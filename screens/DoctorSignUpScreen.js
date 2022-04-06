@@ -42,7 +42,9 @@ const DoctorSignUpScreen = ({ navigation }) => {
     // street_address:'',
     // insurance:null,
     hospital:'',
-    qualifications:[],
+    qualification_name:'',
+    institute_name:'',
+    procurement_year:"",
     countryCode: "",
     check_textInputChange: false,
     secureTextEntry: true,
@@ -102,6 +104,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
 
 
 {/*****  submission: this variable will be JSON object to be submitted    *****/}  
+
   let submission = {
     first_name: data.first_name,
     last_name: data.last_name,
@@ -115,7 +118,11 @@ const DoctorSignUpScreen = ({ navigation }) => {
     date_of_birth: data.date_of_birth,
     region: data.region,
     hospital: data.hospital,
-    qualifications: data.qualifications,
+    qualifications:[{
+      qualification_name: data.qualification_name,
+      institute_name: data.institute_name,
+      procurement_year: data.procurement_year,
+    }]
     // street_address: data.street_address,
     // country: data.country,
     // insurance_id: data.insurance,
@@ -294,13 +301,27 @@ const DoctorSignUpScreen = ({ navigation }) => {
     });
   };
 
-  const handleQualificationsChange = (val) => {
+  const handleQualificationsInstituteNameChange = (val) => {
     setData({
       ...data,
-      qualifications: val,
+    //  institute_name : val,
+      institute_name:val
     });
   };
 
+  const handleQualificationsQualificationNameChange = (val) => {
+    setData({
+      ...data,
+        qualification_name:val
+    });
+  };
+
+  const handleQualificationsProcurementYearChange = (val) => {
+    setData({
+      ...data,
+        procurement_year:val
+    });
+  };
 
 
 
@@ -655,8 +676,49 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </Picker> */}
           </View>
        
-{/******************************      SIGN UP   --BUTTON--     ***********************************/}       
+{/******************************     QUALIFICATIONS SECTION     ***********************************/}
 
+<Text>Qualifications</Text>
+
+<Text style={[styles.text_footer, { marginTop: 35 }]}>Qualification Name</Text>
+          <View style={styles.action}>
+            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <TextInput
+              placeholder="Your City"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              onChangeText={(val) => handleQualificationsQualificationNameChange(val)}
+            />
+          </View>
+
+<Text style={[styles.text_footer, { marginTop: 35 }]}>Institute Name </Text>
+          <View style={styles.action}>
+            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <TextInput
+              placeholder="Your City"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              onChangeText={(val) => handleQualificationsInstituteNameChange(val)}
+            />
+          </View>
+
+
+
+<Text style={[styles.text_footer, { marginTop: 35 }]}>Procurement Year</Text>
+          <View style={styles.action}>
+            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <TextInput
+              placeholder="Your City"
+              placeholderTextColor="#666666"
+              style={[styles.textInput]}
+              autoCapitalize="none"
+              onChangeText={(val) => handleQualificationsProcurementYearChange(val)}
+            />
+          </View>
+
+{/******************************      SIGN UP   --BUTTON--     ***********************************/}       
 <View style={styles.button}>
           <TouchableOpacity
             style={styles.signIn}
