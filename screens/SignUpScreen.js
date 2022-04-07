@@ -17,10 +17,12 @@ import Feather from "react-native-vector-icons/Feather";
 import DatePicker from "react-native-datepicker";
 import CountryPicker from "react-native-country-picker-modal";
 import DropDownPicker from 'react-native-dropdown-picker';
+import Fontisto from "react-native-vector-icons/Fontisto";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 import axios from "axios";
-const baseUrl = "https://reqres.in";
-
+//const baseUrl = "https://reqres.in";
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 
 const SignUpScreen = ({ navigation }) => {
@@ -36,7 +38,7 @@ const SignUpScreen = ({ navigation }) => {
     country: "",
     city:'',
     street_address:'',
-    insurance:null,
+    insurance_id:null,
     countryCode: "",
     check_textInputChange: false,
     secureTextEntry: true,
@@ -50,14 +52,13 @@ const SignUpScreen = ({ navigation }) => {
   //  For Insurance Dropdown 
   const [open, setOpen] = useState(false);
   const [items, setItems] = useState([
-    {label: 'none', value: null},
-    {label: 'AXA Insurance', value: 'AXA Insurance'},
-    {label: 'Metlife Alico', value: 'Metlife Alico'},
-    {label: 'Misr Insurance', value: 'Misr Insurance'},
-    {label: 'Allianz', value: 'Allianz'},
-    {label: 'Suez Canal Insurance', value: 'Suez Canal Insurance'},
-    {label: 'Delta insurance', value: 'Delta insurance'},
-    {label: 'Bupa', value: 'Bupa'},
+    {label: 'AXA Insurance', value: 'AXA Insurance',id:1},
+    {label: 'Metlife Alico', value: 'Metlife Alico',id:2},
+    {label: 'Misr Insurance', value: 'Misr Insurance',id:3},
+    {label: 'Allianz', value: 'Allianz',id:4},
+    {label: 'Suez Canal Insurance', value: 'Suez Canal Insurance',id:5},
+    {label: 'Delta insurance', value: 'Delta insurance',id:6},
+    {label: 'Bupa', value: 'Bupa',id:7},
   ]);
 
 
@@ -69,12 +70,12 @@ const SignUpScreen = ({ navigation }) => {
     first_name: data.first_name,
     last_name: data.last_name,
     phone_number: data.phone_number,
-    date_of_birth: data.date_of_birth,
-    age: '',
+    date_of_birth: (data.date_of_birth).split("-").reverse().join("-"),
+    age: 0,
     street_address: data.street_address,
     city: data.city,
     country: data.country,
-    insurance_id: data.insurance,
+    insurance_id: parseInt(data.insurance_id),
   };
 
 
@@ -83,9 +84,9 @@ const SignUpScreen = ({ navigation }) => {
   const onSubmitFormHandler = async (event) => {
     setIsLoading(true);
     try {
-      const response = await axios.put(`${baseUrl}/api/users`, submission);
-      if (response.status === 200) {
-        alert(` You have created: ${JSON.stringify(response.data)}`);
+      const response = await axios.put(`${baseUrl}/patients-auth/patient-signup`, submission);
+      if (response.status === 201) {
+        alert(`${JSON.stringify(response.data)}`);
         console.log(` You have created: ${JSON.stringify(response.data)}`);
         navigation.navigate("SignInScreen");
         setIsLoading(false);
@@ -95,6 +96,8 @@ const SignUpScreen = ({ navigation }) => {
     } catch (error) {
       alert("An error has occurred");
       console.log(error);
+      console.log("Status code" , response.status);
+
       setIsLoading(false);
     }
   };
@@ -222,7 +225,7 @@ const SignUpScreen = ({ navigation }) => {
   const handleInsuranceChange = (val) => {
     setData({
       ...data,
-      insurance: val.value,
+      insurance: val.id,
     });
   };
 
@@ -266,8 +269,8 @@ const SignUpScreen = ({ navigation }) => {
                 marginTop: 35,
               }]}>Email</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
-            <TextInput
+          <Fontisto name="email" color="#05375a" size={23} />
+             <TextInput
               placeholder="Your Email"
               placeholderTextColor="#666666"
               style={[styles.textInput]}
@@ -374,9 +377,9 @@ const SignUpScreen = ({ navigation }) => {
 {/******************************      PHONE NUMBER     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>Phone Number</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <FontAwesome name="phone" color="#05375a" size={20} />
             <TextInput
-              placeholder="Your Username"
+              placeholder="+20****"
               placeholderTextColor="#666666"
               keyboardType="numeric"
               style={[styles.textInput]}
@@ -432,7 +435,7 @@ const SignUpScreen = ({ navigation }) => {
 {/******************************      CITY     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>City</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+          <MaterialCommunityIcons name="home-city" color="#05375a" size={21} />
             <TextInput
               placeholder="Your City"
               placeholderTextColor="#666666"
@@ -445,7 +448,6 @@ const SignUpScreen = ({ navigation }) => {
 {/******************************      STREET ADDRESS     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>Street Address</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
               placeholder="Your Address"
               placeholderTextColor="#666666"

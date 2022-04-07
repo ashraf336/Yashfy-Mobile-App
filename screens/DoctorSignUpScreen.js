@@ -17,11 +17,16 @@ import Feather from "react-native-vector-icons/Feather";
 import DatePicker from "react-native-datepicker";
 import CountryPicker from "react-native-country-picker-modal";
 import DropDownPicker from 'react-native-dropdown-picker';
+import Fontisto from "react-native-vector-icons/Fontisto";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+
+
 
 // import {Picker} from '@react-native-picker/picker';
 
 import axios from "axios";
-const baseUrl = "https://reqres.in";
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; Deployment
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 
 const DoctorSignUpScreen = ({ navigation }) => {
@@ -35,13 +40,13 @@ const DoctorSignUpScreen = ({ navigation }) => {
     phone_number:'',
     date_of_birth: "01-01-1999",
     specialization:"",
-    consultaion_fee:'',
+    consultaion_fee:0,
     region: '',
     // country: "",
     city:'',
     // street_address:'',
     // insurance:null,
-    hospital:'',
+    hospital_id:null,
     qualifications:[],
     countryCode: "",
     check_textInputChange: false,
@@ -82,22 +87,22 @@ const DoctorSignUpScreen = ({ navigation }) => {
     //  For HOSPITAL Dropdown 
     const [hospitalOpen, setHospitalOpen] = useState(false);
     const [hospitalItems, setHospitalItems] = useState([
-      {label: 'Agial Hospital', value: 'Agial Hospital'},
-      {label: 'Alexandria University Main Hospital', value: 'Alexandria University Main Hospital'},
-      {label: 'Alex Radiology Center', value: 'Alex Radiology Center'},
-      {label: 'Alexandria Pediatric Center', value: 'Alexandria Pediatric Center'},
-      {label: 'Alexandria Medical Center', value: 'Alexandria Medical Center'},
-      {label: 'Badrawy Hospital', value: 'Badrawy Hospital'},
-      {label: 'Coptic Hospital', value: 'Coptic Hospital'},
-      {label: 'Dar Al Shifa Hospital', value: 'Dar Al Shifa Hospital'},
-      {label: 'El Madina El Tebaya Hospital', value: 'El Madina El Tebaya Hospital'},
-      {label: 'El Shorouk Hospital', value: 'El Shorouk Hospital'},
-      {label: 'German Hospital', value: 'German Hospital'},
-      {label: 'Gamal Abd El Naser Hospital', value: 'Gamal Abd El Naser Hospital'},
-      {label: 'Mabaret Al-Asafra Hospitals', value: 'Mabaret Al-Asafra Hospitals'},
-      {label: 'Victoria Hospital', value: 'Victoria Hospital'},
-      {label: 'Alex Specialized Hospital', value: 'Alex Specialized Hospital'},
-      {label: 'Hassab Hospital', value: 'Hassab Hospital'},
+      {label: 'Agial Hospital', value: 'Agial Hospital', id:1},
+      {label: 'Alexandria University Main Hospital', value: 'Alexandria University Main Hospital' ,id:2},
+      {label: 'Alex Radiology Center', value: 'Alex Radiology Center',id:3},
+      {label: 'Alexandria Pediatric Center', value: 'Alexandria Pediatric Center',id:4},
+      {label: 'Alexandria Medical Center', value: 'Alexandria Medical Center',id:5},
+      {label: 'Badrawy Hospital', value: 'Badrawy Hospital',id:6},
+      {label: 'Coptic Hospital', value: 'Coptic Hospital',id:7},
+      {label: 'Dar Al Shifa Hospital', value: 'Dar Al Shifa Hospital',id:8},
+      {label: 'El Madina El Tebaya Hospital', value: 'El Madina El Tebaya Hospital',id:9},
+      {label: 'El Shorouk Hospital', value: 'El Shorouk Hospital',id:10},
+      {label: 'German Hospital', value: 'German Hospital',id:11},
+      {label: 'Gamal Abd El Naser Hospital', value: 'Gamal Abd El Naser Hospital',id:12},
+      {label: 'Mabaret Al-Asafra Hospitals', value: 'Mabaret Al-Asafra Hospitals',id:13},
+      {label: 'Victoria Hospital', value: 'Victoria Hospital',id:14},
+      {label: 'Alex Specialized Hospital', value: 'Alex Specialized Hospital',id:15},
+      {label: 'Hassab Hospital', value: 'Hassab Hospital',id:16},
     ]);
 
 
@@ -112,9 +117,9 @@ const DoctorSignUpScreen = ({ navigation }) => {
     specialization : data.specialization,
     consultaion_fee: data.consultaion_fee,
     // phone_number: data.phone_number,
-    date_of_birth: data.date_of_birth,
+    date_of_birth: (data.date_of_birth).split("-").reverse().join("-"),
     region: data.region,
-    hospital: data.hospital,
+    hospital_id: parseInt(data.hospital_id,10),
     qualifications: data.qualifications,
     // street_address: data.street_address,
     // country: data.country,
@@ -124,19 +129,25 @@ const DoctorSignUpScreen = ({ navigation }) => {
  {/******************************   Dummy API post request   ************************************/}  
  const onSubmitFormHandler = async (event) => {
   setIsLoading(true);
+  let config = {
+    headers: {
+        "Content-Type": "application/json"
+  }
+}
   try {
-    const response = await axios.put(`${baseUrl}/api/users`, submission);
-    if (response.status === 200) {
-      alert(` You have created: ${JSON.stringify(response.data)}`);
-      console.log(` You have created: ${JSON.stringify(response.data)}`);
+    console.log("Calling API ....")
+    const response = await axios.put(`${baseUrl}/doctors-auth/doctor-signup`, submission, config);
+    //console.log(response.data);
+    if (response.status === 201) {
+      alert(` ${JSON.stringify(response.data)}`);
       navigation.navigate("DoctorSignInScreen");
       setIsLoading(false);
     } else {
+      console.log("Error happened : ",response.data)
       throw new Error("An error has occurred");
     }
   } catch (error) {
     alert("An error has occurred");
-    console.log(error);
     setIsLoading(false);
   }
 };
@@ -276,7 +287,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
   const handleConsultaionFeeChange = (val) => {
     setData({
       ...data,
-      consultaion_fee: val,
+      consultaion_fee: parseInt(val),
     });
   };
 
@@ -290,7 +301,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
   const handleHospitalChange = (val) => {
     setData({
       ...data,
-      hospital: val.value,
+      hospital_id: val.id,
     });
   };
 
@@ -342,8 +353,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
                 marginTop: 35,
               }]}>Email</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
-            <TextInput
+          <Fontisto name="email" color="#05375a" size={23} />
+              <TextInput
               placeholder="Your Email"
               placeholderTextColor="#666666"
               style={[styles.textInput]}
@@ -450,9 +461,9 @@ const DoctorSignUpScreen = ({ navigation }) => {
 {/******************************      PHONE NUMBER     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>Phone Number</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <FontAwesome name="phone" color="#05375a" size={20} />
             <TextInput
-              placeholder="Your Username"
+              placeholder="+20****"
               placeholderTextColor="#666666"
               keyboardType="numeric"
               style={[styles.textInput]}
@@ -464,9 +475,9 @@ const DoctorSignUpScreen = ({ navigation }) => {
 {/******************************      CONSULTAION FEE     ***********************************/}
 <Text style={[styles.text_footer, { marginTop: 35 }]}>Consultaion Fee</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <FontAwesome name="money"  color="#05375a" size={20} />
             <TextInput
-              placeholder="Your Username"
+              placeholder="Enter fee amount"
               placeholderTextColor="#666666"
               keyboardType="numeric"
               style={[styles.textInput]}
@@ -522,7 +533,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
 {/******************************      CITY     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>City</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+          <MaterialCommunityIcons name="city"color="#05375a" size={23} />
+         
             <TextInput
               placeholder="Your City"
               placeholderTextColor="#666666"
@@ -535,7 +547,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
 {/******************************      REGION     ***********************************/}
 <Text style={[styles.text_footer, { marginTop: 35 }]}>Region</Text>
           <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
+            <MaterialCommunityIcons name="home-city" color="#05375a" size={21} />
             <TextInput
               placeholder="Your City"
               placeholderTextColor="#666666"
@@ -625,7 +637,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
           <DropDownPicker
             listMode="MODAL"
             open={hospitalOpen}
-            value={data.hospital}
+            //value={data.hospital}
             items={hospitalItems}
             setOpen={setHospitalOpen}
             // setValue={setValue}
@@ -633,26 +645,6 @@ const DoctorSignUpScreen = ({ navigation }) => {
             onSelectItem={(val) => {handleHospitalChange(val);}}
           />
 
-            {/* <Picker
-              mode={"dialog"}
-              selectedValue={data.hospital}
-              style={{ height: 100, width: '100%' }}
-              onValueChange={(val) => {handleHospitalChange(val);}}
-            >
-              <Picker.Item label="none" value={null} />
-              <Picker.Item label="Agial Hospital" value="Agial Hospital" />
-              <Picker.Item label="Badrawy Hospital" value="Badrawy Hospital" />
-              <Picker.Item label="Coptic Hospital" value="Coptic Hospital" />
-              <Picker.Item label="Dar Al Shifa Hospital" value="Dar Al Shifa Hospital" />
-              <Picker.Item label="El Madina El Tebaya Hospital" value="El Madina El Tebaya Hospital" />
-              <Picker.Item label="El Shorouk Hospital" value="El Shorouk Hospital" />
-              <Picker.Item label="German Hospital" value="German Hospital" />
-              <Picker.Item label="Gamal Abd El Naser Hospital" value="Gamal Abd El Naser Hospital" />
-              <Picker.Item label="Mabaret Al-Asafra Hospitals" value="Mabaret Al-Asafra Hospitals" />
-              <Picker.Item label="Victoria Hospital" value="Victoria Hospital" />
-              <Picker.Item label="Alex Specialized Hospital" value="Alex Specialized Hospital" />
-              <Picker.Item label="Hassab Hospital" value="Hassab Hospital" />
-            </Picker> */}
           </View>
        
 {/******************************      SIGN UP   --BUTTON--     ***********************************/}       
