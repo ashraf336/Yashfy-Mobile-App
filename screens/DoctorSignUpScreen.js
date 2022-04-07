@@ -1,4 +1,4 @@
-import React,{useState} from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
@@ -16,35 +16,34 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import DatePicker from "react-native-datepicker";
 import CountryPicker from "react-native-country-picker-modal";
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from "react-native-dropdown-picker";
 
 // import {Picker} from '@react-native-picker/picker';
 
 import axios from "axios";
 const baseUrl = "https://reqres.in";
 
-
 const DoctorSignUpScreen = ({ navigation }) => {
   const [data, setData] = React.useState({
     username: "",
-    email:'',
+    email: "",
     password: "",
     confirm_password: "",
-    first_name:'',
-    last_name:'',
-    phone_number:'',
+    first_name: "",
+    last_name: "",
+    phone_number: "",
     date_of_birth: "01-01-1999",
-    specialization:"",
-    consultaion_fee:'',
-    region: '',
+    specialization: "",
+    consultaion_fee: "",
+    region: "",
     // country: "",
-    city:'',
+    city: "",
     // street_address:'',
     // insurance:null,
-    hospital:'',
-    qualification_name:'',
-    institute_name:'',
-    procurement_year:"",
+    hospital: "",
+    qualification_name: "",
+    institute_name: "",
+    procurement_year: "",
     countryCode: "",
     check_textInputChange: false,
     secureTextEntry: true,
@@ -52,58 +51,76 @@ const DoctorSignUpScreen = ({ navigation }) => {
     isValidUser: true,
     isValidPassword: true,
   });
-  
+
   const [isLoading, setIsLoading] = useState(false);
 
-  //  For SPECIALIZATION Dropdown 
+  //  For SPECIALIZATION Dropdown
   const [specializationOpen, setSpecializationOpen] = useState(false);
   const [specializationItems, setSpecializationItems] = useState([
-    {label: 'Allergy and immunology', value: 'Allergy and immunology'},
-    {label: 'Anesthesiology', value: 'Anesthesiology'},
-    {label: 'Dermatology', value: 'Dermatology'},
-    {label: 'Diagnostic radiology', value: 'Diagnostic radiology'},
-    {label: 'Emergency medicine', value: 'Emergency medicine'},
-    {label: 'Family medicine', value: 'Family medicine'},
-    {label: 'Internal medicine', value: 'Internal medicine'},
-    {label: 'Medical genetics', value: 'Medical genetics'},
-    {label: 'Neurology', value: 'Neurology'},
-    {label: 'Nuclear medicine', value: 'Nuclear medicine'},
-    {label: 'Obstetrics and gynecology', value: 'Obstetrics and gynecology'},
-    {label: 'Ophthalmology', value: 'Ophthalmology'},
-    {label: 'Pathology', value: 'Pathology'},
-    {label: 'Pediatrics', value: 'Pediatrics'},
-    {label: 'Physical medicine and rehabilitation', value: 'Physical medicine and rehabilitation'},
-    {label: 'Preventive medicine', value: 'Preventive medicine'},
-    {label: 'Psychiatry', value: 'Psychiatry'},
-    {label: 'Radiation oncology', value: 'Radiation oncology'},
-    {label: 'Surgery', value: 'Surgery'},
-    {label: 'Urology', value: 'Urology'}
+    { label: "Allergy and immunology", value: "Allergy and immunology" },
+    { label: "Anesthesiology", value: "Anesthesiology" },
+    { label: "Dermatology", value: "Dermatology" },
+    { label: "Diagnostic radiology", value: "Diagnostic radiology" },
+    { label: "Emergency medicine", value: "Emergency medicine" },
+    { label: "Family medicine", value: "Family medicine" },
+    { label: "Internal medicine", value: "Internal medicine" },
+    { label: "Medical genetics", value: "Medical genetics" },
+    { label: "Neurology", value: "Neurology" },
+    { label: "Nuclear medicine", value: "Nuclear medicine" },
+    { label: "Obstetrics and gynecology", value: "Obstetrics and gynecology" },
+    { label: "Ophthalmology", value: "Ophthalmology" },
+    { label: "Pathology", value: "Pathology" },
+    { label: "Pediatrics", value: "Pediatrics" },
+    {
+      label: "Physical medicine and rehabilitation",
+      value: "Physical medicine and rehabilitation",
+    },
+    { label: "Preventive medicine", value: "Preventive medicine" },
+    { label: "Psychiatry", value: "Psychiatry" },
+    { label: "Radiation oncology", value: "Radiation oncology" },
+    { label: "Surgery", value: "Surgery" },
+    { label: "Urology", value: "Urology" },
   ]);
-  
-  
-    //  For HOSPITAL Dropdown 
-    const [hospitalOpen, setHospitalOpen] = useState(false);
-    const [hospitalItems, setHospitalItems] = useState([
-      {label: 'Agial Hospital', value: 'Agial Hospital'},
-      {label: 'Alexandria University Main Hospital', value: 'Alexandria University Main Hospital'},
-      {label: 'Alex Radiology Center', value: 'Alex Radiology Center'},
-      {label: 'Alexandria Pediatric Center', value: 'Alexandria Pediatric Center'},
-      {label: 'Alexandria Medical Center', value: 'Alexandria Medical Center'},
-      {label: 'Badrawy Hospital', value: 'Badrawy Hospital'},
-      {label: 'Coptic Hospital', value: 'Coptic Hospital'},
-      {label: 'Dar Al Shifa Hospital', value: 'Dar Al Shifa Hospital'},
-      {label: 'El Madina El Tebaya Hospital', value: 'El Madina El Tebaya Hospital'},
-      {label: 'El Shorouk Hospital', value: 'El Shorouk Hospital'},
-      {label: 'German Hospital', value: 'German Hospital'},
-      {label: 'Gamal Abd El Naser Hospital', value: 'Gamal Abd El Naser Hospital'},
-      {label: 'Mabaret Al-Asafra Hospitals', value: 'Mabaret Al-Asafra Hospitals'},
-      {label: 'Victoria Hospital', value: 'Victoria Hospital'},
-      {label: 'Alex Specialized Hospital', value: 'Alex Specialized Hospital'},
-      {label: 'Hassab Hospital', value: 'Hassab Hospital'},
-    ]);
 
+  //  For HOSPITAL Dropdown
+  const [hospitalOpen, setHospitalOpen] = useState(false);
+  const [hospitalItems, setHospitalItems] = useState([
+    { label: "Agial Hospital", value: "Agial Hospital" },
+    {
+      label: "Alexandria University Main Hospital",
+      value: "Alexandria University Main Hospital",
+    },
+    { label: "Alex Radiology Center", value: "Alex Radiology Center" },
+    {
+      label: "Alexandria Pediatric Center",
+      value: "Alexandria Pediatric Center",
+    },
+    { label: "Alexandria Medical Center", value: "Alexandria Medical Center" },
+    { label: "Badrawy Hospital", value: "Badrawy Hospital" },
+    { label: "Coptic Hospital", value: "Coptic Hospital" },
+    { label: "Dar Al Shifa Hospital", value: "Dar Al Shifa Hospital" },
+    {
+      label: "El Madina El Tebaya Hospital",
+      value: "El Madina El Tebaya Hospital",
+    },
+    { label: "El Shorouk Hospital", value: "El Shorouk Hospital" },
+    { label: "German Hospital", value: "German Hospital" },
+    {
+      label: "Gamal Abd El Naser Hospital",
+      value: "Gamal Abd El Naser Hospital",
+    },
+    {
+      label: "Mabaret Al-Asafra Hospitals",
+      value: "Mabaret Al-Asafra Hospitals",
+    },
+    { label: "Victoria Hospital", value: "Victoria Hospital" },
+    { label: "Alex Specialized Hospital", value: "Alex Specialized Hospital" },
+    { label: "Hassab Hospital", value: "Hassab Hospital" },
+  ]);
 
-{/*****  submission: this variable will be JSON object to be submitted    *****/}  
+  {
+    /*****  submission: this variable will be JSON object to be submitted    *****/
+  }
 
   let submission = {
     first_name: data.first_name,
@@ -112,43 +129,48 @@ const DoctorSignUpScreen = ({ navigation }) => {
     username: data.username,
     password: data.password,
     city: data.city,
-    specialization : data.specialization,
+    specialization: data.specialization,
     consultaion_fee: data.consultaion_fee,
     // phone_number: data.phone_number,
     date_of_birth: data.date_of_birth,
     region: data.region,
     hospital: data.hospital,
-    qualifications:[{
-      qualification_name: data.qualification_name,
-      institute_name: data.institute_name,
-      procurement_year: data.procurement_year,
-    }]
+    qualifications: [
+      {
+        qualification_name: data.qualification_name,
+        institute_name: data.institute_name,
+        procurement_year: data.procurement_year,
+      },
+    ],
     // street_address: data.street_address,
     // country: data.country,
     // insurance_id: data.insurance,
   };
 
- {/******************************   Dummy API post request   ************************************/}  
- const onSubmitFormHandler = async (event) => {
-  setIsLoading(true);
-  try {
-    const response = await axios.put(`${baseUrl}/api/users`, submission);
-    if (response.status === 200) {
-      alert(` You have created: ${JSON.stringify(response.data)}`);
-      console.log(` You have created: ${JSON.stringify(response.data)}`);
-      navigation.navigate("DoctorSignInScreen");
-      setIsLoading(false);
-    } else {
-      throw new Error("An error has occurred");
-    }
-  } catch (error) {
-    alert("An error has occurred");
-    console.log(error);
-    setIsLoading(false);
+  {
+    /******************************   Dummy API post request   ************************************/
   }
-};
-{/********************************************************************************/}  
-
+  const onSubmitFormHandler = async (event) => {
+    setIsLoading(true);
+    try {
+      const response = await axios.put(`${baseUrl}/api/users`, submission);
+      if (response.status === 200) {
+        alert(` You have created: ${JSON.stringify(response.data)}`);
+        console.log(` You have created: ${JSON.stringify(response.data)}`);
+        navigation.navigate("DoctorSignInScreen");
+        setIsLoading(false);
+      } else {
+        throw new Error("An error has occurred");
+      }
+    } catch (error) {
+      alert("An error has occurred");
+      console.log(error);
+      setIsLoading(false);
+    }
+  };
+  {
+    /********************************************************************************/
+  }
 
   const textInputChange = (val) => {
     if (val.trim().length >= 4) {
@@ -182,14 +204,12 @@ const DoctorSignUpScreen = ({ navigation }) => {
     });
   };
 
-
   const handleEmailChange = (val) => {
     setData({
       ...data,
       email: val,
     });
   };
-
 
   const handlePasswordChange = (val) => {
     if (val.trim().length >= 8) {
@@ -207,14 +227,13 @@ const DoctorSignUpScreen = ({ navigation }) => {
     }
   };
 
-
   const handleConfirmPasswordChange = (val) => {
     setData({
       ...data,
       confirm_password: val,
     });
   };
-  
+
   const handleFirstNameChange = (val) => {
     setData({
       ...data,
@@ -264,8 +283,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
       street_address: val,
     });
   };
- 
-  
+
   const handleInsuranceChange = (val) => {
     setData({
       ...data,
@@ -304,42 +322,45 @@ const DoctorSignUpScreen = ({ navigation }) => {
   const handleQualificationsInstituteNameChange = (val) => {
     setData({
       ...data,
-    //  institute_name : val,
-      institute_name:val
+      //  institute_name : val,
+      institute_name: val,
     });
   };
 
   const handleQualificationsQualificationNameChange = (val) => {
     setData({
       ...data,
-        qualification_name:val
+      qualification_name: val,
     });
   };
 
   const handleQualificationsProcurementYearChange = (val) => {
     setData({
       ...data,
-        procurement_year:val
+      procurement_year: val,
     });
   };
 
-
-
-{/************************************************************************************/}
-{/******************************    View      ****************************************/}
-{/************************************************************************************/}
+  {
+    /************************************************************************************/
+  }
+  {
+    /******************************    View      ****************************************/
+  }
+  {
+    /************************************************************************************/
+  }
 
   return (
     <View style={styles.container}>
-      <StatusBar backgroundColor='#087ed4' barStyle="light-content"/>
+      <StatusBar backgroundColor="#087ed4" barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.text_header}>Please fill the following fields</Text>
       </View>
 
       <Animatable.View animation={"fadeInUpBig"} style={styles.footer}>
         <ScrollView>
-
-{/******************************     USERNAME     ************************************/}
+          {/******************************     USERNAME     ************************************/}
           <Text style={styles.text_footer}>Username</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
@@ -358,10 +379,17 @@ const DoctorSignUpScreen = ({ navigation }) => {
             ) : null}
           </View>
 
-{/******************************     EMAIL     **************************************/}          
-          <Text style={[styles.text_footer , {
+          {/******************************     EMAIL     **************************************/}
+          <Text
+            style={[
+              styles.text_footer,
+              {
                 marginTop: 35,
-              }]}>Email</Text>
+              },
+            ]}
+          >
+            Email
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -374,7 +402,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-{/******************************     PASSWORD     **************************************/}            
+          {/******************************     PASSWORD     **************************************/}
           <Text
             style={[
               styles.text_footer,
@@ -386,10 +414,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             Password
           </Text>
           <View style={styles.action}>
-            <Feather
-              name="lock"
-              size={20}
-            />
+            <Feather name="lock" size={20} />
             <TextInput
               placeholder="Your Password"
               placeholderTextColor="#666666"
@@ -407,7 +432,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-{/******************************     Confirm PASSWORD     ***********************************/}
+          {/******************************     Confirm PASSWORD     ***********************************/}
           <Text
             style={[
               styles.text_footer,
@@ -441,8 +466,10 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </TouchableOpacity>
           </View>
 
-{/******************************     FIRST NAME     ***********************************/}
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>First Name</Text>
+          {/******************************     FIRST NAME     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>
+            First Name
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -455,7 +482,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-{/******************************     LAST NAME     ***********************************/}
+          {/******************************     LAST NAME     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>Last Name</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
@@ -468,8 +495,10 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-{/******************************      PHONE NUMBER     ***********************************/}
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>Phone Number</Text>
+          {/******************************      PHONE NUMBER     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>
+            Phone Number
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -482,8 +511,10 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-{/******************************      CONSULTAION FEE     ***********************************/}
-<Text style={[styles.text_footer, { marginTop: 35 }]}>Consultaion Fee</Text>
+          {/******************************      CONSULTAION FEE     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>
+            Consultaion Fee
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -496,8 +527,10 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-{/******************************      DATE OF BIRTH     ***********************************/}
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>Date of Birth</Text>
+          {/******************************      DATE OF BIRTH     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>
+            Date of Birth
+          </Text>
           <View style={styles.action}>
             <DatePicker
               style={styles.datePickerStyle}
@@ -522,11 +555,13 @@ const DoctorSignUpScreen = ({ navigation }) => {
                   borderWidth: 0,
                 },
               }}
-              onDateChange={(val) => {handleDateofBirthChange(val);}}
+              onDateChange={(val) => {
+                handleDateofBirthChange(val);
+              }}
             />
           </View>
 
-{/******************************      COUNTRY     ***********************************/}
+          {/******************************      COUNTRY     ***********************************/}
           {/* <Text style={[styles.text_footer, { marginTop: 35 }]}>Country</Text>
           <View style={styles.action}>
             <CountryPicker
@@ -540,7 +575,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View> */}
 
-{/******************************      CITY     ***********************************/}
+          {/******************************      CITY     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>City</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
@@ -553,8 +588,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-{/******************************      REGION     ***********************************/}
-<Text style={[styles.text_footer, { marginTop: 35 }]}>Region</Text>
+          {/******************************      REGION     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>Region</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -562,12 +597,12 @@ const DoctorSignUpScreen = ({ navigation }) => {
               placeholderTextColor="#666666"
               style={[styles.textInput]}
               autoCapitalize="none"
-              autoCorrect= {false}
+              autoCorrect={false}
               onChangeText={(val) => handleRegionChange(val)}
             />
           </View>
 
-{/******************************      STREET ADDRESS     ***********************************/}
+          {/******************************      STREET ADDRESS     ***********************************/}
           {/* <Text style={[styles.text_footer, { marginTop: 35 }]}>Street Address</Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
@@ -580,7 +615,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View> */}
 
-{/******************************      INSURANCE     ***********************************/}
+          {/******************************      INSURANCE     ***********************************/}
           {/* <Text style={[styles.text_footer, { marginTop: 35 }]}>Insurance</Text>
           <View style={styles.action}>
             <Picker
@@ -595,21 +630,25 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </Picker>
           </View> */}
 
-{/******************************      SPECIALIZATION     ***********************************/}
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>Specialization</Text>
-          <View style={{marginTop:0}}>
-          <DropDownPicker
-            listMode="MODAL"
-            open={specializationOpen}
-            value={data.specialization}
-            items={specializationItems}
-            setOpen={setSpecializationOpen}
-            // setValue={setValue}
-            // setItems={setItems}
-            onSelectItem={(val) => {handleSpecializationChange(val);}}
-          />
+          {/******************************      SPECIALIZATION     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 20 }]}>
+            Specialization
+          </Text>
+          <View style={{ marginTop: 10 }}>
+            <DropDownPicker
+              listMode="MODAL"
+              open={specializationOpen}
+              value={data.specialization}
+              items={specializationItems}
+              setOpen={setSpecializationOpen}
+              // setValue={setValue}
+              // setItems={setItems}
+              onSelectItem={(val) => {
+                handleSpecializationChange(val);
+              }}
+            />
 
-{/*             
+            {/*             
             <Picker
               mode={"dialog"}
               selectedValue={data.specialization}
@@ -640,47 +679,28 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </Picker> */}
           </View>
 
-{/******************************      HOSPITAL     ***********************************/}
-<Text style={[styles.text_footer, { marginTop: 35 }]}>Hospital</Text>
-          <View style={{marginTop:0}}>
-          <DropDownPicker
-            listMode="MODAL"
-            open={hospitalOpen}
-            value={data.hospital}
-            items={hospitalItems}
-            setOpen={setHospitalOpen}
-            // setValue={setValue}
-            // setItems={setItems}
-            onSelectItem={(val) => {handleHospitalChange(val);}}
-          />
-
-            {/* <Picker
-              mode={"dialog"}
-              selectedValue={data.hospital}
-              style={{ height: 100, width: '100%' }}
-              onValueChange={(val) => {handleHospitalChange(val);}}
-            >
-              <Picker.Item label="none" value={null} />
-              <Picker.Item label="Agial Hospital" value="Agial Hospital" />
-              <Picker.Item label="Badrawy Hospital" value="Badrawy Hospital" />
-              <Picker.Item label="Coptic Hospital" value="Coptic Hospital" />
-              <Picker.Item label="Dar Al Shifa Hospital" value="Dar Al Shifa Hospital" />
-              <Picker.Item label="El Madina El Tebaya Hospital" value="El Madina El Tebaya Hospital" />
-              <Picker.Item label="El Shorouk Hospital" value="El Shorouk Hospital" />
-              <Picker.Item label="German Hospital" value="German Hospital" />
-              <Picker.Item label="Gamal Abd El Naser Hospital" value="Gamal Abd El Naser Hospital" />
-              <Picker.Item label="Mabaret Al-Asafra Hospitals" value="Mabaret Al-Asafra Hospitals" />
-              <Picker.Item label="Victoria Hospital" value="Victoria Hospital" />
-              <Picker.Item label="Alex Specialized Hospital" value="Alex Specialized Hospital" />
-              <Picker.Item label="Hassab Hospital" value="Hassab Hospital" />
-            </Picker> */}
+          {/******************************      HOSPITAL     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 20 }]}>Hospital</Text>
+          <View style={{ marginTop: 10 }}>
+            <DropDownPicker
+              listMode="MODAL"
+              open={hospitalOpen}
+              value={data.hospital}
+              items={hospitalItems}
+              setOpen={setHospitalOpen}
+              onSelectItem={(val) => {
+                handleHospitalChange(val);
+              }}
+            />
           </View>
-       
-{/******************************     QUALIFICATIONS SECTION     ***********************************/}
 
-<Text>Qualifications</Text>
+          {/******************************     QUALIFICATIONS SECTION     ***********************************/}
 
-<Text style={[styles.text_footer, { marginTop: 35 }]}>Qualification Name</Text>
+          <Text style={styles.qualificationsStyle}>Qualifications:</Text>
+
+          <Text style={[styles.text_footer, { marginTop: 20 }]}>
+            Qualification Name
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -688,11 +708,15 @@ const DoctorSignUpScreen = ({ navigation }) => {
               placeholderTextColor="#666666"
               style={[styles.textInput]}
               autoCapitalize="none"
-              onChangeText={(val) => handleQualificationsQualificationNameChange(val)}
+              onChangeText={(val) =>
+                handleQualificationsQualificationNameChange(val)
+              }
             />
           </View>
 
-<Text style={[styles.text_footer, { marginTop: 35 }]}>Institute Name </Text>
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>
+            Institute Name{" "}
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -700,13 +724,15 @@ const DoctorSignUpScreen = ({ navigation }) => {
               placeholderTextColor="#666666"
               style={[styles.textInput]}
               autoCapitalize="none"
-              onChangeText={(val) => handleQualificationsInstituteNameChange(val)}
+              onChangeText={(val) =>
+                handleQualificationsInstituteNameChange(val)
+              }
             />
           </View>
 
-
-
-<Text style={[styles.text_footer, { marginTop: 35 }]}>Procurement Year</Text>
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>
+            Procurement Year
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -714,60 +740,62 @@ const DoctorSignUpScreen = ({ navigation }) => {
               placeholderTextColor="#666666"
               style={[styles.textInput]}
               autoCapitalize="none"
-              onChangeText={(val) => handleQualificationsProcurementYearChange(val)}
+              onChangeText={(val) =>
+                handleQualificationsProcurementYearChange(val)
+              }
             />
           </View>
 
-{/******************************      SIGN UP   --BUTTON--     ***********************************/}       
-<View style={styles.button}>
-          <TouchableOpacity
-            style={styles.signIn}
-            onPress={() => {
-              onSubmitFormHandler() ; 
-              console.log(submission);
-            }}
-          >
-            <LinearGradient
-              colors={["#087ed4", "#01ab9d"]}
+          {/******************************      SIGN UP   --BUTTON--     ***********************************/}
+          <View style={styles.button}>
+            <TouchableOpacity
               style={styles.signIn}
+              onPress={() => {
+                onSubmitFormHandler();
+                console.log(submission);
+              }}
             >
-              <Text
+              <LinearGradient
+                colors={["#087ed4", "#01ab9d"]}
+                style={styles.signIn}
+              >
+                <Text
+                  style={[
+                    styles.textSign,
+                    {
+                      color: "#fff",
+                    },
+                  ]}
+                >
+                  Sign Up
+                </Text>
+              </LinearGradient>
+            </TouchableOpacity>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
+              <Text style={styles.text}>Sign In instead ?</Text>
+              <TouchableOpacity
+                onPress={() => navigation.navigate("DoctorSignInScreen")}
                 style={[
-                  styles.textSign,
+                  styles.signUp,
                   {
-                    color: "#fff",
+                    borderColor: "#009387",
+                    borderWidth: 0,
+                    marginTop: 15,
                   },
                 ]}
               >
-                Sign Up
-              </Text>
-            </LinearGradient>
-          </TouchableOpacity>
-          <View style={{flexDirection:"row" , alignItems:"center"}}>      
-          <Text style={styles.text}>Sign In instead ?</Text>
-          <TouchableOpacity
-            onPress={() => navigation.navigate("DoctorSignInScreen")}
-            style={[
-              styles.signUp,
-              {
-                borderColor: "#009387",
-                borderWidth: 0,
-                marginTop: 15,
-              },
-            ]}
-          >
-            <Text
-              style={[
-                styles.textSign,
-                {
-                  color: "#087ed4",
-                },
-              ]}
-            >
-              Sign In
-            </Text>
-          </TouchableOpacity>
-          </View>
+                <Text
+                  style={[
+                    styles.textSign,
+                    {
+                      color: "#087ed4",
+                    },
+                  ]}
+                >
+                  Sign In
+                </Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </Animatable.View>
@@ -858,6 +886,12 @@ const styles = StyleSheet.create({
     width: "100%",
     // marginTop: 20,
     borderWidth: 0,
+  },
+  qualificationsStyle:{
+    color: "#05375a",
+    fontWeight: "bold",
+    fontSize: 30,
+    marginTop:40,
   },
 });
 
