@@ -23,8 +23,10 @@ import { AuthContext } from "../components/context";
 
 const SignInScreen = ({navigation}) => {
   const [data, setData] = React.useState({
-    username: "",
-    password: "",
+    username: "testuser",
+    password: "testpass",
+    // username: "",
+    // password: "",
     check_textInputChange: false,
     secureTextEntry: true,
     isValidUser: true,
@@ -118,6 +120,9 @@ const SignInScreen = ({navigation}) => {
         ]);
         return;
     }
+
+    // const   foundUser = Users[0];
+
     signIn(foundUser);
 }
 

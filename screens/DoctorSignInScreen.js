@@ -21,8 +21,10 @@ import { AuthContext } from "../components/context";
 
 const DoctorSignInScreen = ({navigation}) => {
   const [data, setData] = React.useState({
-    username: "",
-    password: "",
+    username: "testuser",
+    password: "testpass",
+    // username: "" ,
+    // password: "" ,
     check_textInputChange: false,
     secureTextEntry: true,
     isValidUser: true,
