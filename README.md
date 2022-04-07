@@ -9,7 +9,7 @@ These instructions will get you to run the app on your local machine for develop
 
 ### Prerequisites
 
-You need to have installed Node.js, NPM.
+You need to have installed Node.js and NPM.
 
 ### 1. Installing dependencies
 ```
