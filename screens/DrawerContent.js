@@ -14,7 +14,7 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import{ AuthContext } from '../components/context';
+import { AuthContext } from "../components/context";
 
 export function DrawerContent(props) {
   const [isDarkTheme, setIsDarkTheme] = useState(false);
@@ -107,6 +107,15 @@ export function DrawerContent(props) {
                 props.navigation.navigate("SupportScreen");
               }}
             />
+            <DrawerItem
+              icon={({ color, size }) => (
+                <Icon name="bookmark-outline" color={color} size={size} />
+              )}
+              label="Single Doctor"
+              onPress={() => {
+                props.navigation.navigate("SingleDoctorScreen");
+              }}
+            />
           </Drawer.Section>
           <Drawer.Section title="Preferences">
             <TouchableRipple
@@ -131,7 +140,9 @@ export function DrawerContent(props) {
             <Icon name="exit-to-app" color={color} size={size} />
           )}
           label="Sign Out"
-          onPress={() => {signOut()}}
+          onPress={() => {
+            signOut();
+          }}
         />
       </Drawer.Section>
     </View>
