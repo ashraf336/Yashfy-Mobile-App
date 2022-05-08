@@ -1,13 +1,14 @@
 import React from "react";
 import { View, Text, Button, StyleSheet } from "react-native";
-import App from "../App";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const HomeScreen = ({ navigation }) => {
-  let token = App.userToken;
+  let userToken;
+  AsyncStorage.getItem('userToken').then(res =>{console.log("The Token: ",res); userToken=res;}).catch(err=>{console.log(err)})
+
   return (
     <View style={styles.container}>
-      <Text>{token}</Text>
+      <Text>{userToken}</Text>
       <Button
         title="Go to details screen"
         onPress={() => navigation.navigate("Details")}
