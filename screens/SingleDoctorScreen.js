@@ -18,6 +18,9 @@ import {
   TouchableRipple,
   Switch,
 } from "react-native-paper";
+import AvaialbleAppointmentsList from "../components/AvaialbleAppointmentsList";
+import ReviewsList from "../components/ReviewsList";
+
 import StarRating from "react-native-star-rating";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -36,7 +39,7 @@ const SingleDoctorScreen = () => {
     street: "Syria Street",
     assistant_rating: 4.5,
     clinic_rating: 3.5,
-    doctor_rating:5,
+    doctor_rating: 5,
     about:
       "- Consultant of Plasric Surgery and Laser Treatment \n- Head of plastic surgeons Alexandria University Hospital",
     experienceHeader: "2000 - Present",
@@ -55,9 +58,35 @@ const SingleDoctorScreen = () => {
     ],
   };
 
-  {
+//****************Appointments Slots**********************//
+  let AvailableAppointments = {
+    slots: [
+      { Date: "20-4-2022", Day: "Sunday", Start: "9:00", End: "10:00", id: 1 },
+      { Date: "20-4-2022", Day: "Sunday", Start: "12:00", End: "1:00", id: 2 },
+      { Date: "20-4-2022", Day: "Sunday", Start: "3:00", End: "4:00", id: 3 },
+      { Date: "21-4-2022", Day: "Monday", Start: "9:00", End: "10:00", id: 4 },
+      { Date: "21-4-2022", Day: "Monday", Start: "10:00", End: "12:00", id: 5 },
+      { Date: "21-4-2022", Day: "Monday", Start: "1:00", End: "2:00", id: 6 },
+      { Date: "23-4-2022", Day: "Wednesday", Start: "9:00", End: "10:00", id: 7},
+      { Date: "23-4-2022", Day: "Wednesday", Start: "1:00", End: "2:00", id: 8},
+      { Date: "23-4-2022", Day: "Wednesday", Start: "3:00", End: "4:00", id: 9},
+    ],
+  };
+
+//****************Patient Reviews**********************//  
+let PatientsReviews={
+  Reviews:[
+    {"patient_name":"أحمد سعد" , "review":"الدكتور كان لطيف و العيادة كانت نضيفة", "rating":5 , id:1 },
+    {"patient_name":"اسامة شريف" , "review":"خلصت الكشف بسرعة و الدكتور كان محترم", "rating":5 , id:2 },
+    {"patient_name":"عبدو حبيب" , "review":"الدكتور ده كغأة", "rating":4 , id:3 },
+    {"patient_name":"زياد نصرت" , "review":"تعامل الدكتور كان دون المستوى مش هروحله تاني", "rating":1 , id:4 },
+    {"patient_name":"محمد ايمن" , "review":"سعيد جدا بتعاملي مع الدكتور ده و هرشحه لأصدقائي", "rating":5 , id:5 },
+    {"patient_name":"اميرة بحجابي" , "review":"استنيت كتير اوي عشان ادخل للدكتور", "rating":2 , id:6 },
+    {"patient_name":"ياسين" , "review":"ارجو مراعاة نظافة العيادة اكتر من كده", "rating":2 , id:7 },
+  ]
+};
+  
     /**** Sections Togglers  ****/
-  }
   const [about, setAbout] = useState(true);
   const [experience, setExperience] = useState(true);
   const [subSpecialities, setsubSpecialities] = useState(true);
@@ -138,6 +167,12 @@ const SingleDoctorScreen = () => {
         </View>
         {/********************************************************/}
         <View style={styles.lineStyle} />
+        {/****************   APPOINTMENTS ************************/}
+        <ScrollView>
+          <AvaialbleAppointmentsList result={AvailableAppointments.slots} />
+        </ScrollView>
+        {/********************************************************/}
+        <View style={styles.lineStyle} />
         {/****************   LOCATION ************************/}
         <View style={{ flexDirection: "row", alignItems: "stretch" }}>
           <Ionicons
@@ -192,7 +227,13 @@ const SingleDoctorScreen = () => {
         {/********************************************************/}
         <View style={styles.lineStyle} />
         {/****************   CLINIC & ASSISSTANT RATINGS ************************/}
-        <View style={{ flexDirection: "row", alignItems: "stretch" }}>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "stretch",
+            marginBottom: 15,
+          }}
+        >
           <View style={styles.smallSections}>
             <Ionicons
               name="star"
@@ -223,10 +264,15 @@ const SingleDoctorScreen = () => {
           </View>
         </View>
         {/********************************************************/}
-        <View style={styles.lineStyle} />
+        {/* <View style={styles.lineStyle} /> */}
       </View>
       {/******************----------------------*********************/}
 
+      {/******************* ------------Appointments Section------------ *******************/}
+      {/* <ScrollView>
+        <AvaialbleAppointmentsList  result={AvailableAppointments.slots}  />
+      </ScrollView> */}
+      {/************************************************************************************/}
       {/******************* ------------ABOUT Section------------ *******************/}
       <View style={styles.aboutView}>
         {/****************   ABOUT DOCTOR ************************/}
@@ -344,45 +390,45 @@ const SingleDoctorScreen = () => {
       {/******************* ------------PATIENT REVIEWS Section------------ *******************/}
       <View style={styles.bodyView}>
         <View>
-          <Text style={[styles.sectionHeader, { marginVertical: 15 }]}>
-            Patients' Reviews
-          </Text>
+          <ScrollView>
+            <ReviewsList result={PatientsReviews.Reviews}/>
+          </ScrollView>
           <Text style={[styles.sectionContent, { textAlign: "center" }]}>
             Overall Rating from {result.no_of_ratings} Visitors
           </Text>
-          <View style={{ flexDirection: "row",justifyContent:"center" }}>
+          <View style={{ flexDirection: "row", justifyContent: "center" }}>
             <View style={styles.smallSectionsReviews}>
-              <View style={{ margin: 15, flex:1,alignItems:"center"}}>
-              <StarRating
-              starStyle={styles.stars}
-              starSize={20}
-              disabled={true}
-              emptyStar={"ios-star-outline"}
-              fullStar={"ios-star"}
-              halfStar={"ios-star-half"}
-              iconSet={"Ionicons"}
-              maxStars={5}
-              rating={result.doctor_rating}
-              fullStarColor={"gold"}
-            />
-              <Text style={{marginTop:10}}>Doctor Rating</Text>
+              <View style={{ margin: 15, flex: 1, alignItems: "center" }}>
+                <StarRating
+                  starStyle={styles.stars}
+                  starSize={20}
+                  disabled={true}
+                  emptyStar={"ios-star-outline"}
+                  fullStar={"ios-star"}
+                  halfStar={"ios-star-half"}
+                  iconSet={"Ionicons"}
+                  maxStars={5}
+                  rating={result.doctor_rating}
+                  fullStarColor={"gold"}
+                />
+                <Text style={{ marginTop: 10 }}>Doctor Rating</Text>
               </View>
             </View>
             <View style={styles.smallSectionsReviews}>
-              <View style={{ margin: 15, flex:1,alignItems:"center"}}>
-              <StarRating
-              starStyle={styles.stars}
-              starSize={20}
-              disabled={true}
-              emptyStar={"ios-star-outline"}
-              fullStar={"ios-star"}
-              halfStar={"ios-star-half"}
-              iconSet={"Ionicons"}
-              maxStars={5}
-              rating={result.rating}
-              fullStarColor={"gold"}
-            />
-            <Text style={{marginTop:10}}>Overall Rating</Text>
+              <View style={{ margin: 15, flex: 1, alignItems: "center" }}>
+                <StarRating
+                  starStyle={styles.stars}
+                  starSize={20}
+                  disabled={true}
+                  emptyStar={"ios-star-outline"}
+                  fullStar={"ios-star"}
+                  halfStar={"ios-star-half"}
+                  iconSet={"Ionicons"}
+                  maxStars={5}
+                  rating={result.rating}
+                  fullStarColor={"gold"}
+                />
+                <Text style={{ marginTop: 10 }}>Overall Rating</Text>
               </View>
             </View>
           </View>
@@ -430,12 +476,12 @@ const styles = StyleSheet.create({
   },
   smallSectionsReviews: {
     flexDirection: "row",
-    alignItems:"flex-end",
-    borderWidth:1,
-    borderColor:"#d3d3d3",
-    borderRadius:15,
+    alignItems: "flex-end",
+    borderWidth: 1,
+    borderColor: "#d3d3d3",
+    borderRadius: 15,
     marginTop: 20,
-    marginHorizontal:2,
+    marginHorizontal: 2,
     width: "45%",
     // paddingHorizontal:5
   },
