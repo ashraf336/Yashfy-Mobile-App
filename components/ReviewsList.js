@@ -1,6 +1,5 @@
 import React from "react";
 import { Text, StyleSheet, View, FlatList,TouchableOpacity,Alert } from "react-native";
-// import AppointmentDetail from "./AppointmentDetail";
 import ReviewDetail from "./ReviewDetail";
 
 

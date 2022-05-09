@@ -3,18 +3,21 @@ import {View , Image , Text , StyleSheet} from 'react-native';
 
 const AppointmentDetail = ({result}) => {
     return <View style={styles.container}>
+      <View style={{marginHorizontal:15,alignItems: "center",flexShrink: 1,}}>
         <Text style={styles.name}>{result.Date}</Text>
         <Text>{result.Day}</Text>
         <Text>{result.Start} - {result.End} </Text>
-
+        </View>
     </View>
 };
 
 const styles = StyleSheet.create({
   container:{
-    
-    marginLeft:15,
+    // backgroundColor:"green",
+    // marginHorizontal:15,
     marginBottom:10,
+    borderRightWidth: 2,
+    borderColor: "#e6e6fa",
   },  
   Image:{
     width:300,
