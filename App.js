@@ -4,17 +4,13 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import { DrawerContent } from "./screens/DrawerContent";
 import "react-native-gesture-handler";
-
 import MainTabScreen from "./screens/MainTabScreen";
 import SupportScreen from "./screens/SupportScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import BookmarkScreen from "./screens/BookmarkScreen";
 import SingleDoctorScreen from "./screens/SingleDoctorScreen";
-
 import { AuthContext } from "./components/context";
-
 import RootStackScreen from "./screens/RootStackScreen";
-
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Drawer = createDrawerNavigator(); 
@@ -59,8 +55,7 @@ const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState)
 
 const authContext = React.useMemo(() => ({
     signIn: async (foundUser) => {
-      // setUserToken("asdf");
-      // setIsLoading(false);
+
       console.log("response in app:",foundUser)
       const userToken = String(foundUser.token);
       const userID = foundUser.id;
@@ -79,8 +74,6 @@ const authContext = React.useMemo(() => ({
       } catch (e) {
         console.log(e);
       }
-
-
       dispatch({type:'LOGOUT' });
     },
     //WHY?
@@ -91,6 +84,7 @@ const authContext = React.useMemo(() => ({
     */
   }),[]);
 
+  // Keep sign in if token still valid  
   useEffect(() => {
     setTimeout(async () => {
       let userToken;
