@@ -21,6 +21,10 @@ const baseUrl = "http://192.168.1.12:8080"; //Devolopment
 
 import { AuthContext } from "../components/context";
 
+
+
+
+
 const SignInScreen = ({navigation}) => {
   const [data, setData] = React.useState({
     email: "",
@@ -38,6 +42,13 @@ const SignInScreen = ({navigation}) => {
       email: data.email,
       password: data.password,
     }
+
+
+  
+  let dummyFoundUser={
+    id:"123",
+    token:"123456"
+  };   
 
   {/******************************     Handle input Fields Change    ***********************************/}
 
@@ -98,7 +109,7 @@ const SignInScreen = ({navigation}) => {
           //call sign in function from authcontext JS object imported
   
           signIn(response.data);
-          navigation.navigate("Home");  // NEED TO Be Edited      
+          navigation.navigate("Home");  // This should be removed , the sigIn( ) in the previous line is enough.  
         } 
         else
         {
@@ -202,7 +213,8 @@ const SignInScreen = ({navigation}) => {
           <TouchableOpacity
             style={styles.signIn}
             onPress={() => {
-              loginHandle(data.email,data.password)
+              signIn(dummyFoundUser);
+              // loginHandle(data.email,data.password)
               // loginHandle(data.email, data.password);
             }}
           >

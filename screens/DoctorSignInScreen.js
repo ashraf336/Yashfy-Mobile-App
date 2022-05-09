@@ -38,6 +38,11 @@ let submission = {
     email: data.email,
     password: data.password,
   }
+
+let dummyFoundUser={
+  id:"123",
+  token:"123456"
+};   
 {/******************************     Handle input Fields Change    ***********************************/}
 
 const textInputChange = (val) => {      //email need to edit  field
@@ -98,7 +103,7 @@ const loginHandle = async (email, password) => {
         //call sign in function from authcontext JS object imported
 
         signIn(response.data);
-        navigation.navigate("HomeScreen");        
+        navigation.navigate("HomeScreen");  // This should be removed , the sigIn( ) in the previous line is enough.      
       } 
       else
       {
@@ -202,8 +207,10 @@ const loginHandle = async (email, password) => {
           <TouchableOpacity
             style={styles.signIn}
             onPress={() => {
-              
-              loginHandle(data.email,data.password)
+              signIn(dummyFoundUser)
+              // loginHandle(data.email,data.password)
+
+
               // loginHandle(data.username, data.password);
             }}
           >
