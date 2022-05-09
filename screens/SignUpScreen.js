@@ -39,6 +39,7 @@ const SignUpScreen = ({ navigation }) => {
     country: "",
     city:'',
     street_address:'',
+    insurance:'',
     insurance_id:null,
     countryCode: "",
     check_textInputChange: false,
@@ -243,7 +244,8 @@ const SignUpScreen = ({ navigation }) => {
   const handleInsuranceChange = (val) => {
     setData({
       ...data,
-      insurance: val.id,
+      insurance_id: val.id,
+      insurance: val.value,
     });
   };
 

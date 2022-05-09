@@ -17,12 +17,10 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 import DatePicker from "react-native-datepicker";
 import CountryPicker from "react-native-country-picker-modal";
-import DropDownPicker from 'react-native-dropdown-picker';
+import DropDownPicker from "react-native-dropdown-picker";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ActivityIndicator } from 'react-native';
-
-
 import axios from "axios";
 //const baseUrl = "https://test-api-yashfy.herokuapp.com"; Deployment
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
@@ -44,7 +42,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
     city: "",
     // street_address:'',
     // insurance:null,
-    hospital_id:null,
+    hospital:"",
+    hospital_id: null,
     qualification_name: "",
     institute_name: "",
     procurement_year: "",
@@ -92,32 +91,64 @@ const DoctorSignUpScreen = ({ navigation }) => {
     { label: "Urology", value: "Urology" },
   ]);
 
- 
-  
-  
-    //  For HOSPITAL Dropdown 
-    const [hospitalOpen, setHospitalOpen] = useState(false);
-    const [hospitalItems, setHospitalItems] = useState([
-      {label: 'Agial Hospital', value: 'Agial Hospital', id:1},
-      {label: 'Alexandria University Main Hospital', value: 'Alexandria University Main Hospital' ,id:2},
-      {label: 'Alex Radiology Center', value: 'Alex Radiology Center',id:3},
-      {label: 'Alexandria Pediatric Center', value: 'Alexandria Pediatric Center',id:4},
-      {label: 'Alexandria Medical Center', value: 'Alexandria Medical Center',id:5},
-      {label: 'Badrawy Hospital', value: 'Badrawy Hospital',id:6},
-      {label: 'Coptic Hospital', value: 'Coptic Hospital',id:7},
-      {label: 'Dar Al Shifa Hospital', value: 'Dar Al Shifa Hospital',id:8},
-      {label: 'El Madina El Tebaya Hospital', value: 'El Madina El Tebaya Hospital',id:9},
-      {label: 'El Shorouk Hospital', value: 'El Shorouk Hospital',id:10},
-      {label: 'German Hospital', value: 'German Hospital',id:11},
-      {label: 'Gamal Abd El Naser Hospital', value: 'Gamal Abd El Naser Hospital',id:12},
-      {label: 'Mabaret Al-Asafra Hospitals', value: 'Mabaret Al-Asafra Hospitals',id:13},
-      {label: 'Victoria Hospital', value: 'Victoria Hospital',id:14},
-      {label: 'Alex Specialized Hospital', value: 'Alex Specialized Hospital',id:15},
-      {label: 'Hassab Hospital', value: 'Hassab Hospital',id:16},
-    ]);
 
+  //  For HOSPITAL Dropdown
+  const [hospitalOpen, setHospitalOpen] = useState(false);
+  const [hospitalItems, setHospitalItems] = useState([
+    { label: "Agial Hospital", value: "Agial Hospital", id: 1 },
+    {
+      label: "Alexandria University Main Hospital",
+      value: "Alexandria University Main Hospital",
+      id: 2,
+    },
+    { label: "Alex Radiology Center", value: "Alex Radiology Center", id: 3 },
+    {
+      label: "Alexandria Pediatric Center",
+      value: "Alexandria Pediatric Center",
+      id: 4,
+    },
+    {
+      label: "Alexandria Medical Center",
+      value: "Alexandria Medical Center",
+      id: 5,
+    },
+    { label: "Badrawy Hospital", value: "Badrawy Hospital", id: 6 },
+    { label: "Coptic Hospital", value: "Coptic Hospital", id: 7 },
+    { label: "Dar Al Shifa Hospital", value: "Dar Al Shifa Hospital", id: 8 },
+    {
+      label: "El Madina El Tebaya Hospital",
+      value: "El Madina El Tebaya Hospital",
+      id: 9,
+    },
+    { label: "El Shorouk Hospital", value: "El Shorouk Hospital", id: 10 },
+    { label: "German Hospital", value: "German Hospital", id: 11 },
+    {
+      label: "Gamal Abd El Naser Hospital",
+      value: "Gamal Abd El Naser Hospital",
+      id: 12,
+    },
+    {
+      label: "Mabaret Al-Asafra Hospitals",
+      value: "Mabaret Al-Asafra Hospitals",
+      id: 13,
+    },
+    { label: "Victoria Hospital", value: "Victoria Hospital", id: 14 },
+    {
+      label: "Alex Specialized Hospital",
+      value: "Alex Specialized Hospital",
+      id: 15,
+    },
+    { label: "Hassab Hospital", value: "Hassab Hospital", id: 16 },
+  ]);
 
-{/*****  submission: this variable will be JSON object to be submitted    *****/}  
+  {
+    /*****  submission: this variable will be JSON object to be submitted    *****/
+  }
+
+  {
+    /*****  submission: this variable will be JSON object to be submitted    *****/
+  }
+
   let submission = {
     first_name: data.first_name,
     last_name: data.last_name,
@@ -128,14 +159,14 @@ const DoctorSignUpScreen = ({ navigation }) => {
     specialization: data.specialization,
     consultaion_fee: data.consultaion_fee,
     // phone_number: data.phone_number,
-    date_of_birth: (data.date_of_birth).split("-").reverse().join("-"),
+    date_of_birth: data.date_of_birth.split("-").reverse().join("-"),
     region: data.region,
-    hospital_id: parseInt(data.hospital_id,10),
+    hospital_id: parseInt(data.hospital_id, 10),
     qualifications: [
       {
         qualification_name: data.qualification_name,
         institute_name: data.institute_name,
-        procurement_year: (data.procurement_year).split("-").reverse().join("-"),
+        procurement_year: data.procurement_year.split("-").reverse().join("-"),
       },
     ],
     // street_address: data.street_address,
@@ -174,6 +205,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
     setfetchapi(false);
   }
 }
+
 
   const textInputChange = (val) => {
     if (val.trim().length >= 4) {
@@ -324,6 +356,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
     setData({
       ...data,
       hospital_id: val.id,
+      hospital:val.value,
     });
   };
 
@@ -402,8 +435,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
             Email
           </Text>
           <View style={styles.action}>
-          <Fontisto name="email" color="#05375a" size={23} />
-              <TextInput
+            <Fontisto name="email" color="#05375a" size={23} />
+            <TextInput
               placeholder="Your Email"
               placeholderTextColor="#666666"
               style={[styles.textInput]}
@@ -547,7 +580,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             Consultaion Fee
           </Text>
           <View style={styles.action}>
-            <FontAwesome name="money"  color="#05375a" size={20} />
+            <FontAwesome name="money" color="#05375a" size={20} />
             <TextInput
               placeholder="Enter fee amount"
               placeholderTextColor="#666666"
@@ -609,8 +642,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
           {/******************************      CITY     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>City</Text>
           <View style={styles.action}>
-          <MaterialCommunityIcons name="city"color="#05375a" size={23} />
-         
+            <MaterialCommunityIcons name="city" color="#05375a" size={23} />
+
             <TextInput
               placeholder="Your City"
               placeholderTextColor="#666666"
@@ -623,7 +656,11 @@ const DoctorSignUpScreen = ({ navigation }) => {
           {/******************************      REGION     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>Region</Text>
           <View style={styles.action}>
-            <MaterialCommunityIcons name="home-city" color="#05375a" size={21} />
+            <MaterialCommunityIcons
+              name="home-city"
+              color="#05375a"
+              size={21}
+            />
             <TextInput
               placeholder="Your City"
               placeholderTextColor="#666666"
@@ -682,94 +719,96 @@ const DoctorSignUpScreen = ({ navigation }) => {
 
           </View>
 
-{/******************************      HOSPITAL     ***********************************/}
-        <Text style={[styles.text_footer, { marginTop: 35 }]}>Hospital</Text>
-          <View style={{marginTop:0}}>
-          <DropDownPicker
-            listMode="MODAL"
-            open={hospitalOpen}
-            //value={data.hospital}
-            items={hospitalItems}
-            setOpen={setHospitalOpen}
-            // setValue={setValue}
-            // setItems={setItems}
-            onSelectItem={(val) => {handleHospitalChange(val);}}
-          />
-
+          {/******************************      HOSPITAL     ***********************************/}
+          <Text style={[styles.text_footer, { marginTop: 35 }]}>Hospital</Text>
+          <View style={{ marginTop: 0 }}>
+            <DropDownPicker
+              listMode="MODAL"
+              open={hospitalOpen}
+              value={data.hospital}
+              items={hospitalItems}
+              setOpen={setHospitalOpen}
+              // setValue={setValue}
+              // setItems={setItems}
+              onSelectItem={(val) => {
+                handleHospitalChange(val);
+              }}
+            />
           </View>
 
           {/******************************     QUALIFICATIONS SECTION     ***********************************/}
+          <View>
+            <Text style={styles.qualificationsStyle}>Qualifications Info</Text>
 
-          <Text style={styles.qualificationsStyle}>Qualifications Info</Text>
+            <Text style={[styles.text_footer, { marginTop: 20 }]}>
+              Qualification Name
+            </Text>
+            <View style={styles.action}>
+              <TextInput
+                placeholder="Qualification Name"
+                placeholderTextColor="#666666"
+                style={[styles.textInput]}
+                autoCapitalize="none"
+                onChangeText={(val) =>
+                  handleQualificationsQualificationNameChange(val)
+                }
+              />
+            </View>
 
-          <Text style={[styles.text_footer, { marginTop: 20 }]}>
-            Qualification Name
-          </Text>
-          <View style={styles.action}>
-            <TextInput
-              placeholder="Qualification Name"
-              placeholderTextColor="#666666"
-              style={[styles.textInput]}
-              autoCapitalize="none"
-              onChangeText={(val) =>
-                handleQualificationsQualificationNameChange(val)
-              }
-            />
+            <Text style={[styles.text_footer, { marginTop: 35 }]}>
+              Institute Name{" "}
+            </Text>
+            <View style={styles.action}>
+              <TextInput
+                placeholder="Institute Name"
+                placeholderTextColor="#666666"
+                style={[styles.textInput]}
+                autoCapitalize="none"
+                onChangeText={(val) =>
+                  handleQualificationsInstituteNameChange(val)
+                }
+              />
+            </View>
+
+            <Text style={[styles.text_footer, { marginTop: 35 }]}>
+              Procurement Year
+            </Text>
+            <View style={styles.action}>
+              <DatePicker
+                style={styles.datePickerStyle}
+                mode="date" // The enum of date, datetime and time
+                placeholder="select date"
+                format="DD-MM-YYYY"
+                minDate="01-01-1910"
+                maxDate="01-01-2022"
+                confirmBtnText="Confirm"
+                cancelBtnText="Cancel"
+                customStyles={{
+                  dateIcon: {
+                    //display: 'none',
+                    position: "absolute",
+                    left: 0,
+                    top: 4,
+                    marginLeft: 0,
+                  },
+                  dateInput: {
+                    marginLeft: 36,
+                    borderWidth: 0,
+                  },
+                }}
+                onDateChange={(val) => {
+                  handleQualificationsProcurementYearChange(val);
+                }}
+              />
+            </View>
           </View>
 
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>
-            Institute Name{" "}
-          </Text>
-          <View style={styles.action}>
-            <TextInput
-              placeholder="Institute Name"
-              placeholderTextColor="#666666"
-              style={[styles.textInput]}
-              autoCapitalize="none"
-              onChangeText={(val) =>
-                handleQualificationsInstituteNameChange(val)
-              }
-            />
-          </View>
 
-          <Text style={[styles.text_footer, { marginTop: 35 }]}>
-            Procurement Year
-          </Text>
-          <View style={styles.action}>
-            <DatePicker
-              style={styles.datePickerStyle}
-              mode="date" // The enum of date, datetime and time
-              placeholder="select date"
-              format="DD-MM-YYYY"
-              minDate="01-01-1910"
-              maxDate="01-01-2022"
-              confirmBtnText="Confirm"
-              cancelBtnText="Cancel"
-              customStyles={{
-                dateIcon: {
-                  //display: 'none',
-                  position: "absolute",
-                  left: 0,
-                  top: 4,
-                  marginLeft: 0,
-                },
-                dateInput: {
-                  marginLeft: 36,
-                  borderWidth: 0,
-                },
-              }}
-              onDateChange={(val) => {
-                handleQualificationsProcurementYearChange(val)
-              }}
-            />
-          </View>
-
-
-{/******************************      SIGN UP   --BUTTON--     ***********************************/}
           <View style={styles.loading}>
           {fetchapi && <ActivityIndicator size="large" color="#087ed4"  /> }
           </View>
-          
+
+{/******************************      SIGN UP   --BUTTON--     ***********************************/}  
           <View style={styles.button}>
             <TouchableOpacity
               style={styles.signIn}
@@ -917,11 +956,11 @@ const styles = StyleSheet.create({
     // marginTop: 20,
     borderWidth: 0,
   },
-  qualificationsStyle:{
+  qualificationsStyle: {
     color: "#05375a",
     fontWeight: "bold",
     fontSize: 24,
-    marginTop:30,
+    marginTop: 30,
     paddingLeft: 40,
   },
 });
