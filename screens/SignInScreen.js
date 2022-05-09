@@ -98,7 +98,7 @@ const SignInScreen = ({navigation}) => {
           //call sign in function from authcontext JS object imported
   
           signIn(response.data);
-          navigation.navigate("HomeScreen");        
+          navigation.navigate("Home");  // NEED TO Be Edited      
         } 
         else
         {
