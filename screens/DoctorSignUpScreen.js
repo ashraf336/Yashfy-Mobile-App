@@ -9,6 +9,7 @@ import {
   TextInput,
   StatusBar,
   ScrollView,
+  Alert
 } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
@@ -19,9 +20,7 @@ import CountryPicker from "react-native-country-picker-modal";
 import DropDownPicker from "react-native-dropdown-picker";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-
-// import {Picker} from '@react-native-picker/picker';
-
+import { ActivityIndicator } from 'react-native';
 import axios from "axios";
 //const baseUrl = "https://test-api-yashfy.herokuapp.com"; Deployment
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
@@ -35,10 +34,10 @@ const DoctorSignUpScreen = ({ navigation }) => {
     first_name: "",
     last_name: "",
     phone_number: "",
-    date_of_birth: "01-01-1999",
-    specialization: "",
-    consultaion_fee: 0,
-    region: "",
+    date_of_birth: "1999-01-01",
+    specialization:"",
+    consultaion_fee:0,
+    region: '',
     // country: "",
     city: "",
     // street_address:'',
@@ -54,9 +53,15 @@ const DoctorSignUpScreen = ({ navigation }) => {
     confirm_secureTextEntry: true,
     isValidUser: true,
     isValidPassword: true,
+    enableSignup:false,
+    matchPasswored:true,
+    check_email: true
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  
+  const [fetchapi, setfetchapi] = useState(false);
+
 
   //  For SPECIALIZATION Dropdown
   const [specializationOpen, setSpecializationOpen] = useState(false);
@@ -85,6 +90,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
     { label: "Surgery", value: "Surgery" },
     { label: "Urology", value: "Urology" },
   ]);
+
 
   //  For HOSPITAL Dropdown
   const [hospitalOpen, setHospitalOpen] = useState(false);
@@ -168,37 +174,38 @@ const DoctorSignUpScreen = ({ navigation }) => {
     // insurance_id: data.insurance,
   };
 
-  {
-    /******************************   Dummy API post request   ************************************/
+ {/******************************   Dummy API post request   ************************************/}  
+ const onSubmitFormHandler = async (event) => {
+  setfetchapi(true);
+  setIsLoading(true);
+  let config = {
+    headers: {
+        "Content-Type": "application/json"
   }
-  const onSubmitFormHandler = async (event) => {
-    setIsLoading(true);
-    let config = {
-      headers: {
-        "Content-Type": "application/json",
-      },
-    };
-    try {
-      console.log("Calling API ....");
-      const response = await axios.put(
-        `${baseUrl}/doctors-auth/doctor-signup`,
-        submission,
-        config
-      );
-      //console.log(response.data);
-      if (response.status === 201) {
-        alert(` ${JSON.stringify(response.data)}`);
-        navigation.navigate("DoctorSignInScreen");
-        setIsLoading(false);
-      } else {
-        console.log("Error happened : ", response.data);
-        throw new Error("An error has occurred");
-      }
-    } catch (error) {
-      alert("An error has occurred");
+}
+  try {
+    console.log("Calling API ....")
+    const response = await axios.put(`${baseUrl}/doctors-auth/doctor-signup`, submission, config);
+    //console.log(response.data);
+    if (response.status === 201) {
+      setfetchapi(false);
+      Alert.alert('Done', 'Successfuly Signed Up.', [
+        {text: 'Okay'}
+    ]);
+      navigation.navigate("DoctorSignInScreen");
       setIsLoading(false);
+    } else {
+      setfetchapi(false);
+      console.log("Error happened : ",response.data)
+      throw new Error("An error has occurred");
     }
-  };
+  } catch (error) {
+    alert("An error has occurred");
+    setIsLoading(false);
+    setfetchapi(false);
+  }
+}
+
 
   const textInputChange = (val) => {
     if (val.trim().length >= 4) {
@@ -233,9 +240,12 @@ const DoctorSignUpScreen = ({ navigation }) => {
   };
 
   const handleEmailChange = (val) => {
+    let emailCheck = ValidateEmail(val)
     setData({
       ...data,
       email: val,
+      check_email:emailCheck,
+      enableSignup:emailCheck
     });
   };
 
@@ -244,21 +254,23 @@ const DoctorSignUpScreen = ({ navigation }) => {
       setData({
         ...data,
         password: val,
-        // isValidPassword: true
+         isValidPassword: true
       });
     } else {
       setData({
         ...data,
         password: val,
-        // isValidPassword: false
+         isValidPassword: false
       });
     }
   };
 
   const handleConfirmPasswordChange = (val) => {
+    let matched = (val == data.password)
     setData({
       ...data,
       confirm_password: val,
+      matchPasswored:matched
     });
   };
 
@@ -382,12 +394,15 @@ const DoctorSignUpScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
+    
       <StatusBar backgroundColor="#087ed4" barStyle="light-content" />
       <View style={styles.header}>
         <Text style={styles.text_header}>Please fill the following fields</Text>
       </View>
 
       <Animatable.View animation={"fadeInUpBig"} style={styles.footer}>
+  
+
         <ScrollView>
           {/******************************     USERNAME     ************************************/}
           <Text style={styles.text_footer}>Username</Text>
@@ -429,7 +444,17 @@ const DoctorSignUpScreen = ({ navigation }) => {
               onChangeText={(val) => handleEmailChange(val)}
               // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
             />
+             {data.check_email ? (
+              <Animatable.View animation="bounceIn">
+                <Feather name="check-circle" color="green" size={20} />
+              </Animatable.View>
+            ) : null}
           </View>
+          { data.check_email ? null : 
+            <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}> must be valid email.</Text>
+            </Animatable.View>
+            }
 
           {/******************************     PASSWORD     **************************************/}
           <Text
@@ -460,6 +485,11 @@ const DoctorSignUpScreen = ({ navigation }) => {
               )}
             </TouchableOpacity>
           </View>
+          { data.isValidPassword ? null : 
+            <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+            </Animatable.View>
+            }
 
           {/******************************     Confirm PASSWORD     ***********************************/}
           <Text
@@ -494,6 +524,11 @@ const DoctorSignUpScreen = ({ navigation }) => {
               )}
             </TouchableOpacity>
           </View>
+          { data.matchPasswored ? null : 
+            <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>Password not matched !.</Text>
+            </Animatable.View>
+            }
 
           {/******************************     FIRST NAME     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>
@@ -681,6 +716,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
                 handleSpecializationChange(val);
               }}
             />
+
           </View>
 
           {/******************************      HOSPITAL     ***********************************/}
@@ -767,10 +803,16 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </View>
           </View>
 
-          {/******************************      SIGN UP   --BUTTON--     ***********************************/}
+
+          <View style={styles.loading}>
+          {fetchapi && <ActivityIndicator size="large" color="#087ed4"  /> }
+          </View>
+
+{/******************************      SIGN UP   --BUTTON--     ***********************************/}  
           <View style={styles.button}>
             <TouchableOpacity
               style={styles.signIn}
+              disabled={!data.enableSignup}
               onPress={() => {
                 onSubmitFormHandler();
                 console.log(submission);
@@ -823,8 +865,14 @@ const DoctorSignUpScreen = ({ navigation }) => {
     </View>
   );
 };
+{/******************************     VIEWS STYLES    ***********************************/}
 
 const styles = StyleSheet.create({
+  loading: {
+    flex : 1, justifyContent: 'center', flexDirection: "row",
+    justifyContent: "space-around",  paddingTop: 10
+  },
+
   container: {
     flex: 1,
     backgroundColor: "#087ed4",
@@ -917,4 +965,14 @@ const styles = StyleSheet.create({
   },
 });
 
+{/******************************     Helper Functions    ***********************************/}
+
+const ValidateEmail= (input)=> {
+  var validRegex =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (input.match(validRegex)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 export default DoctorSignUpScreen;

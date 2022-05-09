@@ -20,13 +20,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 const Drawer = createDrawerNavigator(); 
 
 function App() {
-  const [isLoading, setIsLoading] = React.useState(true);
-  const [userToken, setUserToken] = React.useState(null);
-
 
   const initialLoginState = {
-    isLoading: true,
-    userName: null,
+    userID: null,
     userToken: null,
   };
 
@@ -37,58 +33,48 @@ function App() {
         return {
           ...prevState,
           userToken: action.token,
-          isLoading: false,
         };
       case 'LOGIN': 
         return {
           ...prevState,
-          userName: action.id,
+          userID: action.id,
           userToken: action.token,
-          isLoading: false,
         };
       case 'LOGOUT': 
         return {
           ...prevState,
-          userName: null,
+          userID: null,
           userToken: null,
-          isLoading: false,
-        };
+                };
       case 'REGISTER': 
         return {
           ...prevState,
-          userName: action.id,
-          userToken: action.token,
-          isLoading: false,
-        };
+          userID: action.id,
+          userToken: action.token,        };
     }
   };
   
 const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState);
 
 
-  const authContext = React.useMemo(() => ({
+const authContext = React.useMemo(() => ({
     signIn: async (foundUser) => {
       // setUserToken("asdf");
       // setIsLoading(false);
-      const userToken = String(foundUser[0].userToken);
-      const userName = foundUser[0].username;
+      console.log("response in app:",foundUser)
+      const userToken = String(foundUser.token);
+      const userID = foundUser.id;
         try {
-          
+          //Store  token
           await AsyncStorage.setItem('userToken', userToken)
         } catch (e) {
           console.log(e);
-        }
-
-        
-      
-      dispatch({type:'LOGIN' , id:userName, token:userToken});
+        } 
+      dispatch({type:'LOGIN' , id:userID, token:userToken});
 
     },
     signOut: async() => {
-      // setUserToken(null);
-      // setIsLoading(false);
       try {
-       
         await AsyncStorage.removeItem('userToken')
       } catch (e) {
         console.log(e);
@@ -97,10 +83,12 @@ const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState)
 
       dispatch({type:'LOGOUT' });
     },
-    signUp: () => {
+    //WHY?
+    /*signUp: () => {
       setUserToken("asdf");
       setIsLoading(false);
     },
+    */
   }),[]);
 
   useEffect(() => {
@@ -109,7 +97,6 @@ const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState)
       userToken=null;
       try {
         userToken=await AsyncStorage.getItem('userToken');
-        
       } catch (e) {
         console.log(e);
       }
@@ -118,14 +105,8 @@ const [loginState, dispatch] = React.useReducer(loginReducer, initialLoginState)
       // setIsLoading(false);
     }, 1000);
   }, []);
-
-  if ( loginState.isLoading) {
-    return (
-      <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-        <ActivityIndicator size="large" />
-      </View>
-    );
-  }
+  
+  
 
   return (
     <AuthContext.Provider value={authContext}>

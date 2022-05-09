@@ -19,6 +19,7 @@ import CountryPicker from "react-native-country-picker-modal";
 import DropDownPicker from 'react-native-dropdown-picker';
 import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
+import { ActivityIndicator } from 'react-native';
 
 import axios from "axios";
 //const baseUrl = "https://reqres.in";
@@ -42,13 +43,17 @@ const SignUpScreen = ({ navigation }) => {
     insurance_id:null,
     countryCode: "",
     check_textInputChange: false,
+    check_email: true,
     secureTextEntry: true,
     confirm_secureTextEntry: true,
     isValidUser: true,
     isValidPassword: true,
+    matchPasswored:true,
+    enableSignup:false
   });
 
   const [isLoading, setIsLoading] = useState(false);
+  const [fetchapi, setfetchapi] = useState(false);
 
   //  For Insurance Dropdown 
   const [open, setOpen] = useState(false);
@@ -83,23 +88,32 @@ const SignUpScreen = ({ navigation }) => {
 
  {/******************************   Dummy API post request   ************************************/}  
   const onSubmitFormHandler = async (event) => {
+    setfetchapi(true);
     setIsLoading(true);
     try {
+      console.log("Calling API ....")
       const response = await axios.put(`${baseUrl}/patients-auth/patient-signup`, submission);
       if (response.status === 201) {
+        setfetchapi(false);
         alert(`${JSON.stringify(response.data)}`);
         console.log(` You have created: ${JSON.stringify(response.data)}`);
         navigation.navigate("SignInScreen");
         setIsLoading(false);
+        
       } else {
+        setfetchapi(false);
+        setIsLoading(false);
+        console.log("Error happened : ",response.data)
         throw new Error("An error has occurred");
       }
-    } catch (error) {
+    }
+     catch (error) {
+      setfetchapi(false);
+      setIsLoading(false);
       alert("An error has occurred");
       console.log(error);
       console.log("Status code" , response.status);
-
-      setIsLoading(false);
+     
     }
   };
 {/********************************************************************************/}  
@@ -113,14 +127,12 @@ const SignUpScreen = ({ navigation }) => {
         ...data,
         username: val,
         check_textInputChange: true,
-        // isValidUser: true
       });
     } else {
       setData({
         ...data,
         username: val,
         check_textInputChange: false,
-        // isValidUser: false
       });
     }
   };
@@ -141,9 +153,13 @@ const SignUpScreen = ({ navigation }) => {
 
 
   const handleEmailChange = (val) => {
+    let emailCheck = ValidateEmail(val)
+    console.log("Email check: ",emailCheck)
     setData({
       ...data,
       email: val,
+      check_email:emailCheck,
+      enableSignup:emailCheck
     });
   };
 
@@ -153,22 +169,24 @@ const SignUpScreen = ({ navigation }) => {
       setData({
         ...data,
         password: val,
-        // isValidPassword: true
+         isValidPassword: true
       });
     } else {
       setData({
         ...data,
         password: val,
-        // isValidPassword: false
+         isValidPassword: false
       });
     }
   };
 
 
   const handleConfirmPasswordChange = (val) => {
+    let matched = (val == data.password)
     setData({
       ...data,
       confirm_password: val,
+      matchPasswored:matched
     });
   };
   
@@ -280,7 +298,17 @@ const SignUpScreen = ({ navigation }) => {
               onChangeText={(val) => handleEmailChange(val)}
               // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
             />
+             {data.check_email ? (
+              <Animatable.View animation="bounceIn">
+                <Feather name="check-circle" color="green" size={20} />
+              </Animatable.View>
+            ) : null}
           </View>
+          { data.check_email ? null : 
+            <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}> must be valid email.</Text>
+            </Animatable.View>
+            }
 
 {/******************************     PASSWORD     **************************************/}            
           <Text
@@ -314,6 +342,11 @@ const SignUpScreen = ({ navigation }) => {
               )}
             </TouchableOpacity>
           </View>
+          { data.isValidPassword ? null : 
+            <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>Password must be 8 characters long.</Text>
+            </Animatable.View>
+            }
 
 {/******************************     Confirm PASSWORD     ***********************************/}
           <Text
@@ -348,6 +381,11 @@ const SignUpScreen = ({ navigation }) => {
               )}
             </TouchableOpacity>
           </View>
+          { data.matchPasswored ? null : 
+            <Animatable.View animation="fadeInLeft" duration={500}>
+            <Text style={styles.errorMsg}>Password not matched !.</Text>
+            </Animatable.View>
+            }
 
 {/******************************     FIRST NAME     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 35 }]}>First Name</Text>
@@ -472,30 +510,24 @@ const SignUpScreen = ({ navigation }) => {
             // setItems={setItems}
             onSelectItem={(val) => {handleInsuranceChange(val);}}
           />
-            {/* <Picker
-              mode={"dialog"}
-              selectedValue={data.insurance}
-              style={{ height: 30, width: 150 }}
-              onValueChange={(val) => {handleInsuranceChange(val);}}
-            >
-              <Picker.Item label="none" value={null} />
-              <Picker.Item label="Axa" value="Axa" />
-              <Picker.Item label="United" value="United" />
-            </Picker> */}
+            
           </View>
 
 
        
 {/******************************      SIGN UP   --BUTTON--     ***********************************/}       
+          <View style={styles.loading}>
+          {fetchapi && <ActivityIndicator size="large" color="#087ed4"  /> }
+          </View>
+          
           <View style={styles.button}>
             <TouchableOpacity
               style={styles.signIn}
-              disabled={isLoading}
+              disabled={!data.enableSignup}
               onPress={()=>{
                 onSubmitFormHandler() ; 
                 console.log(submission);
                }
-                // loginHandle(data.username, data.password);
               }
             >
               <LinearGradient
@@ -516,6 +548,8 @@ const SignUpScreen = ({ navigation }) => {
             </TouchableOpacity>
 
 {/******************************      SIGN IN   --BUTTON--     ***********************************/}
+            
+
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.text}>Sign In instead ?</Text>
               <TouchableOpacity
@@ -548,7 +582,14 @@ const SignUpScreen = ({ navigation }) => {
   );
 };
 
+{/******************************     VIEWS STYLES    ***********************************/}
+
 const styles = StyleSheet.create({
+  loading: {
+    flex : 1, justifyContent: 'center', flexDirection: "row",
+    justifyContent: "space-around",  paddingTop: 10
+  },
+
   container: {
     flex: 1,
     backgroundColor: "#009387",
@@ -557,10 +598,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     paddingHorizontal: 20,
-    paddingBottom: 50,
+    paddingBottom: 10,
   },
   footer: {
-    flex: 3,
+    flex: 5,
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,
@@ -588,6 +629,10 @@ const styles = StyleSheet.create({
     borderBottomColor: "#f2f2f2",
     paddingBottom: 5,
   },
+  errorMsg: {
+    color: "#FF0000",
+    fontSize: 14,
+  },
   actionError: {
     flexDirection: "row",
     marginTop: 10,
@@ -600,10 +645,6 @@ const styles = StyleSheet.create({
     marginTop: Platform.OS === "ios" ? 0 : -12,
     paddingLeft: 10,
     color: "#05375a",
-  },
-  errorMsg: {
-    color: "#FF0000",
-    fontSize: 14,
   },
   button: {
     alignItems: "center",
@@ -633,5 +674,17 @@ const styles = StyleSheet.create({
     borderWidth: 0,
   },
 });
+
+{/******************************     Helper Functions    ***********************************/}
+
+
+ const ValidateEmail= (input)=> {
+  var validRegex =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+  if (input.match(validRegex)) {
+    return true;
+  } else {
+    return false;
+  }
+}
 
 export default SignUpScreen;

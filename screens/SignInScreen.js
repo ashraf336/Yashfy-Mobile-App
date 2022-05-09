@@ -1,4 +1,5 @@
 import React from "react";
+import {useState} from "react";
 import {
   View,
   Text,
@@ -14,121 +15,110 @@ import { LinearGradient } from "expo-linear-gradient";
 import * as Animatable from "react-native-animatable";
 import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
-
-import { useValidation } from 'react-native-form-validator';
-
-import Users from "../model/users";
+import { ActivityIndicator } from 'react-native';
+import axios from "axios";
+const baseUrl = "http://192.168.1.12:8080"; //Devolopment
 
 import { AuthContext } from "../components/context";
 
 const SignInScreen = ({navigation}) => {
   const [data, setData] = React.useState({
-    username: "testuser",
-    password: "testpass",
-    // username: "",
-    // password: "",
-    check_textInputChange: false,
+    email: "",
+    password: "",
     secureTextEntry: true,
-    isValidUser: true,
+    isValidEmail: true, 
     isValidPassword: true,
   });
 
-  const [email, setEmail] = React.useState('');
-
   const {signIn} = React.useContext(AuthContext);
 
-  const { validate, isFormValid } = useValidation({
-    state: { email },
-    // messages: customValidationMessages,
-  });
-
-  const textInputChange = (val) => {
-    validate({email: {email: true}});
-    if ( isFormValid() ) {
-      setData({
-        ...data,
-        username: val,
-        check_textInputChange: true,
-        isValidUser: true
-      });
-      setEmail(val);
-    } else {
-      setData({
-        ...data,
-        username: val,
-        check_textInputChange: false,
-        isValidUser: false
-      });
-      setEmail(val);
+  const [fetchapi, setfetchapi] = useState(false);
+  
+  let submission = {
+      email: data.email,
+      password: data.password,
     }
-  };
 
+  {/******************************     Handle input Fields Change    ***********************************/}
+
+  const textInputChange = (val) => {      //email need to edit  field
+      let emailCheck = ValidateEmail(val)
+        setData({
+          ...data,
+          email: val,
+          isValidEmail: emailCheck
+        });
+    };
   const handlePasswordChange = (val) => {
-    if (val.trim().length >= 8) {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: true
-      });
-    } else {
-      setData({
-        ...data,
-        password: val,
-        isValidPassword: false
-      });
-    }
-  };
-
-  const handleValidUser = (val) => {
-    if( val.trim().length >= 4 ) {
+      if (val.trim().length >= 8) {
         setData({
-            ...data,
-            isValidUser: true
+          ...data,
+          password: val,
+          isValidPassword: true
         });
-    } else {
+      } else {
         setData({
-            ...data,
-            isValidUser: false
+          ...data,
+          password: val,
+          isValidPassword: false
         });
-    }
-}
-
-
+      }
+    };
+  // show hide/show in passeord field
   const updateSecureTextEntry = () => {
-    setData({
-      ...data,
-      secureTextEntry: !data.secureTextEntry,
-    });
-  };
+      setData({
+        ...data,
+        secureTextEntry: !data.secureTextEntry,
+      });
+    };
+{/******************************     Login API Call    ***********************************/}
 
-  const loginHandle = (userName, password) => {
-
-    const foundUser = Users.filter( item => {
-        return userName == item.username && password == item.password;
-    } );
-
-    if ( data.username.length == 0 || data.password.length == 0 ) {
-        Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
-            {text: 'Okay'}
-        ]);
-        return;
+  const loginHandle = async (email, password) => {
+    setfetchapi(true);
+    // validate empty
+    if ( data.email.length == 0 || data.password.length == 0 ) {
+      Alert.alert('Wrong Input!', 'Username or password field cannot be empty.', [
+          {text: 'Okay'}
+      ]);
+      setfetchapi(false);
+      return;
     }
-
-    if ( foundUser.length == 0 ) {
-        Alert.alert('Invalid User!', 'Username or password is incorrect.', [
+      submission.email=email
+      submission.password = password
+      //CALLING API RETURN TOKEN
+      try {
+        console.log(" Calling API ....")
+        const response = await axios.post(`${baseUrl}/patients-auth/patient-login`, submission);
+        if (response.status === 200) {
+          setfetchapi(false);
+          Alert.alert('Done', 'Successfuly Logged In.', [
             {text: 'Okay'}
-        ]);
-        return;
-    }
+          ]);
+          console.log(` Response: ${JSON.stringify(response.data)}`);
+          //call sign in function from authcontext JS object imported
+  
+          signIn(response.data);
+          navigation.navigate("HomeScreen");        
+        } 
+        else
+        {
+          setfetchapi(false);
+          Alert.alert('Not Found User!', 'Username or password is incorrect.', [
+            {text: 'Okay'}
+         ]);
+          return;
+        }
+      }
+       catch (error) {
+        setfetchapi(false);
+        alert("An error has occurred");
+        console.log(error);
+        //console.log("Status code" , response.status);
+        throw error;
+      }
+  }
 
-    // const   foundUser = Users[0];
-
-    signIn(foundUser);
-}
-
-  // const loginHandle = (username, password) => {
-  //   signIn(username,password);
-  // };
+{/******************************    VIEWS    ***************************************************************/}
 
   return (
     <View style={styles.container}>
@@ -136,6 +126,7 @@ const SignInScreen = ({navigation}) => {
       <View style={styles.header}>
         <Text style={styles.text_header}>Welcome Patient !</Text>
       </View>
+{/******************************    Email    ***********************************/}
 
       <Animatable.View animation={"fadeInUpBig"} style={styles.footer}>
         <Text style={styles.text_footer}>Email</Text>
@@ -149,17 +140,19 @@ const SignInScreen = ({navigation}) => {
             onChangeText={(val) => textInputChange(val)}
             // onEndEditing={(e) => handleValidUser(e.nativeEvent.text)}
           />
-          {data.check_textInputChange ? (
+           {data.isValidEmail ? (
             <Animatable.View animation="bounceIn">
               <Feather name="check-circle" color="green" size={20} />
             </Animatable.View>
           ) : null}
         </View>
-        { data.isValidUser ? null : 
+        { data.isValidEmail ? null : 
             <Animatable.View animation="fadeInLeft" duration={500}>
-            <Text style={styles.errorMsg}>Must be an email !!</Text>
+            <Text style={styles.errorMsg}> must be valid email.</Text>
             </Animatable.View>
             }
+
+    {/******************************    Password    ***********************************/}
 
         <Text
           style={[
@@ -200,13 +193,17 @@ const SignInScreen = ({navigation}) => {
             </Animatable.View>
             }
             
+          <View style={styles.loading}>
+          {fetchapi && <ActivityIndicator size="large" color="#087ed4"  /> }
+          </View>
 
+{/******************************    SIGN IN Button    ***********************************/}
         <View style={styles.button}>
           <TouchableOpacity
             style={styles.signIn}
             onPress={() => {
-              loginHandle(data.username,data.password)
-              // loginHandle(data.username, data.password);
+              loginHandle(data.email,data.password)
+              // loginHandle(data.email, data.password);
             }}
           >
             <LinearGradient
@@ -259,9 +256,14 @@ const SignInScreen = ({navigation}) => {
 
 
 
+{/******************************     VIEWS STYLES    ***********************************/}
 
 
 const styles = StyleSheet.create({
+  loading: {
+    justifyContent: 'center', flexDirection: "row",
+    justifyContent: "space-around",  paddingTop: .5
+  },
   container: {
     flex: 1,
     backgroundColor: "#009387",
@@ -341,5 +343,15 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
 });
+
+{/******************************     Helper Functions    ***********************************/}
+const ValidateEmail= (input)=> {
+      var validRegex =  /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+      if (input.match(validRegex)) {
+        return true;
+      } else {
+        return false;
+      }
+    }
 
 export default SignInScreen;
