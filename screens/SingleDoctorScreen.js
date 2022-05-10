@@ -531,6 +531,14 @@ let PatientsReviews={
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
+            <TouchableOpacity onPress={() => {setAddReviewVisible(!addReviewVisible)}} style={styles.exitButton}>
+            <Ionicons
+                  name="ios-close-circle-outline"
+                  color="red"
+                  size={30}
+                  style={{ alignSelf: "flex-end" }}
+                />
+            </TouchableOpacity>
             <Text style={styles.modalText}>Please write your review : </Text>
             <TextInput style={[styles.textInput]} multiline={true} numberOfLines={5} textAlignVertical="top" onChangeText={(val) => handleAddReview(val)} />
             <TouchableOpacity onPress={() => {setAddReviewVisible(!addReviewVisible),console.log(addReview)}} style={[styles.button, styles.buttonClose]}>
@@ -547,7 +555,7 @@ let PatientsReviews={
           <Text style={[styles.sectionContent, { textAlign: "center" }]}>
             Overall Rating from {result.no_of_ratings} Visitors
           </Text>
-          <View style={{ flexDirection: "row", justifyContent: "center" }}>
+          <View style={{ flexDirection: "row", justifyContent: "center" , marginBottom:20}}>
             <View style={styles.smallSectionsReviews}>
               <View style={{ margin: 15, flex: 1, alignItems: "center" }}>
                 <StarRating
@@ -587,7 +595,7 @@ let PatientsReviews={
 
       </View>
       {/******************------------------------------------------------*********************/}
-      <Button title="Click Here" onPress={() => alert("Button Clicked!")} />
+      {/* <Button title="Click Here" onPress={() => alert("Button Clicked!")} /> */}
     </ScrollView>
   );
 };
@@ -749,6 +757,16 @@ const styles = StyleSheet.create({
     height:40,
     marginBottom:20,
     
+  },
+  exitButton:{
+    alignSelf:"flex-end",
+    borderRadius: 20,
+    // padding: 10,
+    elevation: 2,
+    width:50,
+    height:50,
+    // marginBottom:20,
+    // backgroundColor:'black'
   },
   buttonOpen: {
     backgroundColor: "#90ee90",

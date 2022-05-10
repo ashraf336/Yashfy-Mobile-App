@@ -16,14 +16,7 @@ import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
 import { AuthContext } from "../components/context";
 
-export function DrawerContent(props) {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
-  };
-
-  // const paperTheme = useTheme();
-
+export function DoctorDrawerContent(props) {
   const { signOut } = React.useContext(AuthContext);
 
   return (
@@ -34,14 +27,14 @@ export function DrawerContent(props) {
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <Avatar.Image
                 source={
-                  require("../assets/ahmed2.jpg")
+                  require("../assets/osama.jpg")
                   // {uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'}
                 }
                 size={100}
               />
               <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                <Title style={styles.title}>Ahmed Ashraf</Title>
-                <Caption style={styles.caption}>@ashraf336</Caption>
+                <Title style={styles.title}>Dr.Osama Sherif</Title>
+                <Caption style={styles.caption}>Consultant of Plastic Surgery and Laser Treatments</Caption>
               </View>
             </View>
 
@@ -50,17 +43,17 @@ export function DrawerContent(props) {
                 <Paragraph style={[styles.paragraph, styles.caption]}>
                   80
                 </Paragraph>
-                <Caption style={styles.caption}>Following</Caption>
+                <Caption style={styles.caption}>Surgeries</Caption>
               </View>
               <View style={styles.section}>
                 <Paragraph style={[styles.paragraph, styles.caption]}>
-                  100
+                  500
                 </Paragraph>
-                <Caption style={styles.caption}>Followers</Caption>
+                <Caption style={styles.caption}>Examinations</Caption>
               </View>
             </View>
           </View>
-
+{/* 
           <Drawer.Section style={styles.drawerSection}>
             <DrawerItem
               icon={({ color, size }) => (
@@ -126,12 +119,12 @@ export function DrawerContent(props) {
               <View style={styles.preference}>
                 <Text>Dark Theme</Text>
                 <View pointerEvents="none">
-                  {/* <Switch value={paperTheme.dark} /> */}
+                  
                   <Switch value={isDarkTheme} />
                 </View>
               </View>
             </TouchableRipple>
-          </Drawer.Section>
+          </Drawer.Section> */}
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>

@@ -41,7 +41,8 @@ let submission = {
 
 let dummyFoundUser={
   id:"123",
-  token:"123456"
+  token:"123456",
+  isDoctor: true,
 };   
 {/******************************     Handle input Fields Change    ***********************************/}
 

@@ -47,7 +47,8 @@ const SignInScreen = ({navigation}) => {
   
   let dummyFoundUser={
     id:"123",
-    token:"123456"
+    token:"123456",
+    isDoctor: false,
   };   
 
   {/******************************     Handle input Fields Change    ***********************************/}
