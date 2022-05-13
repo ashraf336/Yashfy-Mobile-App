@@ -98,7 +98,7 @@ export function DrawerContent(props) {
                 props.navigation.navigate("SettingsScreen");
               }}
             />
-            <DrawerItem
+            {/* <DrawerItem
               icon={({ color, size }) => (
                 <Icon name="account-check-outline" color={color} size={size} />
               )}
@@ -106,7 +106,7 @@ export function DrawerContent(props) {
               onPress={() => {
                 props.navigation.navigate("SupportScreen");
               }}
-            />
+            /> */}
             <DrawerItem
               icon={({ color, size }) => (
                 <Icon name="bookmark-outline" color={color} size={size} />

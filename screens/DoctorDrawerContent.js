@@ -53,6 +53,16 @@ export function DoctorDrawerContent(props) {
               </View>
             </View>
           </View>
+
+          <DrawerItem
+              icon={({ color, size }) => (
+                <Icon name="account-outline" color={color} size={size} />
+              )}
+              label="Profile"
+              onPress={() => {
+                props.navigation.navigate("Profile");
+              }}
+            />
 {/* 
           <Drawer.Section style={styles.drawerSection}>
             <DrawerItem

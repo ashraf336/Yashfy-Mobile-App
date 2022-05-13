@@ -6,10 +6,12 @@ import { DrawerContent } from "./screens/DrawerContent";
 import { DoctorDrawerContent } from "./screens/DoctorDrawerContent";
 import "react-native-gesture-handler";
 import MainTabScreen from "./screens/MainTabScreen";
+import DoctorMainTabScreen from "./screens/DoctorMainTabScreen";
 import SupportScreen from "./screens/SupportScreen";
 import SettingsScreen from "./screens/SettingsScreen";
 import BookmarkScreen from "./screens/BookmarkScreen";
 import SingleDoctorScreen from "./screens/SingleDoctorScreen";
+import DoctorProfileScreen from "./screens/DoctorProfileScreen";
 import { AuthContext } from "./components/context";
 import RootStackScreen from "./screens/RootStackScreen";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -69,7 +71,7 @@ const authContext = React.useMemo(() => ({
       const isDoctor= foundUser.isDoctor;
         try {
           //Store  token
-          await (AsyncStorage.multiSet(['userToken', userToken] , ['isDoctor', isDoctor]))
+          await (AsyncStorage.multiSet([['userToken', userToken] , ['isDoctor', JSON.stringify( isDoctor)]]))
            
         } catch (e) {
           console.log(e);
@@ -79,7 +81,7 @@ const authContext = React.useMemo(() => ({
     },
     signOut: async() => {
       try {
-        await (AsyncStorage.multiRemove(['userToken', userToken] , ['isDoctor', isDoctor]))
+        await (AsyncStorage.multiRemove(['userToken', 'isDoctor']))
       } catch (e) {
         console.log(e);
       }
@@ -101,7 +103,10 @@ const authContext = React.useMemo(() => ({
       let isDoctor;
       isDoctor=null;
       try {
-        userToken=await AsyncStorage.getItem('userToken');
+        // userToken=await AsyncStorage.getItem('userToken' );
+        let res = await AsyncStorage.multiGet(['userToken','isDoctor'] );
+        userToken = res[0][1];
+        isDoctor = JSON.parse(res[1][1]);
       } catch (e) {
         console.log(e);
       }
@@ -118,6 +123,7 @@ const authContext = React.useMemo(() => ({
       <NavigationContainer>
         { loginState.userToken !== null ? (
           loginState.isDoctor == false?(
+            // PATIENT's Successful sign in path
           <Drawer.Navigator
             drawerContent={(props) => <DrawerContent {...props} />}
             headerMode="screen"
@@ -131,13 +137,13 @@ const authContext = React.useMemo(() => ({
             }}
           >
             <Drawer.Screen  name="DrawerHome" component={MainTabScreen} options={{ title: "Home" }}/>
-            <Drawer.Screen name="SupportScreen" component={SupportScreen} />
+            {/* <Drawer.Screen name="SupportScreen" component={SupportScreen} /> */}
             <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
             <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
             <Drawer.Screen name="SingleDoctorScreen" component={SingleDoctorScreen} />
           </Drawer.Navigator>
           )
-          :(          
+          :( // DOCTOR's Successful sign in path
           <DoctorDrawer.Navigator
             drawerContent={(props) => <DoctorDrawerContent {...props} />}
             headerMode="screen"
@@ -150,14 +156,12 @@ const authContext = React.useMemo(() => ({
               headerShown: true,
             }}
           >
+             <Drawer.Screen  name="DrawerHome" component={DoctorMainTabScreen} options={{ title: "Home" }}/>
              <Drawer.Screen name="SupportScreen" component={SupportScreen} />
-            {/* <Drawer.Screen  name="DrawerHome" component={MainTabScreen} options={{ title: "Home" }}/>
-            <Drawer.Screen name="SupportScreen" component={SupportScreen} />
-            <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
-            <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
-            <Drawer.Screen name="SingleDoctorScreen" component={SingleDoctorScreen} /> */}
+             <Drawer.Screen name="DoctorProfileScreen" component={DoctorProfileScreen} options={{ title: "Profile" }}/>
           </DoctorDrawer.Navigator>)
         ) 
+        // Default Logged out path
         : <RootStackScreen />
         }
       </NavigationContainer>

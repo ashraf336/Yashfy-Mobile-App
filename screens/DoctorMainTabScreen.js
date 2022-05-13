@@ -5,18 +5,20 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import Icon from "react-native-vector-icons/Ionicons";
 const Tab = createMaterialBottomTabNavigator();
 
+import DoctorProfileScreen from "./DoctorProfileScreen";
+import SupportScreen from "./SupportScreen";
 import DetailsScreen from "./DetailsScreen";
 import HomeScreen from "./HomeScreen";
-import ProfileScreen from "./ProfileScreen";
-import ExploreScreen from "./ExploreScreen";
+// import ProfileScreen from "./ProfileScreen";
+// import ExploreScreen from "./ExploreScreen";
 import SingleDoctorScreen from "./SingleDoctorScreen";
 
 // const HomeStack = createNativeStackNavigator();
 // const DetailsStack = createNativeStackNavigator();
 
-const MainTabScreen = () => (
+const DoctorMainTabScreen = () => (
   <Tab.Navigator
-    initialRouteName="Home"
+    initialRouteName="Profile"
     activeColor="#fff"
       barStyle={{ backgroundColor: 'tomato' }}
   >
@@ -41,19 +43,30 @@ const MainTabScreen = () => (
           <Icon name="ios-notifications" color={color} size={26} />
         ),
       }}
-    />
+    />      
     <Tab.Screen
       name="Profile"
-      component={ProfileScreen}
+      component={DoctorProfileScreen}
       options={{
         tabBarLabel: "Profile",
-        tabBarColor: "#778899",
+        tabBarColor: "#8a2be2",
         tabBarIcon: ({ color }) => (
           <Icon name="ios-person" color={color} size={26} />
         ),
       }}
     />
-    <Tab.Screen
+    {/* <Tab.Screen
+      name="Support"
+      component={SupportScreen}
+      options={{
+        tabBarLabel: "Explore",
+        tabBarColor: "black",
+        tabBarIcon: ({ color }) => (
+          <Icon name="ios-aperture" color={color} size={26} />
+        ),
+      }}
+    /> */}
+        <Tab.Screen
       name="Explore"
       component={SingleDoctorScreen}
       options={{
@@ -64,59 +77,9 @@ const MainTabScreen = () => (
         ),
       }}
     />
+  
+    
   </Tab.Navigator>
 );
 
-export default MainTabScreen;
-
-// const HomeStackScreen = ({ navigation }) => (
-//   <HomeStack.Navigator
-//     screenOptions={{
-//       headerStyle: { backgroundColor: "#009387" },
-//       headerTintColor: "#fff",
-//       headerTitleStyle: { fontWeight: "bold" },
-//     }}
-//   >
-//     <HomeStack.Screen
-//       name="Home"
-//       component={HomeScreen}
-//       options={{
-//         title: "Overview",
-//         headerLeft: () => (
-//           <Icon.Button
-//             name="ios-menu"
-//             size={25}
-//             backgroundColor="#009387"
-//             onPress={() => navigation.openDrawer()}
-//           ></Icon.Button>
-//         ),
-//         headerShown: true,
-//       }}
-//     />
-//   </HomeStack.Navigator>
-// );
-
-// const DetailsStackScreen = ({ navigation }) => (
-//   <DetailsStack.Navigator
-//     screenOptions={{
-//       headerStyle: { backgroundColor: "#009387" },
-//       headerTintColor: "#fff",
-//       headerTitleStyle: { fontWeight: "bold" },
-//       headerShown: true,
-//     }}
-//   >
-//     <DetailsStack.Screen
-//       name="Details"
-//       component={DetailsScreen}
-//       options={{}}
-//     />
-//   </DetailsStack.Navigator>
-// );
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: "center",
-//     justifyContent: "center",
-//   },
-// });
+export default DoctorMainTabScreen;

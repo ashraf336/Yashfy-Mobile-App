@@ -117,6 +117,9 @@ let PatientsReviews={
   const [addReviewVisible, setAddReviewVisible] = useState(false);
 
 
+
+/********************************   SCREEN  **********************************************************/   
+
   return (
     <ScrollView
       showsVerticalScrollIndicator={false}
