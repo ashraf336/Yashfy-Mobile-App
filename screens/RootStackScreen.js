@@ -3,10 +3,10 @@ import React from 'react';
 import { createStackNavigator } from '@react-navigation/stack';
 
 import SplashScreen from './SplashScreen';
-import SignInScreen from './SignInScreen';
-import SignUpScreen from './SignUpScreen';
-import DoctorSignInScreen from './DoctorSignInScreen';
-import DoctorSignUpScreen from './DoctorSignUpScreen';
+import SignInScreen from './Patient Screens/SignInScreen';
+import SignUpScreen from './Patient Screens/SignUpScreen';
+import DoctorSignInScreen from './Doctor Screens/DoctorSignInScreen';
+import DoctorSignUpScreen from './Doctor Screens/DoctorSignUpScreen';
 
 const RootStack = createStackNavigator();
 

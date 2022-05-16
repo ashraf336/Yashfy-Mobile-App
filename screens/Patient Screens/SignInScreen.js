@@ -19,7 +19,7 @@ import { ActivityIndicator } from 'react-native';
 import axios from "axios";
 const baseUrl = "http://192.168.1.12:8080"; //Devolopment
 
-import { AuthContext } from "../components/context";
+import { AuthContext } from "../../components/context";
 
 
 

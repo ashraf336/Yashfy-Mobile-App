@@ -5,11 +5,11 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import Icon from "react-native-vector-icons/Ionicons";
 const Tab = createMaterialBottomTabNavigator();
 
-import DetailsScreen from "./DetailsScreen";
-import HomeScreen from "./HomeScreen";
+import DetailsScreen from "../DetailsScreen";
+import HomeScreen from "../HomeScreen";
 import ProfileScreen from "./ProfileScreen";
-import ExploreScreen from "./ExploreScreen";
-import SingleDoctorScreen from "./SingleDoctorScreen";
+import ExploreScreen from "../ExploreScreen";
+import SingleDoctorScreen from "../SingleDoctorScreen";
 
 // const HomeStack = createNativeStackNavigator();
 // const DetailsStack = createNativeStackNavigator();

@@ -14,9 +14,16 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 
-import { AuthContext } from "../components/context";
+import { AuthContext} from "../../components/context";
 
-export function DoctorDrawerContent(props) {
+export function DrawerContent(props) {
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const toggleTheme = () => {
+    setIsDarkTheme(!isDarkTheme);
+  };
+
+  // const paperTheme = useTheme();
+
   const { signOut } = React.useContext(AuthContext);
 
   return (
@@ -27,14 +34,14 @@ export function DoctorDrawerContent(props) {
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <Avatar.Image
                 source={
-                  require("../assets/osama.jpg")
+                  require("../../assets/ahmed2.jpg")
                   // {uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'}
                 }
                 size={100}
               />
               <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                <Title style={styles.title}>Dr.Osama Sherif</Title>
-                <Caption style={styles.caption}>Consultant of Plastic Surgery and Laser Treatments</Caption>
+                <Title style={styles.title}>Ahmed Ashraf</Title>
+                <Caption style={styles.caption}>@ashraf336</Caption>
               </View>
             </View>
 
@@ -43,27 +50,17 @@ export function DoctorDrawerContent(props) {
                 <Paragraph style={[styles.paragraph, styles.caption]}>
                   80
                 </Paragraph>
-                <Caption style={styles.caption}>Surgeries</Caption>
+                <Caption style={styles.caption}>Following</Caption>
               </View>
               <View style={styles.section}>
                 <Paragraph style={[styles.paragraph, styles.caption]}>
-                  500
+                  100
                 </Paragraph>
-                <Caption style={styles.caption}>Examinations</Caption>
+                <Caption style={styles.caption}>Followers</Caption>
               </View>
             </View>
           </View>
 
-          <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-outline" color={color} size={size} />
-              )}
-              label="Profile"
-              onPress={() => {
-                props.navigation.navigate("Profile");
-              }}
-            />
-{/* 
           <Drawer.Section style={styles.drawerSection}>
             <DrawerItem
               icon={({ color, size }) => (
@@ -101,7 +98,7 @@ export function DoctorDrawerContent(props) {
                 props.navigation.navigate("SettingsScreen");
               }}
             />
-            <DrawerItem
+            {/* <DrawerItem
               icon={({ color, size }) => (
                 <Icon name="account-check-outline" color={color} size={size} />
               )}
@@ -109,7 +106,7 @@ export function DoctorDrawerContent(props) {
               onPress={() => {
                 props.navigation.navigate("SupportScreen");
               }}
-            />
+            /> */}
             <DrawerItem
               icon={({ color, size }) => (
                 <Icon name="bookmark-outline" color={color} size={size} />
@@ -129,12 +126,12 @@ export function DoctorDrawerContent(props) {
               <View style={styles.preference}>
                 <Text>Dark Theme</Text>
                 <View pointerEvents="none">
-                  
+                  {/* <Switch value={paperTheme.dark} /> */}
                   <Switch value={isDarkTheme} />
                 </View>
               </View>
             </TouchableRipple>
-          </Drawer.Section> */}
+          </Drawer.Section>
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>

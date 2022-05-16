@@ -22,8 +22,8 @@ import {
   TextInput,
 } from "react-native-paper";
 import { LinearGradient } from "expo-linear-gradient";
-import AvaialbleAppointmentsList from "../components/AvaialbleAppointmentsList";
-import ReviewsList from "../components/ReviewsList";
+// import AvaialbleAppointmentsList from "../../components/AvaialbleAppointmentsList";
+import ReviewsList from "../../components/ReviewsList";
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from "react-native-star-rating";
 import DatePicker from "react-native-datepicker";
@@ -334,7 +334,7 @@ const handleQualificationsProcurementYearChange = (val) => {
         <View style={{ flexDirection: "column", marginTop: 25,alignItems:"center" }}>
           <Avatar.Image
             style={{ marginLeft: 15, marginTop: 5 }}
-            source={require("../assets/osama.jpg")}
+            source={require("../../assets/osama.jpg")}
             size={175}
           />
 
