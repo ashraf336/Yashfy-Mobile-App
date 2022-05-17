@@ -126,14 +126,13 @@ const authContext = React.useMemo(() => ({
             // PATIENT's Successful sign in path
           <Drawer.Navigator
             drawerContent={(props) => <DrawerContent {...props} />}
-            headerMode="screen"
+            // headerMode="screen"
             screenOptions={{
-              headerShown: true,
               headerStyle: { backgroundColor: "#009387" },
               headerTintColor: "#fff",
               headerTitleAlign: "center",
               headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
-              headerShown: true,
+              headerShown: false,
             }}
           >
             <Drawer.Screen  name="DrawerHome" component={MainTabScreen} options={{ title: "Home" }}/>
@@ -146,14 +145,14 @@ const authContext = React.useMemo(() => ({
           :( // DOCTOR's Successful sign in path
           <DoctorDrawer.Navigator
             drawerContent={(props) => <DoctorDrawerContent {...props} />}
-            headerMode="screen"
+            headerMode="none"
             screenOptions={{
-              headerShown: true,
+              headerShown: false,
               headerStyle: { backgroundColor: "#009387" },
               headerTintColor: "#fff",
               headerTitleAlign: "center",
               headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
-              headerShown: true,
+              // headerShown: true,
             }}
           >
              <Drawer.Screen  name="DrawerHome" component={DoctorMainTabScreen} options={{ title: "Home" }}/>

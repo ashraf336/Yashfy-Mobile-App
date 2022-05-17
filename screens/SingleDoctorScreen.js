@@ -20,6 +20,7 @@ import {
   Switch,
   TextInput,
 } from "react-native-paper";
+
 import AvaialbleAppointmentsList from "../components/AvaialbleAppointmentsList";
 import ReviewsList from "../components/ReviewsList";
 

@@ -6,7 +6,7 @@ import Icon from "react-native-vector-icons/Ionicons";
 const Tab = createMaterialBottomTabNavigator();
 
 import DoctorProfileScreen from "./DoctorProfileScreen";
-import SupportScreen from "../SupportScreen";
+import DoctorAppointmentsScreen from "./DoctorAppointmentsScreen";
 import DetailsScreen from "../DetailsScreen";
 import HomeScreen from "../HomeScreen";
 // import ProfileScreen from "./ProfileScreen";
@@ -20,30 +20,9 @@ const DoctorMainTabScreen = () => (
   <Tab.Navigator
     initialRouteName="Profile"
     activeColor="#fff"
-      barStyle={{ backgroundColor: 'tomato' }}
+      barStyle={{ backgroundColor: '#009387' }}
   >
-    <Tab.Screen
-      name="Home"
-      component={HomeScreen}
-      options={{
-        tabBarLabel: "Home",
-        tabBarColor: "#009387",
-        tabBarIcon: ({ color }) => (
-          <Icon name="ios-home" color={color} size={26} />
-        ),
-      }}
-    />
-    <Tab.Screen
-      name="Details"
-      component={DetailsScreen}
-      options={{
-        tabBarLabel: "Updates",
-        tabBarColor: "#8a2be2",
-        tabBarIcon: ({ color }) => (
-          <Icon name="ios-notifications" color={color} size={26} />
-        ),
-      }}
-    />      
+
     <Tab.Screen
       name="Profile"
       component={DoctorProfileScreen}
@@ -55,22 +34,11 @@ const DoctorMainTabScreen = () => (
         ),
       }}
     />
-    {/* <Tab.Screen
-      name="Support"
-      component={SupportScreen}
-      options={{
-        tabBarLabel: "Explore",
-        tabBarColor: "black",
-        tabBarIcon: ({ color }) => (
-          <Icon name="ios-aperture" color={color} size={26} />
-        ),
-      }}
-    /> */}
         <Tab.Screen
-      name="Explore"
-      component={SingleDoctorScreen}
+      name="Appointments"
+      component={DoctorAppointmentsScreen}
       options={{
-        tabBarLabel: "Explore",
+        tabBarLabel: "Appointments",
         tabBarColor: "#fa8072",
         tabBarIcon: ({ color }) => (
           <Icon name="ios-aperture" color={color} size={26} />

@@ -144,11 +144,6 @@ let PatientsReviews={
   ]
 };
   
-    /**** Sections Togglers  ****/
-  const [about, setAbout] = useState(true);
-  const [experience, setExperience] = useState(true);
-  const [supportedInsurances, setsupportedInsurances] = useState(true);
-
 
   const [fieldsEditable,setFieldsEditable] = useState(false);
 
@@ -230,6 +225,19 @@ let PatientsReviews={
     { label: "Hassab Hospital", value: "Hassab Hospital", id: 16 },
     
   ]);
+  
+  //  For SUPPORTED INSURANCES Dropdown
+  const [supportedInsurances, setSupportedInsurances] = useState(['Axa','Bupa']);
+  const [supportedInsurancesOpen, setSupportedInsurancesOpen] = useState(false);
+  const [supportedInsurancesItems, setSupportedInsurancesItems] = useState([
+    {  id: 1 , label: "Axa" , value: "Axa"  },
+    {  id: 2 , label: "Misr Insurance" ,  value: "Misr Insurance"},
+    {  id: 3 , label: "Alianz", value: "Alianz"},
+    {  id: 4 , label: "Bupa", value: "Bupa"},
+    {  id: 5 , label: "Lintile" , value: "Lintile"},
+    {  id: 6 , label: "Werty", value: "Werty"},
+  ]);
+    
 
 ///////////////////////   INPUT HANDLERS      ////////////////////////////////
 
@@ -296,6 +304,7 @@ const handleHospitalChange = (val) => {
     hospital:val.value,
   });
 };
+
 
 const handleQualificationsInstituteNameChange = (val) => {
   setData({
@@ -364,12 +373,8 @@ const handleQualificationsProcurementYearChange = (val) => {
         </View>
       </View>
       {/**************************--------------------------****************************/}
-
-      {/******************* ------------DESCRIPTION Section------------ *******************/}
       <View style={styles.headerView}>
-        <View style={styles.footer}>
-        {/********************** EDIT FIELDS BUTTON ****************************/}
-        
+        <View style={styles.footer}>  
           {/******************     USERNAME     ************************************/}
           <Text style={styles.text_footer}>Username *</Text>
             <View style={styles.action}>
@@ -396,7 +401,15 @@ const handleQualificationsProcurementYearChange = (val) => {
                 value={data.email}
               />
             </View>
+        </View>
+      </View>
 
+
+
+      {/******************* ------------DESCRIPTION Section------------ *******************/}
+      <View style={styles.headerView}>
+        <View style={styles.footer}>  
+          {/********************** EDIT FIELDS BUTTON ****************************/}
             { !fieldsEditable?(
             <Pressable style={styles.button}  disabled={fieldsEditable} onPress={()=>setFieldsEditable(!fieldsEditable) }>
             <LinearGradient
@@ -603,6 +616,24 @@ const handleQualificationsProcurementYearChange = (val) => {
               }}
             />
           </View>
+          {/******************************      SUPPORTED INSURANCES     ***********************************/}
+          <Text style={[styles.text_footer,{marginTop:10}]}>Supported Insurances</Text>
+          <View style={{ marginTop: 10 }}>
+            <DropDownPicker
+              multiple={true}
+              min={0}
+              // max={3}
+              listMode="MODAL"
+              mode="BADGE"
+              open={supportedInsurancesOpen}
+              value={supportedInsurances}
+              setValue={setSupportedInsurances}
+              items={supportedInsurancesItems}
+              setItems={setSupportedInsurancesItems}
+              setOpen={setSupportedInsurancesOpen}
+              disabled={!fieldsEditable}
+            />
+          </View>
 
           {/******************************     QUALIFICATIONS SECTION     ***********************************/}
           <View>
@@ -683,7 +714,7 @@ const handleQualificationsProcurementYearChange = (val) => {
 
         {/********************** SUBMIT BUTTON ****************************/}
            { fieldsEditable?(
-            <Pressable style={styles.button} disabled={!fieldsEditable} onPress={()=>{setFieldsEditable(!fieldsEditable),alert("Changes Saved!") }}>
+            <Pressable style={styles.button} disabled={!fieldsEditable} onPress={()=>{setFieldsEditable(!fieldsEditable),alert(supportedInsurances),console.log(supportedInsurances) }}>
             <LinearGradient
                 colors={["#08d4c4", "#01ab9d"]}
                 style={styles.submit}
@@ -715,8 +746,127 @@ const handleQualificationsProcurementYearChange = (val) => {
       {/**************************************************************************************/}
         </View>
 
-      </View>
+ 
+{/****************   CLINIC & DOCTOR TREATMENT RATINGS ************************/}
+<View
+          style={{
+            flexDirection: "row",
+            alignItems: "stretch",
+            marginBottom: 15,
+          }}
+        >
+          <View style={styles.smallSections}>
+            <Ionicons
+              name="star"
+              color="#009387"
+              size={25}
+              style={[styles.icon, { color: "gold", alignSelf: "center" }]}
+            />
+            <View style={{ alignSelf: "center" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                {result.doctor_treatment_rating} /5
+              </Text>
+              <Text>Doctor Treatment</Text>
+            </View>
+          </View>
+          <View style={styles.smallSections}>
+            <Ionicons
+              name="star"
+              color="#009387"
+              size={25}
+              style={[styles.icon, { color: "gold", alignSelf: "center" }]}
+            />
+            <View style={{ alignSelf: "center" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                {result.clinic_rating} /5
+              </Text>
+              <Text>Clinic</Text>
+            </View>
+          </View>
+        </View>
+        {/********************************************************/}
+        {/* <View style={styles.lineStyle} /> */}
+        {/****************   STAFF & WAITING TIME RATINGS ************************/}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "stretch",
+            marginBottom: 15,
+          }}
+        >
+          <View style={styles.smallSections}>
+            <Ionicons
+              name="star"
+              color="#009387"
+              size={25}
+              style={[styles.icon, { color: "gold", alignSelf: "center" }]}
+            />
+            <View style={{ alignSelf: "center" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                {result.staff_rating} /5
+              </Text>
+              <Text>Staff</Text>
+            </View>
+          </View>
+          <View style={styles.smallSections}>
+            <Ionicons
+              name="star"
+              color="#009387"
+              size={25}
+              style={[styles.icon, { color: "gold", alignSelf: "center" }]}
+            />
+            <View style={{ alignSelf: "center" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                {result.waiting_time_rating} /5
+              </Text>
+              <Text>Waiting Time </Text>
+            </View>
+          </View>
+        </View>
+        {/********************************************************/}
+        {/* <View style={styles.lineStyle} /> */}
+                {/****************   EQUIPMENT & PRICE RATINGS ************************/}
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "stretch",
+            marginBottom: 15,
+          }}
+        >
+          <View style={styles.smallSections}>
+            <Ionicons
+              name="star"
+              color="#009387"
+              size={25}
+              style={[styles.icon, { color: "gold", alignSelf: "center" }]}
+            />
+            <View style={{ alignSelf: "center" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                {result.equipement_rating} /5
+              </Text>
+              <Text>Equipment </Text>
+            </View>
+          </View>
+          <View style={styles.smallSections}>
+            <Ionicons
+              name="star"
+              color="#009387"
+              size={25}
+              style={[styles.icon, { color: "gold", alignSelf: "center" }]}
+            />
+            <View style={{ alignSelf: "center" }}>
+              <Text style={{ fontWeight: "bold", fontSize: 16 }}>
+                {result.price_rating} /5
+              </Text>
+              <Text>Price </Text>
+            </View>
+          </View>
+        </View>
+        {/********************************************************/}
+        </View>
       {/******************------------------------------------------------*********************/}
+
+
     </ScrollView>
   );
 };

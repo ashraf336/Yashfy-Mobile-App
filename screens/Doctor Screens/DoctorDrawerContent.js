@@ -32,9 +32,9 @@ export function DoctorDrawerContent(props) {
                 }
                 size={100}
               />
-              <View style={{ marginLeft: 15, flexDirection: "column" }}>
+              <View style={{ marginLeft: 15, flexDirection: "column",flexShrink:1 }}>
                 <Title style={styles.title}>Dr.Osama Sherif</Title>
-                <Caption style={styles.caption}>Consultant of Plastic Surgery and Laser Treatments</Caption>
+                <Caption style={[styles.caption ]}>Consultant of Plastic Surgery and Laser Treatments</Caption>
               </View>
             </View>
 
@@ -63,78 +63,6 @@ export function DoctorDrawerContent(props) {
                 props.navigation.navigate("Profile");
               }}
             />
-{/* 
-          <Drawer.Section style={styles.drawerSection}>
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="home-outline" color={color} size={size} />
-              )}
-              label="Home"
-              onPress={() => {
-                props.navigation.navigate("Home");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-outline" color={color} size={size} />
-              )}
-              label="Profile"
-              onPress={() => {
-                props.navigation.navigate("Profile");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
-              )}
-              label="Bookmarks"
-              onPress={() => {
-                props.navigation.navigate("BookmarkScreen");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="cog-outline" color={color} size={size} />
-              )}
-              label="Settings"
-              onPress={() => {
-                props.navigation.navigate("SettingsScreen");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-check-outline" color={color} size={size} />
-              )}
-              label="Support"
-              onPress={() => {
-                props.navigation.navigate("SupportScreen");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
-              )}
-              label="Single Doctor"
-              onPress={() => {
-                props.navigation.navigate("SingleDoctorScreen");
-              }}
-            />
-          </Drawer.Section>
-          <Drawer.Section title="Preferences">
-            <TouchableRipple
-              onPress={() => {
-                toggleTheme();
-              }}
-            >
-              <View style={styles.preference}>
-                <Text>Dark Theme</Text>
-                <View pointerEvents="none">
-                  
-                  <Switch value={isDarkTheme} />
-                </View>
-              </View>
-            </TouchableRipple>
-          </Drawer.Section> */}
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
