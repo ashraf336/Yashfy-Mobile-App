@@ -18,7 +18,8 @@ import { AuthContext } from "../../components/context";
 import { ActivityIndicator } from 'react-native';
 
 import axios from "axios";
-const baseUrl = "http://192.168.1.12:8080"; //Devolopment
+//const baseUrl = "http://192.168.1.12:8080"; //Devolopment
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; //Deployment
 
 const DoctorSignInScreen = ({navigation}) => {
 
@@ -208,10 +209,8 @@ const loginHandle = async (email, password) => {
           <TouchableOpacity
             style={styles.signIn}
             onPress={() => {
-              signIn(dummyFoundUser)
-              // loginHandle(data.email,data.password)
-
-
+              //signIn(dummyFoundUser)
+              loginHandle(data.email,data.password)
               // loginHandle(data.username, data.password);
             }}
           >

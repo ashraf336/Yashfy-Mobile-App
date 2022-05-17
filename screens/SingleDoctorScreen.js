@@ -1,13 +1,15 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
+
 import {
   View,
   // Text,
-  Button,
+  Button,Alert,
   StyleSheet,
   ScrollView,
   Image,
   TouchableOpacity,
-  Modal,
+  Modal,SafeAreaView ,RefreshControl
 } from "react-native";
 import {
   Avatar,
@@ -20,7 +22,7 @@ import {
   Switch,
   TextInput,
 } from "react-native-paper";
-
+import { ActivityIndicator } from 'react-native';
 import AvaialbleAppointmentsList from "../components/AvaialbleAppointmentsList";
 import ReviewsList from "../components/ReviewsList";
 
@@ -30,58 +32,148 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
-const SingleDoctorScreen = () => {
-  let result = {
-    doctor_name: "Doctor Osama Sherif",
+import axios from "axios";
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+
+
+const SingleDoctorScreen = (/*doctorId*/) => {
+const doctorId = 1  
+
+/*************************  States ****************************/
+const [isLoading, setLoading] = useState(true);
+const [refreshing, setRefreshing] = React.useState(false);
+
+//**************** Doctor Data **********************//
+const [result, setResult] = React.useState({
+    doctor_name: "Doctor" ,
     no_of_ratings: "15",
-    rating: 4.5,
-    doctor_speciality: "Consultant of Plastic Surgery and Laser Treatments",
-    consultation_fees: "200",
-    waiting_time: "8",
+    rating: 0,
+    doctor_speciality: "Consultant of " ,
+    consultation_fees: '0',
+    waiting_time: '0',
     hospital_name:"Al Andalusia Hospital",
-    region: "Roshdy",
-    street: "Syria Street",
-    staff_rating: 4.5,
-    clinic_rating: 3.5,
-    doctor_treatment_rating: 5,
-    waiting_time_rating: 4.5,
-    equipement_rating:2,
-    price_rating:1,
+    region: ' ',
+    street: " ",
+    staff_rating: '0',
+    clinic_rating: '0',
+    doctor_treatment_rating: '0',
+    waiting_time_rating: '0',
+    equipement_rating: '0',
+    price_rating:'0',
     about:
       "- Consultant of Plasric Surgery and Laser Treatment \n- Head of plastic surgeons Alexandria University Hospital",
     experienceHeader: "2000 - Present",
     experienceDetail:
       "Consultant plastic surgeon at Head of plastic surgery department",
-    subSpecialities: [
-      "Facial Plastic Surgery",
-      "Hand Surgery",
-      "Pediatric Deformities and Birth Defects Surgery",
-      "Rhinoplastic Surgery",
-      "Eyes Cosmetic Surgery",
-      "Pediatric Dermatology",
-      "Cosmetic Dermatology and Laser",
-      "Burn Surgery",
-      "Adult Dermatology",
-    ],
     supportedInsurances:[
       "Delta","Bupa", "Misr Insurance" , "Axa"
     ],
-  };
+  });
 
-//****************Appointments Slots**********************//
-  let AvailableAppointments = {
-    slots: [
-      { Date: "20-4-2022", Day: "Sunday", Start: "9:00", End: "10:00", id: 1 },
-      { Date: "20-4-2022", Day: "Sunday", Start: "12:00", End: "1:00", id: 2 },
-      { Date: "20-4-2022", Day: "Sunday", Start: "3:00", End: "4:00", id: 3 },
-      { Date: "21-4-2022", Day: "Monday", Start: "9:00", End: "10:00", id: 4 },
-      { Date: "21-4-2022", Day: "Monday", Start: "10:00", End: "12:00", id: 5 },
-      { Date: "21-4-2022", Day: "Monday", Start: "1:00", End: "2:00", id: 6 },
-      { Date: "23-4-2022", Day: "Wednesday", Start: "9:00", End: "10:00", id: 7},
-      { Date: "23-4-2022", Day: "Wednesday", Start: "1:00", End: "2:00", id: 8},
-      { Date: "23-4-2022", Day: "Wednesday", Start: "3:00", End: "4:00", id: 9},
-    ],
-  };
+//**************** Doctor Slots**********************//
+const [AvailableSlots, setAvailableSlots] = React.useState([]);
+
+
+{/******************************      API Call  Handlers  ***********************************/}
+const fetchDoctorDataHandle = async (doctorId ) => {
+
+    //CALLING API RETURN data 
+    try {
+      console.log(" ....... Calling API (Fetch Doctor data)......")
+      const response = await axios.get(`${baseUrl}/home/doctors/${doctorId}`);
+      setLoading(false);
+      setRefreshing(false)
+      if (response.status === 200) {
+        console.log(` Response: ${JSON.stringify(response.data)}`);
+        let result_api = response.data.doctor
+        // Set the data with fetched data
+        setResult({
+          ...result,
+          doctor_name: "Doctor "+ result_api.first_name+ " " + result_api.last_name ,
+          rating: result_api.general_rank,
+          doctor_speciality: "Consultant of " + result_api.specialization,
+          consultation_fees: result_api.consultaion_fee,
+          waiting_time: result_api.waiting_time,
+          hospital_name:"Al Andalusia Hospital",
+          region: result_api.region,
+          street: "Syria Street",
+          staff_rating: result_api.catgs_staff,
+          clinic_rating: result_api.catgs_Clinic,
+          doctor_treatment_rating: result_api.catgs_doctor_treatment,
+          waiting_time_rating: result_api.catgs_waiting_time,
+          equipement_rating:result_api.catgs_equipment,
+          price_rating:result_api.catgs_price,
+        });
+        console.log("..... Done FETCHING .....")
+        return
+      } 
+      else
+      {
+        Alert.alert('Not Found !', 'Seems that this doctor is not found !', [
+          {text: 'Try Again'}
+       ]);
+        return null;
+      }
+    }
+     catch (error) {
+      alert("An error has occurred");
+      console.log(error);
+      throw error;
+    }
+}
+
+const fetchDoctorSlotsHandle = async (doctorId ) => {
+
+  //CALLING API RETURN data 
+  try {
+    console.log(" ....... Calling API (Fetch Doctor Slots) ......")
+    const response = await axios.get(`${baseUrl}/home/doctors/${doctorId}/available-slots`);
+    setLoading(false);
+    setRefreshing(false)
+    if (response.status === 200) {
+      console.log(` Response: ${JSON.stringify(response.data)}`);
+      let fetchedSlots = response.data.slots
+      //console.log(` Fetched Slots Is : ${fetchedSlots}`);
+
+      // Set the data with fetched data
+      setAvailableSlots(fetchedSlots);
+
+      console.log("..... Done FETCHING Slots .....")      
+      return
+    } 
+    else
+    {
+      Alert.alert('Not Found !', 'Seems that Slots are not found !', [
+        {text: 'Try Again'}
+     ]);
+      return null;
+    }
+  }
+   catch (error) {
+    alert("An error has occurred");
+    console.log(error);
+    throw error;
+  }
+}
+
+
+if (isLoading) // FETCH DOCTOR DATA FOR FIRST TIME
+{ 
+console.log("INSIDE FIRST FETCH")
+fetchDoctorDataHandle(doctorId);
+fetchDoctorSlotsHandle(doctorId)
+}
+
+// FETCH DOCTOR DATA when swap down to refresh
+const onRefresh = React.useCallback(() => {
+  setRefreshing(true);
+  fetchDoctorDataHandle(doctorId);
+  fetchDoctorSlotsHandle(doctorId)
+  }, []);
+
+
+
 
 //****************Patient Reviews**********************//  
 let PatientsReviews={
@@ -96,36 +188,45 @@ let PatientsReviews={
   ]
 };
   
-    /**** Sections Togglers  ****/
-  const [about, setAbout] = useState(true);
-  const [experience, setExperience] = useState(true);
-  // const [subSpecialities, setsubSpecialities] = useState(true);
-  const [supportedInsurances, setsupportedInsurances] = useState(true);
+/**** Sections Togglers  ****/
+const [about, setAbout] = useState(true);
+const [experience, setExperience] = useState(true);
+// const [subSpecialities, setsubSpecialities] = useState(true);
+const [supportedInsurances, setsupportedInsurances] = useState(true);
 
-  /*************** User ADD REVIEW  ****************/
-  const [addReview, setAddReview] = useState({userReview:""});
-  const handleAddReview = (val) => {
-    setAddReview({
-      userReview: val,
-    });
-  };
-
-  /**************************************************/
-
-
+/*************** User ADD REVIEW  ****************/
+const [addReview, setAddReview] = useState({userReview:""});
 
   /********** ADD Review Window Toggle*************/
   const [addReviewVisible, setAddReviewVisible] = useState(false);
 
+  /**************************************************/
+const handleAddReview = (val) => {
+    setAddReview({
+      userReview: val,
+    });
+  };
+  
 
 
 /********************************   SCREEN  **********************************************************/   
 
   return (
+
+    
+    <SafeAreaView style={styles.container}> 
     <ScrollView
       showsVerticalScrollIndicator={false}
       contentContainerStyle={styles.container}
+        refreshControl={
+          <RefreshControl
+            refreshing={refreshing}
+            onRefresh={onRefresh}
+          />
+        }
+      
     >
+          
       {/******************* ------------HEADER Section------------ *******************/}
       <View style={styles.headerView}>
         <View style={{ flexDirection: "row", marginTop: 25 }}>
@@ -161,7 +262,7 @@ let PatientsReviews={
         </View>
       </View>
       {/**************************--------------------------****************************/}
-
+        
       {/******************* ------------BODY Section------------ *******************/}
       <View style={styles.bodyView}>
         {/************** CONSULTATION FEES and WAITING TIME *************/}
@@ -196,10 +297,13 @@ let PatientsReviews={
           </View>
         </View>
         {/********************************************************/}
+        <View style={styles.loading}>
+          {isLoading && <ActivityIndicator size="large" color="#009387"  /> }
+          </View>
         <View style={styles.lineStyle} />
         {/****************   APPOINTMENTS ************************/}
         <ScrollView>
-          <AvaialbleAppointmentsList result={AvailableAppointments.slots} />
+          <AvaialbleAppointmentsList result={AvailableSlots} />
         </ScrollView>
         {/********************************************************/}
         <View style={styles.lineStyle} />
@@ -394,11 +498,6 @@ let PatientsReviews={
       </View>
       {/******************----------------------*********************/}
 
-      {/******************* ------------Appointments Section------------ *******************/}
-      {/* <ScrollView>
-        <AvaialbleAppointmentsList  result={AvailableAppointments.slots}  />
-      </ScrollView> */}
-      {/************************************************************************************/}
       {/******************* ------------ABOUT Section------------ *******************/}
       <View style={styles.aboutView}>
         {/****************   ABOUT DOCTOR ************************/}
@@ -601,10 +700,21 @@ let PatientsReviews={
       {/******************------------------------------------------------*********************/}
       {/* <Button title="Click Here" onPress={() => alert("Button Clicked!")} /> */}
     </ScrollView>
+    </SafeAreaView>
+
   );
 };
 
 const styles = StyleSheet.create({
+  loading: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 72,
+    bottom: 0,
+   /* alignItems: 'center',
+    justifyContent: 'center'*/
+  },
   container: {
     // flex: 1,
     // alignItems: "center",

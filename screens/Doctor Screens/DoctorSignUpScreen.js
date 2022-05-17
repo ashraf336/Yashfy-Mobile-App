@@ -22,8 +22,8 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ActivityIndicator } from 'react-native';
 import axios from "axios";
-//const baseUrl = "https://test-api-yashfy.herokuapp.com"; Deployment
-const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; //Deployment
+//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const DoctorSignUpScreen = ({ navigation }) => {
   const [data, setData] = React.useState({
@@ -186,7 +186,8 @@ const DoctorSignUpScreen = ({ navigation }) => {
   try {
     console.log("Calling API ....")
     const response = await axios.put(`${baseUrl}/doctors-auth/doctor-signup`, submission, config);
-    //console.log(response.data);
+     //response = await response.json()
+
     if (response.status === 201) {
       setfetchapi(false);
       Alert.alert('Done', 'Successfuly Signed Up.', [
@@ -201,6 +202,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
     }
   } catch (error) {
     alert("An error has occurred");
+   // console.log("Error happened : ... ",response)
     setIsLoading(false);
     setfetchapi(false);
   }
@@ -869,8 +871,13 @@ const DoctorSignUpScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   loading: {
-    flex : 1, justifyContent: 'center', flexDirection: "row",
-    justifyContent: "space-around",  paddingTop: 10
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 1050,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
 
   container: {

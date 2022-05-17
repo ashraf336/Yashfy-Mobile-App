@@ -22,7 +22,6 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { ActivityIndicator } from 'react-native';
 
 import axios from "axios";
-//const baseUrl = "https://reqres.in";
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 
@@ -586,10 +585,14 @@ const SignUpScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
   loading: {
-    flex : 1, justifyContent: 'center', flexDirection: "row",
-    justifyContent: "space-around",  paddingTop: 10
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 1050,
+    bottom: 0,
+    alignItems: 'center',
+    justifyContent: 'center'
   },
-
   container: {
     flex: 1,
     backgroundColor: "#009387",

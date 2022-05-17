@@ -34,7 +34,11 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
+import axios from "axios";
+const baseUrl = "http://192.168.1.12:8080"; //Devolopment
+
 const DoctorProfileScreen = () => {
+  
   let result = {
     doctor_name: "Doctor Osama Sherif",
     no_of_ratings: "15",
@@ -72,7 +76,43 @@ const DoctorProfileScreen = () => {
     ],
   };
 
+  const submitEditHandle = async (submission) => {
+      setfetchapi(true);
 
+
+      //CALLING API RETURN TOKEN
+      try {
+        console.log(" Calling API ....")
+        const response = await axios.post(`${baseUrl}/doctors/edit-profile`, submission);
+        if (response.status === 200) {
+          setfetchapi(false);
+          Alert.alert('Done', 'Successfuly Logged In.', [
+            {text: 'Okay'}
+          ]);
+          console.log(` Response: ${JSON.stringify(response.data)}`);
+          //call sign in function from authcontext JS object imported
+  
+          signIn(response.data);
+          navigation.navigate("HomeScreen");  // This should be removed , the sigIn( ) in the previous line is enough.      
+        } 
+        else
+        {
+          setfetchapi(false);
+          Alert.alert('Not Found User!', 'Username or password is incorrect.', [
+            {text: 'Okay'}
+         ]);
+          return;
+        }
+      }
+       catch (error) {
+        setfetchapi(false);
+        alert("An error has occurred");
+        console.log(error);
+        console.log("Status code" , response.status);
+        throw error;
+      }
+  }
+  
   const [data, setData] = useState({
     username: "Osama_1999",
     email: "osama_sherif@gmail.com",
@@ -109,13 +149,10 @@ const DoctorProfileScreen = () => {
   let submission = {
     first_name: data.first_name,
     last_name: data.last_name,
-    email: data.email,
-    username: data.username,
-    password: data.password,
     city: data.city,
     specialization: data.specialization,
     consultaion_fee: data.consultaion_fee,
-    // phone_number: data.phone_number,
+    phone_number: data.phone_number,
     date_of_birth: data.date_of_birth.split("-").reverse().join("-"),
     region: data.region,
     hospital_id: parseInt(data.hospital_id, 10),
@@ -714,7 +751,13 @@ const handleQualificationsProcurementYearChange = (val) => {
 
         {/********************** SUBMIT BUTTON ****************************/}
            { fieldsEditable?(
-            <Pressable style={styles.button} disabled={!fieldsEditable} onPress={()=>{setFieldsEditable(!fieldsEditable),alert(supportedInsurances),console.log(supportedInsurances) }}>
+            <Pressable style={styles.button} disabled={!fieldsEditable} 
+            onPress={()=>
+            {
+
+              setFieldsEditable(!fieldsEditable),
+              alert("Changes Saved!") 
+              }}>
             <LinearGradient
                 colors={["#08d4c4", "#01ab9d"]}
                 style={styles.submit}

@@ -6,12 +6,13 @@ import AppointmentDetail from "./AppointmentDetail";
 const AvaialbleAppointmentsList = ({  result }) => {
 
 if(!result.length){
+  console.log( "NO SLOTS !")
   return null;
 }
 
   return (
     <View style={styles.Container}>
-      <Text style={styles.Title}>Reserve an appointment : </Text>
+      <Text style={styles.Title}>Reserve an appointment </Text>
 
       <FlatList
         showsHorizontalScrollIndicator={false}
@@ -19,15 +20,18 @@ if(!result.length){
         data={result}
         keyExtractor={(result) => result.id}
         renderItem={({ item }) => {
-          return (<TouchableOpacity style={{marginHorizontal:10}} onPress={()=>Alert.alert(
-            "Reservation Confirmation",
-            "Are you sure you want to confirm this Reservation?",
-            [
+          return (<TouchableOpacity  disabled={!item.is_available} style={{marginHorizontal:10}} onPress={()=>Alert.alert(
+            "Reservation Confirmation" /* Head of alert */,
+            "Are you sure you want to confirm this Reservation?", /* Text in box */
+            [ // clickable Buttons to show 
               {
                 text: "Cancel",
                 style: "cancel"
               },
-              { text: "Confirm", onPress: () => console.log("Succesfully Reserved this slot",item) }
+              { text: "Confirm", onPress: ( ) =>
+              {
+                console.log("Succesfully Reserved this slot",item)
+              }  }
             ]
           )}>
           <AppointmentDetail result={item} />
