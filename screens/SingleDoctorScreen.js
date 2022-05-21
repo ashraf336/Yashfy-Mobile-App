@@ -33,15 +33,17 @@ import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
 import axios from "axios";
-const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
-//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
-const SingleDoctorScreen = (/*doctorId*/) => {
+const SingleDoctorScreen = (/*doctorId, token*/ ) => {
 const doctorId = 1  
+const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjUzMDAxMzUxfQ.DUp6xbVKU4N1___jgZbpK-rNjDvaShM8cDYogEdR170'
 
 /*************************  States ****************************/
 const [isLoading, setLoading] = useState(true);
+const [addReviewLoading, setaddReviewLoading] = useState(false);
 const [refreshing, setRefreshing] = React.useState(false);
 
 //**************** Doctor Data **********************//
@@ -74,6 +76,9 @@ const [result, setResult] = React.useState({
 //**************** Doctor Slots**********************//
 const [AvailableSlots, setAvailableSlots] = React.useState([]);
 
+//****************Patient Reviews**********************// 
+const [reviews, setReviews] = React.useState([]);
+
 
 {/******************************      API Call  Handlers  ***********************************/}
 const fetchDoctorDataHandle = async (doctorId ) => {
@@ -82,10 +87,12 @@ const fetchDoctorDataHandle = async (doctorId ) => {
     try {
       console.log(" ....... Calling API (Fetch Doctor data)......")
       const response = await axios.get(`${baseUrl}/home/doctors/${doctorId}`);
-      setLoading(false);
-      setRefreshing(false)
+
+
+      // { url , body , headear , config } for maore deatils visit docs
       if (response.status === 200) {
-        console.log(` Response: ${JSON.stringify(response.data)}`);
+       // console.log(` Response: ${JSON.stringify(response.data)}`);
+        console.log(` doctor data is fetched`);
         let result_api = response.data.doctor
         // Set the data with fetched data
         setResult({
@@ -105,7 +112,6 @@ const fetchDoctorDataHandle = async (doctorId ) => {
           equipement_rating:result_api.catgs_equipment,
           price_rating:result_api.catgs_price,
         });
-        console.log("..... Done FETCHING .....")
         return
       } 
       else
@@ -122,24 +128,22 @@ const fetchDoctorDataHandle = async (doctorId ) => {
       throw error;
     }
 }
-
 const fetchDoctorSlotsHandle = async (doctorId ) => {
 
   //CALLING API RETURN data 
   try {
     console.log(" ....... Calling API (Fetch Doctor Slots) ......")
     const response = await axios.get(`${baseUrl}/home/doctors/${doctorId}/available-slots`);
-    setLoading(false);
-    setRefreshing(false)
     if (response.status === 200) {
-      console.log(` Response: ${JSON.stringify(response.data)}`);
+      //console.log(` Response: ${JSON.stringify(response.data)}`);
+      console.log(` doctor Slots is fetched`);
+
       let fetchedSlots = response.data.slots
       //console.log(` Fetched Slots Is : ${fetchedSlots}`);
 
       // Set the data with fetched data
       setAvailableSlots(fetchedSlots);
 
-      console.log("..... Done FETCHING Slots .....")      
       return
     } 
     else
@@ -156,6 +160,77 @@ const fetchDoctorSlotsHandle = async (doctorId ) => {
     throw error;
   }
 }
+const fetchDoctorReviewsHandle = async (doctorId ) => {
+
+  //CALLING API RETURN data 
+  try {
+    console.log(" ....... Calling API (Fetch Doctor Reviews) ......")
+    const response = await axios.get(`${baseUrl}/home/doctors/${doctorId}/reviews`);
+    setLoading(false);
+    setRefreshing(false)
+    if (response.status === 200) {
+     // console.log(` Response: ${JSON.stringify(response.data)}`);
+     console.log(` doctor reviews is fetched`);
+
+      let fetchedReviews = response.data.reviews
+      //console.log(` Fetched Slots Is : ${fetchedSlots}`);
+
+      // Set the data with fetched data
+      setReviews(fetchedReviews);
+
+      return
+    } 
+    else
+    {
+      Alert.alert('Not Found !', 'Seems that Slots are not found !', [
+        {text: 'Try Again'}
+     ]);
+      return null;
+    }
+  }
+   catch (error) {
+    alert("An error has occurred");
+    console.log(error);
+    throw error;
+  }
+}
+const addReviewHandle = async (review ) => {
+
+  //CALLING API RETURN data 
+try {
+    console.log(" ....... Calling API (Add Review) ......")
+     setaddReviewLoading(true)
+     const response = await axios.post(`${baseUrl}/patient/make-review`, review /*posted data */ , {
+      headers: {
+        'Authorization': `bearer ${token}` 
+      }
+    })
+
+    if (response.status === 201) {
+      setLoading(false);
+      setRefreshing(false)
+      setaddReviewLoading(false)
+      console.log(` Response: ${JSON.stringify(response.data)}`);
+      console.log("..... Done Adding Review .....")      
+      return
+    } 
+    else
+    {
+      Alert.alert('Not Found !', 'ERROR !', [
+        {text: 'Try Again'}
+     ]);
+      return null;
+    }
+  }
+   catch (error) {
+    setaddReviewLoading(false)
+    setLoading(false);
+    setRefreshing(false)
+    alert("An error has occurred");
+    console.log(error);
+    throw error;
+  }
+}
 
 
 if (isLoading) // FETCH DOCTOR DATA FOR FIRST TIME
@@ -163,6 +238,9 @@ if (isLoading) // FETCH DOCTOR DATA FOR FIRST TIME
 console.log("INSIDE FIRST FETCH")
 fetchDoctorDataHandle(doctorId);
 fetchDoctorSlotsHandle(doctorId)
+fetchDoctorReviewsHandle(doctorId)
+console.log("..... Done FETCHING .....")      
+
 }
 
 // FETCH DOCTOR DATA when swap down to refresh
@@ -170,50 +248,35 @@ const onRefresh = React.useCallback(() => {
   setRefreshing(true);
   fetchDoctorDataHandle(doctorId);
   fetchDoctorSlotsHandle(doctorId)
-  }, []);
+  fetchDoctorReviewsHandle(doctorId)
+  console.log("..... Done FETCHING .....")      
+}, []);
 
 
-
-
-//****************Patient Reviews**********************//  
-let PatientsReviews={
-  Reviews:[
-    {"patient_name":"أحمد سعد" , "review":"الدكتور كان لطيف و العيادة كانت نضيفة", "rating":5 , id:1 },
-    {"patient_name":"اسامة شريف" , "review":"خلصت الكشف بسرعة و الدكتور كان محترم", "rating":5 , id:2 },
-    {"patient_name":"عبدو حبيب" , "review":"الدكتور ده كغأة", "rating":4 , id:3 },
-    {"patient_name":"زياد نصرت" , "review":"تعامل الدكتور كان دون المستوى مش هروحله تاني", "rating":1 , id:4 },
-    {"patient_name":"محمد ايمن" , "review":"سعيد جدا بتعاملي مع الدكتور ده و هرشحه لأصدقائي", "rating":5 , id:5 },
-    {"patient_name":"اميرة بحجابي" , "review":"استنيت كتير اوي عشان ادخل للدكتور", "rating":2 , id:6 },
-    {"patient_name":"ياسين" , "review":"ارجو مراعاة نظافة العيادة اكتر من كده", "rating":2 , id:7 },
-  ]
-};
-  
 /**** Sections Togglers  ****/
 const [about, setAbout] = useState(true);
 const [experience, setExperience] = useState(true);
-// const [subSpecialities, setsubSpecialities] = useState(true);
 const [supportedInsurances, setsupportedInsurances] = useState(true);
 
 /*************** User ADD REVIEW  ****************/
-const [addReview, setAddReview] = useState({userReview:""});
-
-  /********** ADD Review Window Toggle*************/
-  const [addReviewVisible, setAddReviewVisible] = useState(false);
-
-  /**************************************************/
+const [addedReview, setAddedReview] = useState({
+  review: "" ,
+  is_review_annoymous: 0,
+  doctorId: doctorId /* passed in screen*/
+});
+const [addReviewVisible, setAddReviewVisible] = useState(false);
 const handleAddReview = (val) => {
-    setAddReview({
-      userReview: val,
+  setAddedReview({
+      ...addedReview,
+      review: val,
     });
   };
-  
 
 
 /********************************   SCREEN  **********************************************************/   
 
   return (
 
-    
     <SafeAreaView style={styles.container}> 
     <ScrollView
       showsVerticalScrollIndicator={false}
@@ -290,7 +353,7 @@ const handleAddReview = (val) => {
             />
             <View style={{ marginTop: 5 }}>
               <Text style={styles.smallSectionsTitle}>
-                {result.waiting_time} min
+                {result.waiting_time}
               </Text>
               <Text>Waiting Time</Text>
             </View>
@@ -303,7 +366,7 @@ const handleAddReview = (val) => {
         <View style={styles.lineStyle} />
         {/****************   APPOINTMENTS ************************/}
         <ScrollView>
-          <AvaialbleAppointmentsList result={AvailableSlots} />
+          <AvaialbleAppointmentsList result={AvailableSlots} token={token} doctorId={doctorId} />
         </ScrollView>
         {/********************************************************/}
         <View style={styles.lineStyle} />
@@ -340,28 +403,6 @@ const handleAddReview = (val) => {
         </View>
         {/********************************************************/}
         <View style={styles.lineStyle} />
-        {/****************   EARNED POINTS ************************/}
-        {/* <View style={{ flexDirection: "row", alignItems: "stretch" }}>
-          <FontAwesome5
-            name="coins"
-            color="#009387"
-            size={20}
-            style={[styles.icon, { color: "gold", marginHorizontal: 25 }]}
-          />
-          <View style={{ alignSelf: "center" }}>
-            <Text>
-              <Text>You'll earn </Text>
-              <Text
-                style={{ color: "green", fontWeight: "bold", fontSize: 16 }}
-              >
-                200
-              </Text>
-              <Text> points after booking </Text>
-            </Text>
-          </View>
-        </View> */}
-        {/********************************************************/}
-
         
         {/****************   FOLLOW-UP FEES ************************/}
         <View style={{ flexDirection: "row", alignItems: "stretch" }}>
@@ -617,9 +658,13 @@ const handleAddReview = (val) => {
         <View>
           {/**********  Patient Reviews List   *******/}
           <ScrollView>
-            <ReviewsList result={PatientsReviews.Reviews}/>
+            <ReviewsList result={reviews}/>
           </ScrollView>          
           {/**************************/}
+
+          <View style={styles.loading}>
+          {addReviewLoading && <ActivityIndicator size="large" color="#009387"  /> }
+          </View>
 
 {/********************* Add Review Button and Window ***********/}
           <View>
@@ -642,9 +687,21 @@ const handleAddReview = (val) => {
                   style={{ alignSelf: "flex-end" }}
                 />
             </TouchableOpacity>
-            <Text style={styles.modalText}>Please write your review : </Text>
-            <TextInput style={[styles.textInput]} multiline={true} numberOfLines={5} textAlignVertical="top" onChangeText={(val) => handleAddReview(val)} />
-            <TouchableOpacity onPress={() => {setAddReviewVisible(!addReviewVisible),console.log(addReview)}} style={[styles.button, styles.buttonClose]}>
+            <Text style={styles.modalText}>Please write your review</Text>
+            <TextInput style={
+            [styles.textInput]}
+             multiline={true} 
+             numberOfLines={5} 
+             textAlignVertical="top" 
+             onChangeText={(val) => handleAddReview(val)} />
+            <TouchableOpacity onPress=
+            {() =>
+               {setAddReviewVisible(!addReviewVisible),
+                console.log("HIWAN")
+                addReviewHandle(addedReview)
+
+              }} 
+            style={[styles.button, styles.buttonClose]}>
               <Text style={styles.buttonText}>Submit Review</Text>
             </TouchableOpacity>
           </View>

@@ -5,7 +5,7 @@ const AppointmentDetail = ({result}) => {
     return <View style={styles.container}>
       <View style={{marginHorizontal:15,alignItems: "center",flexShrink: 1,}}>
         <Text style={styles.name}>{result.day_of_week}</Text>
-        <Text style={styles.time} >{result.start_time}</Text>
+        <Text style={styles.time} >{result.time}</Text>
         {result.is_available==true? (<Text>  </Text> ) :
               (<Text style={styles.booked}> Booked!</Text> ) }
         </View>

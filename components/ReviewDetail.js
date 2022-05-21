@@ -6,20 +6,10 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 const ReviewDetail = ({result}) => {
     return <View style={styles.container}>
         <View style={{marginHorizontal:25,alignItems: "center",flexShrink: 1,}}>
-        <Text style={styles.name}>{result.patient_name}</Text>
-        <StarRating
-                  starStyle={styles.stars}
-                  starSize={15}
-                  disabled={true}
-                  emptyStar={"ios-star-outline"}
-                  fullStar={"ios-star"}
-                  halfStar={"ios-star-half"}
-                  iconSet={"Ionicons"}
-                  maxStars={5}
-                  rating={result.rating}
-                  fullStarColor={"gold"}
-                />
+        { result.is_review_annoymous ? (<Text style={styles.name}>Annoymous Patient</Text>) : (<Text style={styles.name}>{result.patient_name}</Text>) }
         <Text style={styles.review}>{result.review}</Text>
+        <Text style={styles.date_time}>{result.date} | {result.time}</Text>
+
         </View>
     </View>
 };
@@ -34,14 +24,15 @@ const styles = StyleSheet.create({
   },  
   name:{
       fontWeight:"bold",
-      fontSize:20
+      fontSize:19
   },
   review:{
-      marginTop:10,
-    fontSize:18
+    marginTop:6,
+    fontSize:18,
   },
-  stars: {
-    alignSelf: "center",
+  date_time: {
+    marginTop:5,
+    fontSize:12.5,
   },
 });
 

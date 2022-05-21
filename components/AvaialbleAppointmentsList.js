@@ -1,9 +1,48 @@
 import React from "react";
 import { Text, StyleSheet, View, FlatList,TouchableOpacity,Alert } from "react-native";
 import AppointmentDetail from "./AppointmentDetail";
+import axios from "axios";
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+
+const AvaialbleAppointmentsList = ({  result, doctorId, token }) => {
 
 
-const AvaialbleAppointmentsList = ({  result }) => {
+const bookAppointmentHandle = async (slot, doctorId, token ) => {
+
+    //CALLING API RETURN data 
+  try {
+      console.log(" ....... Calling API (Book Appointmnet) ......")
+       const response = await axios.post(`${baseUrl}/patient/bookAppointment`, 
+       { start_time:slot.start_time ,
+        day_of_week: slot.day_of_week  ,
+        doctor_id: doctorId,
+        slotId:slot.id
+
+       },  /*posted data */  {
+        headers: {
+          'Authorization': `bearer ${token}` 
+        }
+      })
+      if (response.status === 200) {
+        console.log(` Response: ${JSON.stringify(response.data)}`);
+        console.log("..... Done Booking Appointment  .....")     
+      } 
+      else
+      {
+        Alert.alert('Not Found !', 'ERROR !', [
+          {text: 'Try Again'}
+       ]);
+        return null;
+      }
+    }
+     catch (error) {
+      alert("An error has occurred");
+      console.log(error);
+      throw error;
+    }
+  }
 
 if(!result.length){
   console.log( "NO SLOTS !")
@@ -20,25 +59,31 @@ if(!result.length){
         data={result}
         keyExtractor={(result) => result.id}
         renderItem={({ item }) => {
-          return (<TouchableOpacity  disabled={!item.is_available} style={{marginHorizontal:10}} onPress={()=>Alert.alert(
-            "Reservation Confirmation" /* Head of alert */,
-            "Are you sure you want to confirm this Reservation?", /* Text in box */
-            [ // clickable Buttons to show 
-              {
-                text: "Cancel",
-                style: "cancel"
-              },
-              { text: "Confirm", onPress: ( ) =>
-              {
-                console.log("Succesfully Reserved this slot",item)
-              }  }
-            ]
-          )}>
+          return (<TouchableOpacity  disabled={!item.is_available} style={{marginHorizontal:10}} 
+            onPress={
+              ( )=>{
+                Alert.alert(
+                  "Reservation Confirmation" /* Head of alert */,
+                  `Are you sure you want to confirm this Reservation \nAt ${ item.day_of_week}, ${item.time}?`, /* Text in box */
+                  [ // clickable Buttons to show 
+                    {
+                      text: "Cancel",
+                      style: "cancel"
+                    },
+                    { text: "Confirm", onPress: ( ) =>
+                    {
+                      bookAppointmentHandle(item,doctorId, token)
+                      
+                    }  
+                  }
+                  ]
+                )
+              }}>
           <AppointmentDetail result={item} />
           </TouchableOpacity>)
         }}
       />
-    </View>
+          </View>
   );
 };
 

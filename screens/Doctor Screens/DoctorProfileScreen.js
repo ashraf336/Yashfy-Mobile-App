@@ -34,51 +34,15 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
-import axios from "axios";
+import axios from "axios";  
 const baseUrl = "http://192.168.1.12:8080"; //Devolopment
 
-const DoctorProfileScreen = () => {
+const DoctorProfileScreen = ( /*token*/) => {
   
-  let result = {
-    doctor_name: "Doctor Osama Sherif",
-    no_of_ratings: "15",
-    rating: 4.5,
-    doctor_speciality: "Consultant of Plastic Surgery and Laser Treatments",
-    consultation_fees: "200",
-    waiting_time: "8",
-    hospital_name:"Al Andalusia Hospital",
-    region: "Roshdy",
-    street: "Syria Street",
-    staff_rating: 4.5,
-    clinic_rating: 3.5,
-    doctor_treatment_rating: 5,
-    waiting_time_rating: 4.5,
-    equipement_rating:2,
-    price_rating:1,
-    about:
-      "- Consultant of Plasric Surgery and Laser Treatment \n- Head of plastic surgeons Alexandria University Hospital",
-    experienceHeader: "2000 - Present",
-    experienceDetail:
-      "Consultant plastic surgeon at Head of plastic surgery department",
-    subSpecialities: [
-      "Facial Plastic Surgery",
-      "Hand Surgery",
-      "Pediatric Deformities and Birth Defects Surgery",
-      "Rhinoplastic Surgery",
-      "Eyes Cosmetic Surgery",
-      "Pediatric Dermatology",
-      "Cosmetic Dermatology and Laser",
-      "Burn Surgery",
-      "Adult Dermatology",
-    ],
-    supportedInsurances:[
-      "Delta","Bupa", "Misr Insurance" , "Axa"
-    ],
-  };
 
-  const submitEditHandle = async (submission) => {
+
+const submitEditHandle = async (submission) => {
       setfetchapi(true);
-
 
       //CALLING API RETURN TOKEN
       try {
@@ -114,35 +78,33 @@ const DoctorProfileScreen = () => {
   }
   
   const [data, setData] = useState({
-    username: "Osama_1999",
-    email: "osama_sherif@gmail.com",
+    username: " ",
+    email: " ",
     // password: "",
     // confirm_password: "",
-    first_name: "Osama",
-    last_name: "Sherif",
-    phone_number: "+20123456789",
-    date_of_birth: "1999-01-01",
-    specialization:"Dermatology",
-    consultaion_fee:'200',
-    region: 'Roshdy',
+    first_name: " ",
+    last_name: " ",
+    phone_number: " ",
+    date_of_birth: " ",
+    specialization:" ",
+    consultaion_fee:' ',
+    region: ' ',
     // country: "",
-    city: "Alexandria",
+    city: " ",
     // street_address:'',
     // insurance:null,
-    hospital:"Al Andalusia Hospital",
+    hospital:" ",
     // hospital_id: null,
-    qualification_name: "PhD",
-    institute_name: "Harvard University",
-    procurement_year: "10-2-2022",
-    countryCode: "+20",
-    check_textInputChange: false,
-    secureTextEntry: true,
-    confirm_secureTextEntry: true,
-    isValidUser: true,
-    isValidPassword: true,
-    enableSignup:false,
-    matchPasswored:true,
-    check_email: true
+    qualification_name: " ",
+    institute_name: " ",
+    procurement_year: " ",
+    countryCode: " ",
+    staff_rating: 4.5,
+    clinic_rating: 3.5,
+    doctor_treatment_rating: 5,
+    waiting_time_rating: 4.5,
+    equipement_rating:2,
+    price_rating:1,
   });  
 
 
@@ -385,7 +347,7 @@ const handleQualificationsProcurementYearChange = (val) => {
           />
 
           <View style={styles.doctorDescription}>
-            <Title style={styles.title}>{result.doctor_name}</Title>
+            <Title style={styles.title}>{data.doctor_name}</Title>
             <StarRating
               starStyle={styles.stars}
               starSize={20}
@@ -395,16 +357,16 @@ const handleQualificationsProcurementYearChange = (val) => {
               halfStar={"ios-star-half"}
               iconSet={"Ionicons"}
               maxStars={5}
-              rating={result.rating}
+              rating={data.rating}
               fullStarColor={"gold"}
             />
             <Caption style={styles.caption}>
-              Overall Rating From {result.no_of_ratings} Visitors
+              Overall Rating From {data.no_of_ratings} Visitors
             </Caption>
             <Caption
               style={[styles.caption, {fontWeight:"bold",fontSize:16, marginTop: 15, color: "black" }]}
             >
-              {result.doctor_speciality}
+              {data.doctor_speciality}
             </Caption>
           </View>
         </View>
@@ -754,10 +716,12 @@ const handleQualificationsProcurementYearChange = (val) => {
             <Pressable style={styles.button} disabled={!fieldsEditable} 
             onPress={()=>
             {
-
+              // API CALL FOR SUBMIT THE EDIT 
+              submitEditHandle(/*pass new data*/)
               setFieldsEditable(!fieldsEditable),
               alert("Changes Saved!") 
-              }}>
+            }}
+              >
             <LinearGradient
                 colors={["#08d4c4", "#01ab9d"]}
                 style={styles.submit}
@@ -807,7 +771,7 @@ const handleQualificationsProcurementYearChange = (val) => {
             />
             <View style={{ alignSelf: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {result.doctor_treatment_rating} /5
+                {data.doctor_treatment_rating} /5
               </Text>
               <Text>Doctor Treatment</Text>
             </View>
@@ -821,7 +785,7 @@ const handleQualificationsProcurementYearChange = (val) => {
             />
             <View style={{ alignSelf: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {result.clinic_rating} /5
+                {data.clinic_rating} /5
               </Text>
               <Text>Clinic</Text>
             </View>
@@ -846,7 +810,7 @@ const handleQualificationsProcurementYearChange = (val) => {
             />
             <View style={{ alignSelf: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {result.staff_rating} /5
+                {data.staff_rating} /5
               </Text>
               <Text>Staff</Text>
             </View>
@@ -860,7 +824,7 @@ const handleQualificationsProcurementYearChange = (val) => {
             />
             <View style={{ alignSelf: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {result.waiting_time_rating} /5
+                {data.waiting_time_rating} /5
               </Text>
               <Text>Waiting Time </Text>
             </View>
@@ -885,7 +849,7 @@ const handleQualificationsProcurementYearChange = (val) => {
             />
             <View style={{ alignSelf: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {result.equipement_rating} /5
+                {data.equipement_rating} /5
               </Text>
               <Text>Equipment </Text>
             </View>
@@ -899,7 +863,7 @@ const handleQualificationsProcurementYearChange = (val) => {
             />
             <View style={{ alignSelf: "center" }}>
               <Text style={{ fontWeight: "bold", fontSize: 16 }}>
-                {result.price_rating} /5
+                {data.price_rating} /5
               </Text>
               <Text>Price </Text>
             </View>
