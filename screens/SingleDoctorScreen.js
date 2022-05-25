@@ -38,6 +38,11 @@ import axios from "axios";
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const SingleDoctorScreen = (/*doctorId, token , *** result ****  */  ) => {
+
+///  The SELECTED DOCTOR   Full JSON OBJECT inside "result" //////////
+
+// const selecteditem = navigation.getParam("result");
+  
 const doctorId = 1  
 const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjUzMDAxMzUxfQ.DUp6xbVKU4N1___jgZbpK-rNjDvaShM8cDYogEdR170'
 
