@@ -37,7 +37,7 @@ import axios from "axios";
 
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
-const SingleDoctorScreen = (/*doctorId, token*/ ) => {
+const SingleDoctorScreen = (/*doctorId, token , *** result ****  */  ) => {
 const doctorId = 1  
 const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjUzMDAxMzUxfQ.DUp6xbVKU4N1___jgZbpK-rNjDvaShM8cDYogEdR170'
 
@@ -933,7 +933,7 @@ const styles = StyleSheet.create({
     alignSelf:"flex-end",
     borderRadius: 20,
     // padding: 10,
-    elevation: 2,
+    // elevation: 2,
     width:50,
     height:50,
     // marginBottom:20,

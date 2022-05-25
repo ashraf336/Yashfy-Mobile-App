@@ -10,24 +10,25 @@ import HomeScreen from "../HomeScreen";
 import ProfileScreen from "./ProfileScreen";
 import ExploreScreen from "../ExploreScreen";
 import SingleDoctorScreen from "../SingleDoctorScreen";
+import SearchScreen from "./SearchScreen"
 
 // const HomeStack = createNativeStackNavigator();
 // const DetailsStack = createNativeStackNavigator();
 
 const MainTabScreen = () => (
   <Tab.Navigator
-    initialRouteName="Home"
+    initialRouteName="Search"
     activeColor="#fff"
       barStyle={{ backgroundColor: 'tomato' }}
   >
     <Tab.Screen
-      name="Home"
-      component={HomeScreen}
+      name="Search"
+      component={SearchScreen}
       options={{
-        tabBarLabel: "Home",
+        tabBarLabel: "Search",
         tabBarColor: "#009387",
         tabBarIcon: ({ color }) => (
-          <Icon name="ios-home" color={color} size={26} />
+          <Icon name="search" color={color} size={26} />
         ),
       }}
     />
