@@ -18,9 +18,8 @@ const styles = StyleSheet.create({
   container:{
 
     // marginLeft:15,
-    marginBottom:10,
-    borderRightWidth: 2,
-    borderColor: "#e6e6fa",
+    marginBottom:1,
+
   },  
   name:{
       fontWeight:"bold",

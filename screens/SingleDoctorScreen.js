@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-
+import { useFocusEffect } from '@react-navigation/native';
 import {
   View,
   // Text,
@@ -37,46 +37,46 @@ import axios from "axios";
 
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
-const SingleDoctorScreen = (/*doctorId, token , *** result ****  */  ) => {
+const SingleDoctorScreen = ( { navigation, route } /*, token , *** result ****  */  ) => {
 
-///  The SELECTED DOCTOR   Full JSON OBJECT inside "result" //////////
+let  doctorId = route.params.id
+console.log("Doctor ID : ", doctorId )
+const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzNDU2QHlhaG9vLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjUzNDA5MjY0fQ.5w5thILYXhsfyAwjbhYZ-elstCNCxgHcysSGB9m20UE'
 
-// const selecteditem = navigation.getParam("result");
-  
-const doctorId = 1  
-const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjUzMDAxMzUxfQ.DUp6xbVKU4N1___jgZbpK-rNjDvaShM8cDYogEdR170'
+//**************** Doctor Data **********************//
+const initialState = {doctor_name: "" ,
+no_of_ratings: "0",
+rating: 0,
+doctor_speciality: "Consultant of " ,
+consultation_fees: '0',
+waiting_time: '0',
+hospital_name:"",
+region: ' ',
+street: " ",
+staff_rating: '0',
+clinic_rating: '0',
+doctor_treatment_rating: '0',
+waiting_time_rating: '0',
+equipement_rating: '0',
+price_rating:'0',
+about:
+  "- Consultant of Plasric Surgery and Laser Treatment \n- Head of plastic surgeons Alexandria University Hospital",
+experienceHeader: "2000 - Present",
+experienceDetail:
+  "Consultant plastic surgeon at Head of plastic surgery department",
+supportedInsurances:[
+  "Delta","Bupa", "Misr Insurance" , "Axa"
+],}
+const [result, setResult] = React.useState(
+  initialState
+);
 
 /*************************  States ****************************/
 const [isLoading, setLoading] = useState(true);
 const [addReviewLoading, setaddReviewLoading] = useState(false);
 const [refreshing, setRefreshing] = React.useState(false);
 
-//**************** Doctor Data **********************//
-const [result, setResult] = React.useState({
-    doctor_name: "Doctor" ,
-    no_of_ratings: "15",
-    rating: 0,
-    doctor_speciality: "Consultant of " ,
-    consultation_fees: '0',
-    waiting_time: '0',
-    hospital_name:"Al Andalusia Hospital",
-    region: ' ',
-    street: " ",
-    staff_rating: '0',
-    clinic_rating: '0',
-    doctor_treatment_rating: '0',
-    waiting_time_rating: '0',
-    equipement_rating: '0',
-    price_rating:'0',
-    about:
-      "- Consultant of Plasric Surgery and Laser Treatment \n- Head of plastic surgeons Alexandria University Hospital",
-    experienceHeader: "2000 - Present",
-    experienceDetail:
-      "Consultant plastic surgeon at Head of plastic surgery department",
-    supportedInsurances:[
-      "Delta","Bupa", "Misr Insurance" , "Axa"
-    ],
-  });
+
 
 //**************** Doctor Slots**********************//
 const [AvailableSlots, setAvailableSlots] = React.useState([]);
@@ -86,7 +86,8 @@ const [reviews, setReviews] = React.useState([]);
 
 
 {/******************************      API Call  Handlers  ***********************************/}
-const fetchDoctorDataHandle = async (doctorId ) => {
+const fetchDoctorDataHandle = async ( ) => {
+  console.log("doc id inside ....",doctorId)
 
     //CALLING API RETURN data 
     try {
@@ -98,24 +99,23 @@ const fetchDoctorDataHandle = async (doctorId ) => {
       if (response.status === 200) {
        // console.log(` Response: ${JSON.stringify(response.data)}`);
         console.log(` doctor data is fetched`);
-        let result_api = response.data.doctor
+        let result_api = response.data
         // Set the data with fetched data
         setResult({
           ...result,
-          doctor_name: "Doctor "+ result_api.first_name+ " " + result_api.last_name ,
-          rating: result_api.general_rank,
-          doctor_speciality: "Consultant of " + result_api.specialization,
-          consultation_fees: result_api.consultaion_fee,
-          waiting_time: result_api.waiting_time,
-          hospital_name:"Al Andalusia Hospital",
-          region: result_api.region,
-          street: "Syria Street",
-          staff_rating: result_api.catgs_staff,
-          clinic_rating: result_api.catgs_Clinic,
-          doctor_treatment_rating: result_api.catgs_doctor_treatment,
-          waiting_time_rating: result_api.catgs_waiting_time,
-          equipement_rating:result_api.catgs_equipment,
-          price_rating:result_api.catgs_price,
+          doctor_name:result_api.doctor.first_name+ " " + result_api.doctor.last_name ,
+          rating: result_api.doctor.general_rank,
+          doctor_speciality: "Consultant of " + result_api.doctor.specialization,
+          consultation_fees: result_api.doctor.consultaion_fee,
+          waiting_time: result_api.doctor.waiting_time,
+          hospital_name: result_api.hospital_name ,
+          region: result_api.doctor.region,
+          staff_rating: result_api.doctor.catgs_staff,
+          clinic_rating: result_api.doctor.catgs_Clinic,
+          doctor_treatment_rating: result_api.doctor.catgs_doctor_treatment,
+          waiting_time_rating: result_api.doctor.catgs_waiting_time,
+          equipement_rating:result_api.doctor.catgs_equipment,
+          price_rating:result_api.doctor.catgs_price,
         });
         return
       } 
@@ -128,12 +128,14 @@ const fetchDoctorDataHandle = async (doctorId ) => {
       }
     }
      catch (error) {
-      alert("An error has occurred");
+      setLoading(false);
+      setRefreshing(false)
+      alert("An error has occurred in fetching doctor data ..");
       console.log(error);
       throw error;
     }
 }
-const fetchDoctorSlotsHandle = async (doctorId ) => {
+const fetchDoctorSlotsHandle = async ( ) => {
 
   //CALLING API RETURN data 
   try {
@@ -160,12 +162,14 @@ const fetchDoctorSlotsHandle = async (doctorId ) => {
     }
   }
    catch (error) {
-    alert("An error has occurred");
+    setLoading(false);
+    setRefreshing(false)
+    alert("An error has occurred in fetching Doctor Available Slots ..");
     console.log(error);
     throw error;
   }
 }
-const fetchDoctorReviewsHandle = async (doctorId ) => {
+const fetchDoctorReviewsHandle = async ( ) => {
 
   //CALLING API RETURN data 
   try {
@@ -181,7 +185,9 @@ const fetchDoctorReviewsHandle = async (doctorId ) => {
       //console.log(` Fetched Slots Is : ${fetchedSlots}`);
 
       // Set the data with fetched data
+      console.log("INSIDE")
       setReviews(fetchedReviews);
+      result.no_of_ratings = fetchedReviews.length
 
       return
     } 
@@ -194,7 +200,9 @@ const fetchDoctorReviewsHandle = async (doctorId ) => {
     }
   }
    catch (error) {
-    alert("An error has occurred");
+    setLoading(false);
+    setRefreshing(false)
+    alert("An error has occurred in fetching doctor Reviews");
     console.log(error);
     throw error;
   }
@@ -238,24 +246,26 @@ try {
 }
 
 
-if (isLoading) // FETCH DOCTOR DATA FOR FIRST TIME
-{ 
-console.log("INSIDE FIRST FETCH")
-fetchDoctorDataHandle(doctorId);
-fetchDoctorSlotsHandle(doctorId)
-fetchDoctorReviewsHandle(doctorId)
-console.log("..... Done FETCHING .....")      
-
-}
+useFocusEffect(
+  React.useCallback(() => {
+    setResult(initialState)
+    setAvailableSlots([])
+    setReviews([])
+    fetchDoctorDataHandle()
+    fetchDoctorSlotsHandle()
+    fetchDoctorReviewsHandle()
+  }, [doctorId])
+);
 
 // FETCH DOCTOR DATA when swap down to refresh
 const onRefresh = React.useCallback(() => {
+  console.log("Doctor ID in refresh !: ", doctorId )
   setRefreshing(true);
-  fetchDoctorDataHandle(doctorId);
-  fetchDoctorSlotsHandle(doctorId)
-  fetchDoctorReviewsHandle(doctorId)
+  fetchDoctorDataHandle();
+  fetchDoctorSlotsHandle()
+  fetchDoctorReviewsHandle()
   console.log("..... Done FETCHING .....")      
-}, []);
+}, [doctorId]);
 
 
 /**** Sections Togglers  ****/
@@ -305,7 +315,7 @@ const handleAddReview = (val) => {
           />
 
           <View style={styles.doctorDescription}>
-            <Title style={styles.title}>{result.doctor_name}</Title>
+            <Title style={styles.title}>Doctor {result.doctor_name}</Title>
             <StarRating
               starStyle={styles.stars}
               starSize={20}
@@ -322,7 +332,7 @@ const handleAddReview = (val) => {
               Overall Rating From {result.no_of_ratings} Visitors
             </Caption>
             <Caption
-              style={[styles.caption, { marginTop: 15, color: "black" }]}
+              style={[styles.caption, { marginTop: 5, color: "black" }]}
             >
               {result.doctor_speciality}
             </Caption>
@@ -365,9 +375,9 @@ const handleAddReview = (val) => {
           </View>
         </View>
         {/********************************************************/}
-        <View style={styles.loading}>
+        {/*<View style={styles.loading}>
           {isLoading && <ActivityIndicator size="large" color="#009387"  /> }
-          </View>
+        </View>*/}
         <View style={styles.lineStyle} />
         {/****************   APPOINTMENTS ************************/}
         <ScrollView>
@@ -401,7 +411,7 @@ const handleAddReview = (val) => {
           />
           <View style={{ marginTop: 5 }}>
             <Text style={styles.smallSectionsTitle}>
-              {result.region}: {result.street}
+              {result.region}
             </Text>
             <Text>Book and you will recieve the address details</Text>
           </View>
@@ -978,7 +988,7 @@ const styles = StyleSheet.create({
   },
   hospitalName:{
     fontWeight:"bold",
-    fontSize:20,
+    fontSize:16,
     textAlignVertical:"center",
   },
 });

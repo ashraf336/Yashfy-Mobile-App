@@ -15,34 +15,44 @@ import StarRating from "react-native-star-rating";
 
 const ResultDetail = ({result}) => {
     return <View style={styles.container}>
-        <View style={{ flexDirection: "row", marginTop: 25 }}>
+        <View style={{ flexDirection: "row", marginTop: 3 }}>
           <Avatar.Image
-            style={{ marginLeft: 15, marginTop: 5 }}
+            style={{ marginLeft: 7, marginTop: 15 }}
+            
             source={require("../../../assets/osama.jpg")}
-            size={100}
+            size={110}
           />
 
           <View style={styles.doctorDescription}>
-            <Title style={styles.title}>{"Doctor "+result.doctor_name}</Title>
+            <Title style={styles.title}>{"Doctor "+result.first_name+" "+(result.last_name?result.last_name:"")}</Title>
             <StarRating
               starStyle={styles.stars}
-              starSize={20}
+              starSize={13}
               disabled={true}
               emptyStar={"ios-star-outline"}
               fullStar={"ios-star"}
               halfStar={"ios-star-half"}
               iconSet={"Ionicons"}
               maxStars={5}
-              rating={result.rating}
+              rating={result.general_rank}
               fullStarColor={"gold"}
             />
-            <Caption style={styles.caption}>
-              Overall Rating From {result.no_of_ratings} Visitors
-            </Caption>
-            <Caption
-              style={[styles.caption, { marginTop: 15, color: "black" }]}
+             <Caption
+              style={[styles.caption, { marginTop: 3, color: "black" }]}
             >
-              {result.doctor_speciality}
+              {"City: " + result.city}
+            </Caption>
+
+            <Caption
+              style={[styles.caption, { marginTop: 3, color: "black" }]}
+            >
+              {"Region: " +result.region.split(' ')[0]}
+            </Caption>
+
+            <Caption
+              style={[styles.caption, { marginTop: 3, color: "black" }]}
+            >
+              {"Specialized in " + result.specialization}
             </Caption>
           </View>
         </View>
@@ -51,7 +61,8 @@ const ResultDetail = ({result}) => {
 
 const styles = StyleSheet.create({
   container:{
-    
+    borderRightWidth: 2,
+    borderColor: "#e6e6fa",
     marginLeft:15
   },  
   Image:{
@@ -67,23 +78,24 @@ const styles = StyleSheet.create({
       fontSize:16
   },
   doctorDescription: {
-    marginLeft: 15,
+    marginLeft: 10,
     flexDirection: "column",
     alignItems: "flex-start",
     flexShrink: 1,
   },
   title: {
-    fontSize: 20,
+    fontSize: 16,
     marginTop: 3,
-    marginBottom: 10,
+    marginBottom: 8,
     fontWeight: "bold",
   },
   stars: {
     alignSelf: "center",
+    marginTop: -7,
   },
   caption: {
     fontSize: 13,
-    lineHeight: 14,
+    lineHeight: 16,
     color: "#009387",
     flexShrink: 1,
   },

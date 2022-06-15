@@ -1,77 +1,116 @@
 import React, { useState } from "react";
-import { Text, StyleSheet, View, ScrollView , TouchableOpacity ,Modal} from "react-native";
+import { useFocusEffect } from '@react-navigation/native';
+import { Text, StyleSheet, View, ScrollView , TouchableOpacity ,Modal , SafeAreaView } from "react-native";
 import SearchBar from "./components/SearchBar";
 import ResultList from "./components/ResultList";
 // import useResult from "./hooks/useResult";
 import { LinearGradient } from "expo-linear-gradient";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import DropDownPicker from "react-native-dropdown-picker";
+import axios from "axios";
+
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const SearchScreen = (props) => {
-  const [term, setTerm] = useState("");
-  // const [searchApi, result, errorMessage] = useResult();
 
-  // Fetched Result :  Abbreviated here for simplicity, but will be fully fetched with API.
-  const[result,setResult]=useState([
-    {doctor_name:"Osama Sherif" , rating:5 , no_of_ratings:101 ,doctor_speciality:"Consultant of Plastic Surgery" , id:1 },
-    {doctor_name:"Mohamed Aiman" , rating:5 , no_of_ratings:102 ,doctor_speciality:"Consultant of Dermatology" , id:2 },
-    {doctor_name:"Abdulrahman Habib" , rating:5 , no_of_ratings:103 ,doctor_speciality:"Consultant of Neurology" , id:3 },
-    {doctor_name:"Ahmed Ashraf" , rating:5 , no_of_ratings:104 ,doctor_speciality:"Specialist of Allergy and Immunology" , id:4 },
-    {doctor_name:"Zeyad Nasrat Sherif" , rating:5 , no_of_ratings:105 ,doctor_speciality:"Specialist of Orthopedics" , id:5 },
-    {doctor_name:"Abdulrahman Osama " , rating:5 , no_of_ratings:106 ,doctor_speciality:"Consultant of Plastic Surgery" , id:6 },
-    {doctor_name:"Mohamed Sherif" , rating:5 , no_of_ratings:107 ,doctor_speciality:"Consultant of Plastic Surgery" , id:7 },
-    {doctor_name:"Osama Nasrat" , rating:5 , no_of_ratings:108 ,doctor_speciality:"Consultant of Plastic Surgery" , id:8 },
-    {doctor_name:"Abdulrahman Aiman" , rating:5 , no_of_ratings:109 ,doctor_speciality:"Consultant of Plastic Surgery" , id:9 },
-    {doctor_name:"Zeyad Ashraf" , rating:5 , no_of_ratings:110 ,doctor_speciality:"Consultant of Plastic Surgery" , id:10 },
-  ]);
- 
+
+
+//**************** Search Bar Input Text **********************// 
+const [term, setTerm] = useState("");
+//**************** Doctors List **********************// 
+const [result, setResult] = React.useState([]);
+
+
+{/******************************      API Call  Handlers  ***********************************/}
+const fetchDoctorsDataHandle = async ( queryParams ) => {
+
+    //CALLING API RETURN data 
+    try {
+      console.log(" ....... Calling API (Fetch Doctors data)......")
+      const response = await axios.get(`${baseUrl}/home/doctors` , { params: queryParams });
+
+      if (response.status === 200) {
+        console.log("inside" );
+
+        let fetchedDoctors = response.data.fetchedDoctors
+        //console.log("doctors is fetched: ",fetchedDoctors );
+        return fetchedDoctors
+      } 
+      else
+      {
+        Alert.alert('Not Found !', 'No Doctors Available', [
+          {text: 'Try Again'}
+       ]);
+        return null;
+      }
+    }
+     catch (error) {
+      //setLoading(false);
+      //setRefreshing(false)
+      alert("An error has occurred in fetching doctors data ..");
+      console.log(error);
+      throw error;
+    }
+}
+
+
+
   //Filtered Result: the output after using the serach key word.
-  const [filteredResult,setFilteredResult] = useState(result);
+  const [filteredResult,setFilteredResult] = useState([]);
+
   // The Filtering Window 
   const [filterVisible, setFilterVisible] = useState(false);
   // Filtering Criteria which will be send to the API Call
-  const [filterCriteria, setFilterCriteria] = useState({
-    specialization:'',
-    city:'',
-    region:'',
-  });
+  const initialParams = {
+    /* default values for closures */
+    specialization:null,
+    city:null,
+    region:null,
+  }
+  const [filterCriteria, setFilterCriteria] = useState(initialParams);
   
   //Function that searches for any doctor name that contains that substring.
   const filterResultsByName = (name) => {
     if(name==""){
-     return result}
-     else{
-    return result.filter((result) => {
-      return result.doctor_name.toLowerCase().includes(name.toLowerCase());
+     return result
+    }
+    else{
+    return result.filter((doctor) => {
+      let doctor_name = doctor.first_name+" "+doctor.last_name 
+      return doctor_name.toLowerCase().includes(name.toLowerCase());
     });
   }
   };
 
 
+  
+useFocusEffect(
+  React.useCallback(() => {
+    setFilteredResult([])
+    setResult([])
+    const promise = fetchDoctorsDataHandle(initialParams);
+    promise.then(fetchedDoctors => {
+      //console.log("here" , fetchedDoctors);
+      // Set the data with fetched data
+      setResult(fetchedDoctors)
+      setFilteredResult(fetchedDoctors)
+    });
+  }, [])
+);
+
       //  For SPECIALIZATION Dropdown
       const [specializationOpen, setSpecializationOpen] = useState(false);
       const [specializationItems, setSpecializationItems] = useState([
-        { label: "Allergy and immunology", value: "Allergy and immunology" },
-        { label: "Anesthesiology", value: "Anesthesiology" },
+        { label: "None", value: null },
+        { label: "Nephrology", value: "Nephrology" },
+        { label: "orthopedics", value: "orthopedics" },
         { label: "Dermatology", value: "Dermatology" },
-        { label: "Diagnostic radiology", value: "Diagnostic radiology" },
-        { label: "Emergency medicine", value: "Emergency medicine" },
-        { label: "Family medicine", value: "Family medicine" },
-        { label: "Internal medicine", value: "Internal medicine" },
-        { label: "Medical genetics", value: "Medical genetics" },
         { label: "Neurology", value: "Neurology" },
-        { label: "Nuclear medicine", value: "Nuclear medicine" },
-        { label: "Obstetrics and gynecology", value: "Obstetrics and gynecology" },
         { label: "Ophthalmology", value: "Ophthalmology" },
         { label: "Pathology", value: "Pathology" },
         { label: "Pediatrics", value: "Pediatrics" },
-        {
-          label: "Physical medicine and rehabilitation",
-          value: "Physical medicine and rehabilitation",
-        },
-        { label: "Preventive medicine", value: "Preventive medicine" },
-        { label: "Psychiatry", value: "Psychiatry" },
-        { label: "Radiation oncology", value: "Radiation oncology" },
+        { label: "Dentistry", value: "Dentistry" },
         { label: "Surgery", value: "Surgery" },
         { label: "Urology", value: "Urology" },
       ]);
@@ -80,28 +119,27 @@ const SearchScreen = (props) => {
           //  For REGION Dropdown
     const [regionOpen, setRegionOpen] = useState(false);
     const [regionItems, setRegionItems] = useState([
+      { label: "None", value: null },
       { label: "Ibrahimiyah", value: "Ibrahimiyah" },
       { label: "Camp Ceaser", value: "Camp Ceaser" },
       { label: "Sporting", value: "Sporting" },
-      { label: "Cleopatra", value: "Cleopatra" },
-      { label: "Sidi Gaber", value: "Sidi Gaber" },
-      { label: "Mostafa Kamel", value: "Mostafa Kamel" },
-      { label: "Roshdy", value: "Roshdy" },
+      { label: "Qalyoub", value: "Qalyoub" },
+      { label: "Shibin", value: "Shibin" },
+      { label: "Banha", value: "Banha" },
+      { label: "Mahalla", value: "Mahalla" },
     ]);
 
 
         //  For CITY Dropdown
         const [cityOpen, setCityOpen] = useState(false);
         const [cityItems, setCityItems] = useState([
+          { label: "None", value: null },
+          { label: "gharbia", value: "gharbia" },
+          { label: "Fayoum", value: "Fayoum" },
+          { label: "qalyubia", value: "qalyubia" },
+          { label: "Menoufia", value: "Menoufia" },
           { label: "Alexandria", value: "Alexandria" },
           { label: "Cairo", value: "Cairo" },
-          { label: "Mansoura", value: "Mansoura" },
-          { label: "Tanta", value: "Tanta" },
-          { label: "Luxor", value: "Luxor" },
-          { label: "Aswan", value: "Aswan" },
-          { label: "Ismailiyah", value: "Ismailiyah" },
-          { label: "Sohag", value: "Sohag" },
-          { label: "Monofiya", value: "Monofiya" },
         ]);
     
 
@@ -187,23 +225,14 @@ const SearchScreen = (props) => {
         visible={filterVisible}
         onRequestClose={() => {
           Alert.alert("Modal has been closed.");
-          
         }}
       >
         <View style={styles.centeredView}>
           <View style={styles.modalView}>
-            {/*   Exit Button        ** DO NOT DELETE THIS SECTION **    */}
-          {/* <TouchableOpacity onPress={() => {setFilterVisible(false)}} style={styles.exitButton}>
-            <Ionicons
-                  name="ios-close-circle-outline"
-                  color="red"
-                  size={30}
-                  style={{ alignSelf: "flex-end" }}
-                />
-            </TouchableOpacity> */}
+           
 
         {/*********************  SPECIALIZATION Dropdown   ***********************/}
-        <Text style={styles.text_footer}> Specialization: </Text>
+        <Text style={styles.text_footer}> Specialization </Text>
             <DropDownPicker
               listMode="MODAL"
               open={specializationOpen}
@@ -215,7 +244,7 @@ const SearchScreen = (props) => {
               }}
             />          
         {/*********************  CITY Dropdown   ***********************/}
-        <Text style={styles.text_footer}> City: </Text>
+        <Text style={styles.text_footer}> City </Text>
             <DropDownPicker
               listMode="MODAL"
               open={cityOpen}
@@ -227,7 +256,7 @@ const SearchScreen = (props) => {
               }}
             />
         {/*********************  REGION Dropdown   ***********************/}
-        <Text style={styles.text_footer}> Region: </Text>
+        <Text style={styles.text_footer}> Region </Text>
             <DropDownPicker
               listMode="MODAL"
               open={regionOpen}
@@ -238,8 +267,25 @@ const SearchScreen = (props) => {
                 handleRegionChange(val);
               }}
             /> 
-        {/*********************  SAVE Button  ***********************/}
-      <TouchableOpacity onPress={() => {setFilterVisible(false)}} style={[styles.exitButton,{marginTop:20}]}>
+        {/*********************  APPLY Button  ***********************/}
+      <TouchableOpacity onPress={( )  => 
+        {
+          setFilterVisible(false)
+          setFilteredResult([])
+          setResult([])
+          console.log(filterCriteria)
+          const promise = fetchDoctorsDataHandle(filterCriteria);
+          promise.then(fetchedDoctors => {
+            //console.log("here" , fetchedDoctors);
+            // Set the data with fetched data
+            setResult(fetchedDoctors)
+            setFilteredResult(fetchedDoctors)
+          });
+          // fetch doctors list with new filters (  closures : filterCriteria )
+
+        }
+          
+          } style={[styles.exitButton,{marginTop:20}]}>
       <LinearGradient
               colors={["#08d4c4", "#01ab9d"]}
               style={styles.Button}
@@ -252,7 +298,7 @@ const SearchScreen = (props) => {
                   },
                 ]}
               >
-                Save
+                Apply
               </Text>
             </LinearGradient>
      </TouchableOpacity>                       
@@ -261,10 +307,10 @@ const SearchScreen = (props) => {
       </Modal>
       </View>
   {/**********************************************************************************/}       
-
+        
       {/*****************************  RESULT LIST   ************************************/} 
       <View style={{flex:1}}>
-        <ResultList  result={filteredResult} Title="Doctors" navigation={props.navigation} />
+        <ResultList  result={filteredResult} navigation={props.navigation} />
       </View>
       {/**********************************************************************************/} 
     </View>
@@ -289,7 +335,7 @@ const styles = StyleSheet.create({
     flexDirection:"row"
   },
   textButton: {
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: "bold",
   },
   icon:{

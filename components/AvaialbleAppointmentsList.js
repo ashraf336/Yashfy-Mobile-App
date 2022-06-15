@@ -45,7 +45,6 @@ const bookAppointmentHandle = async (slot, doctorId, token ) => {
   }
 
 if(!result.length){
-  console.log( "NO SLOTS !")
   return null;
 }
 

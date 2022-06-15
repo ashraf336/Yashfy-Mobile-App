@@ -158,7 +158,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
     city: data.city,
     specialization: data.specialization,
     consultaion_fee: data.consultaion_fee,
-    // phone_number: data.phone_number,
+    phone_number: data.phone_number,
     date_of_birth: data.date_of_birth.split("-").reverse().join("-"),
     region: data.region,
     hospital_id: parseInt(data.hospital_id, 10),
@@ -673,34 +673,6 @@ const DoctorSignUpScreen = ({ navigation }) => {
             />
           </View>
 
-          {/******************************      STREET ADDRESS     ***********************************/}
-          {/* <Text style={[styles.text_footer, { marginTop: 35 }]}>Street Address</Text>
-          <View style={styles.action}>
-            <FontAwesome name="user-o" color="#05375a" size={20} />
-            <TextInput
-              placeholder="Your Address"
-              placeholderTextColor="#666666"
-              style={[styles.textInput]}
-              autoCapitalize="none"
-              onChangeText={(val) => handleStreetAddressChange(val)}
-            />
-          </View> */}
-
-          {/******************************      INSURANCE     ***********************************/}
-          {/* <Text style={[styles.text_footer, { marginTop: 35 }]}>Insurance</Text>
-          <View style={styles.action}>
-            <Picker
-              mode={"dialog"}
-              selectedValue={data.insurance}
-              style={{ height: 30, width: 150 }}
-              onValueChange={(val) => {handleInsuranceChange(val);}}
-            >
-              <Picker.Item label="none" value={null} />
-              <Picker.Item label="Axa" value="Axa" />
-              <Picker.Item label="United" value="United" />
-            </Picker>
-          </View> */}
-
           {/******************************      SPECIALIZATION     ***********************************/}
           <Text style={[styles.text_footer, { marginTop: 20 }]}>
             Specialization
@@ -782,7 +754,6 @@ const DoctorSignUpScreen = ({ navigation }) => {
                 placeholder="select date"
                 format="DD-MM-YYYY"
                 minDate="01-01-1910"
-                maxDate="01-01-2022"
                 confirmBtnText="Confirm"
                 cancelBtnText="Cancel"
                 customStyles={{

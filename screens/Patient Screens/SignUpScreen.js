@@ -53,10 +53,12 @@ const SignUpScreen = ({ navigation }) => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [fetchapi, setfetchapi] = useState(false);
-
+  const [loadInsurances, setloadInsurances] =  React.useState(false);
   //  For Insurance Dropdown 
   const [open, setOpen] = useState(false);
-  const [items, setItems] = useState([
+  const [items, setItems] =  React.useState([])
+
+  /*const [items, setItems] = useState([
     {label: 'AXA Insurance', value: 'AXA Insurance',id:1},
     {label: 'Metlife Alico', value: 'Metlife Alico',id:2},
     {label: 'Misr Insurance', value: 'Misr Insurance',id:3},
@@ -64,7 +66,7 @@ const SignUpScreen = ({ navigation }) => {
     {label: 'Suez Canal Insurance', value: 'Suez Canal Insurance',id:5},
     {label: 'Delta insurance', value: 'Delta insurance',id:6},
     {label: 'Bupa', value: 'Bupa',id:7},
-  ]);
+  ]);*/
 
 
 {/*****  submission: this variable will be JSON object to be submitted    *****/}  
@@ -82,8 +84,38 @@ const SignUpScreen = ({ navigation }) => {
     country: data.country,
     insurance_id: parseInt(data.insurance_id),
   };
+  
+  const fetchInsurances = async ( ) => {
 
+    //CALLING API RETURN data 
 
+      console.log(" ....... Calling API (Fetch Doctor data)......")
+     axios.get(`${baseUrl}/home/insurances`)
+     .then(
+       response =>
+       {
+      if (response.status === 200) {
+        setloadInsurances(true)
+        // console.log(` Response: ${JSON.stringify(response.data)}`);
+         console.log(` doctor data is fetched`);
+         const result_api = response.data.insurances 
+         console.log("HERE" , result_api)
+
+         // Set the data with fetched data
+         setItems(result_api);
+         }
+       } 
+     )
+     .catch( 
+      err =>{
+      Alert.alert('Not Found !', 'No Insurances !', [
+        {text: 'Try Again'}
+     ]);
+    }
+     )
+
+    
+}
 
  {/******************************   Dummy API post request   ************************************/}  
   const onSubmitFormHandler = async (event) => {
@@ -92,7 +124,7 @@ const SignUpScreen = ({ navigation }) => {
     try {
       console.log("Calling API ....")
       const response = await axios.put(`${baseUrl}/patients-auth/patient-signup`, submission);
-      if (response.status === 201) {
+      if (response.status === 200) {
         setfetchapi(false);
         alert(`${JSON.stringify(response.data)}`);
         console.log(` You have created: ${JSON.stringify(response.data)}`);
@@ -119,6 +151,10 @@ const SignUpScreen = ({ navigation }) => {
 
 
 
+if(!loadInsurances)
+{
+  fetchInsurances();
+}
 
   const textInputChange = (val) => {
     if (val.trim().length >= 4) {
@@ -152,7 +188,7 @@ const SignUpScreen = ({ navigation }) => {
 
 
   const handleEmailChange = (val) => {
-    let emailCheck = ValidateEmail(val)
+    let emailCheck = ValidateEmail(val.trim())
     console.log("Email check: ",emailCheck)
     setData({
       ...data,
@@ -244,7 +280,7 @@ const SignUpScreen = ({ navigation }) => {
     setData({
       ...data,
       insurance_id: val.id,
-      insurance: val.value,
+      insurance: val.insurance_name,
     });
   };
 
@@ -500,6 +536,10 @@ const SignUpScreen = ({ navigation }) => {
           <Text style={[styles.text_footer, { marginTop: 35 }]}>Insurance</Text>
           <View style={styles.action}>
           <DropDownPicker
+          schema={{
+            label: 'insurance_name',
+            value: 'insurance_name'
+          }}
             listMode="MODAL"
             open={open}
             value={data.insurance}
