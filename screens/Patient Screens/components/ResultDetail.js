@@ -61,8 +61,8 @@ const ResultDetail = ({result}) => {
 
 const styles = StyleSheet.create({
   container:{
-    borderRightWidth: 2,
-    borderColor: "#e6e6fa",
+    /*borderBottomWidth: 2,
+    borderColor: "#e6e6fa",*/
     marginLeft:15
   },  
   Image:{

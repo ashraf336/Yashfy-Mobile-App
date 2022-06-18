@@ -18,6 +18,7 @@ import Fontisto from "react-native-vector-icons/Fontisto";
 import { ActivityIndicator } from 'react-native';
 import axios from "axios";
 const baseUrl = "http://192.168.1.12:8080"; //Devolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
 import { AuthContext } from "../../components/context";
 
@@ -54,7 +55,7 @@ const SignInScreen = ({navigation}) => {
   {/******************************     Handle input Fields Change    ***********************************/}
 
   const textInputChange = (val) => {      //email need to edit  field
-      let emailCheck = ValidateEmail(val)
+      let emailCheck = ValidateEmail(val.trim())
         setData({
           ...data,
           email: val,
@@ -236,7 +237,7 @@ const SignInScreen = ({navigation}) => {
             </LinearGradient>
           </TouchableOpacity>
           <View style={{flexDirection:"row" , alignItems:"center"}}>      
-          <Text style={styles.text}>Doesn't have an account ?</Text>
+          <Text style={styles.text}>Don't have an account ?</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("SignUpScreen")}
             style={[

@@ -23,6 +23,7 @@ import { ActivityIndicator } from 'react-native';
 
 import axios from "axios";
 const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
 
 const SignUpScreen = ({ navigation }) => {
@@ -189,7 +190,6 @@ if(!loadInsurances)
 
   const handleEmailChange = (val) => {
     let emailCheck = ValidateEmail(val.trim())
-    console.log("Email check: ",emailCheck)
     setData({
       ...data,
       email: val,
@@ -301,8 +301,12 @@ if(!loadInsurances)
         <ScrollView>
 
 {/******************************     USERNAME     ************************************/}
-          <Text style={styles.text_footer}>Username</Text>
-          <View style={styles.action}>
+          <Text style={[styles.text_footer]}>  
+
+          <Text style={styles.text_footer}>Username
+          </Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
+          </Text>
+                    <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
               placeholder="Your Username"
@@ -320,9 +324,13 @@ if(!loadInsurances)
           </View>
 
 {/******************************     EMAIL     **************************************/}          
+<Text style={[styles.text_footer,{ marginTop: 35,},]}>  
+
           <Text style={[styles.text_footer , {
                 marginTop: 35,
-              }]}>Email</Text>
+              }]}>Email
+                        </Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
+          </Text>
           <View style={styles.action}>
           <Fontisto name="email" color="#05375a" size={23} />
              <TextInput
@@ -346,6 +354,8 @@ if(!loadInsurances)
             }
 
 {/******************************     PASSWORD     **************************************/}            
+<Text style={[styles.text_footer,{ marginTop: 35,},]}>  
+
           <Text
             style={[
               styles.text_footer,
@@ -355,8 +365,9 @@ if(!loadInsurances)
             ]}
           >
             Password
+            </Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
           </Text>
-          <View style={styles.action}>
+                    <View style={styles.action}>
             <Feather
               name="lock"
               size={20}
@@ -384,6 +395,8 @@ if(!loadInsurances)
             }
 
 {/******************************     Confirm PASSWORD     ***********************************/}
+<Text style={[styles.text_footer,{ marginTop: 35,},]}>  
+
           <Text
             style={[
               styles.text_footer,
@@ -393,6 +406,7 @@ if(!loadInsurances)
             ]}
           >
             Confirm Password
+            </Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
           </Text>
           <View style={styles.action}>
             <Feather
@@ -552,6 +566,7 @@ if(!loadInsurances)
             
           </View>
 
+          <Text style={[{marginTop: 10, fontSize: 15,color: 'red' }]}>[*]  for required fields</Text>
 
        
 {/******************************      SIGN UP   --BUTTON--     ***********************************/}       
@@ -644,7 +659,7 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   footer: {
-    flex: 5,
+    flex: 4.5,
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,

@@ -19,6 +19,8 @@ const styles = StyleSheet.create({
 
     // marginLeft:15,
     marginBottom:1,
+    borderRightWidth: 2,
+    borderColor: "#e6e6fa",
 
   },  
   name:{

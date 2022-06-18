@@ -29,7 +29,7 @@ if(!result.length){
 
 const styles = StyleSheet.create({
   Container:{
-      marginBottom:30,
+      marginBottom:3,
       flex:1,
   },  
   Title: {

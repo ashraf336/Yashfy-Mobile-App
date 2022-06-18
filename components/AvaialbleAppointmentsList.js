@@ -4,7 +4,8 @@ import AppointmentDetail from "./AppointmentDetail";
 import axios from "axios";
 //const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
-const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
 const AvaialbleAppointmentsList = ({  result, doctorId, token }) => {
 

@@ -33,15 +33,15 @@ import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
 import axios from "axios";
-//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
-const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const SingleDoctorScreen = ( { navigation, route } /*, token , *** result ****  */  ) => {
 
 let  doctorId = route.params.id
 console.log("Doctor ID : ", doctorId )
-const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzNDU2QHlhaG9vLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjUzNDA5MjY0fQ.5w5thILYXhsfyAwjbhYZ-elstCNCxgHcysSGB9m20UE'
+const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjU1NDE0MDUwfQ.1_gUe-E824Fvdvgq-n8T2oQeg0Zrq4L6lv8LK2ADTmE'
 
 //**************** Doctor Data **********************//
 const initialState = {doctor_name: "" ,
@@ -713,6 +713,10 @@ const handleAddReview = (val) => {
             {() =>
                {setAddReviewVisible(!addReviewVisible),
                 console.log("HIWAN")
+                setAddedReview({
+                  ...addedReview,
+                  doctorId: doctorId,
+                });
                 addReviewHandle(addedReview)
 
               }} 
@@ -869,7 +873,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginTop: 3,
-    marginBottom: 10,
+    marginBottom: 3,
     fontWeight: "bold",
   },
   caption: {

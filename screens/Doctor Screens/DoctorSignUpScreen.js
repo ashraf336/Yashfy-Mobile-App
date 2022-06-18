@@ -242,7 +242,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
   };
 
   const handleEmailChange = (val) => {
-    let emailCheck = ValidateEmail(val)
+    let emailCheck = ValidateEmail(val.trim())
     setData({
       ...data,
       email: val,
@@ -407,7 +407,13 @@ const DoctorSignUpScreen = ({ navigation }) => {
 
         <ScrollView>
           {/******************************     USERNAME     ************************************/}
-          <Text style={styles.text_footer}>Username</Text>
+         
+          <Text style = {{flexDirection: 'row',alignItems: 'center' ,flexWrap: 'wrap'}}>
+
+          <Text style={styles.text_footer}>Username</Text> 
+          <Text style = {{ color: 'red', fontSize: 18 }} > *</Text>
+          
+          </Text>
           <View style={styles.action}>
             <FontAwesome name="user-o" color="#05375a" size={20} />
             <TextInput
@@ -426,16 +432,10 @@ const DoctorSignUpScreen = ({ navigation }) => {
           </View>
 
           {/******************************     EMAIL     **************************************/}
-          <Text
-            style={[
-              styles.text_footer,
-              {
-                marginTop: 35,
-              },
-            ]}
-          >
-            Email
+          <Text style={[styles.text_footer,{ marginTop: 35,},]}>
+          <Text style={[styles.text_footer]}>Email</Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
           </Text>
+
           <View style={styles.action}>
             <Fontisto name="email" color="#05375a" size={23} />
             <TextInput
@@ -459,6 +459,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             }
 
           {/******************************     PASSWORD     **************************************/}
+          <Text style={[styles.text_footer,{ marginTop: 35,},]}>  
           <Text
             style={[
               styles.text_footer,
@@ -468,7 +469,9 @@ const DoctorSignUpScreen = ({ navigation }) => {
             ]}
           >
             Password
+          </Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
           </Text>
+
           <View style={styles.action}>
             <Feather name="lock" size={20} />
             <TextInput
@@ -494,6 +497,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             }
 
           {/******************************     Confirm PASSWORD     ***********************************/}
+          <Text style={[styles.text_footer,{ marginTop: 35,},]}>  
           <Text
             style={[
               styles.text_footer,
@@ -503,8 +507,9 @@ const DoctorSignUpScreen = ({ navigation }) => {
             ]}
           >
             Confirm Password
-          </Text>
-          <View style={styles.action}>
+            </Text><Text style = {[styles.text_footer,{ color: 'red', fontSize: 18 }]} > *</Text>
+           </Text>
+            <View style={styles.action}>
             <Feather
               name="lock"
               // color={colors.text}
@@ -780,6 +785,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
           <View style={styles.loading}>
           {fetchapi && <ActivityIndicator size="large" color="#087ed4"  /> }
           </View>
+          <Text style={[{marginTop: 10, fontSize: 15,color: 'red' }]}>[*]  for required fields</Text>
 
 {/******************************      SIGN UP   --BUTTON--     ***********************************/}  
           <View style={styles.button}>
@@ -809,6 +815,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
             </TouchableOpacity>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Text style={styles.text}>Sign In instead ?</Text>
+
               <TouchableOpacity
                 onPress={() => navigation.navigate("DoctorSignInScreen")}
                 style={[
@@ -832,6 +839,7 @@ const DoctorSignUpScreen = ({ navigation }) => {
                 </Text>
               </TouchableOpacity>
             </View>
+
           </View>
         </ScrollView>
       </Animatable.View>
@@ -859,10 +867,10 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: "flex-end",
     paddingHorizontal: 20,
-    paddingBottom: 50,
+    paddingBottom: 10,
   },
   footer: {
-    flex: 3,
+    flex: 4.5,
     backgroundColor: "#fff",
     borderTopLeftRadius: 30,
     borderTopRightRadius: 30,

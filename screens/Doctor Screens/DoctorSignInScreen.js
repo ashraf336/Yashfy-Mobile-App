@@ -48,7 +48,7 @@ let dummyFoundUser={
 {/******************************     Handle input Fields Change    ***********************************/}
 
 const textInputChange = (val) => {      //email need to edit  field
-    let emailCheck = ValidateEmail(val)
+    let emailCheck = ValidateEmail(val.trim())
       setData({
         ...data,
         email: val,
@@ -231,7 +231,7 @@ const loginHandle = async (email, password) => {
             </LinearGradient>
           </TouchableOpacity>
           <View style={{flexDirection:"row" , alignItems:"center"}}>      
-          <Text style={styles.text}>Doesn't have an account ?</Text>
+          <Text style={styles.text}>Don't have an account ?</Text>
           <TouchableOpacity
             onPress={() => navigation.navigate("DoctorSignUpScreen")}
             style={[
