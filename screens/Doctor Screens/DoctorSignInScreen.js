@@ -209,8 +209,8 @@ const loginHandle = async (email, password) => {
           <TouchableOpacity
             style={styles.signIn}
             onPress={() => {
-              //signIn(dummyFoundUser)
-              loginHandle(data.email,data.password)
+              signIn(dummyFoundUser)
+              // loginHandle(data.email,data.password)
               // loginHandle(data.username, data.password);
             }}
           >

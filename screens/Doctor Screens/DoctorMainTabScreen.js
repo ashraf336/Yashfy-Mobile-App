@@ -9,12 +9,8 @@ import DoctorProfileScreen from "./DoctorProfileScreen";
 import DoctorAppointmentsScreen from "./DoctorAppointmentsScreen";
 import DetailsScreen from "../DetailsScreen";
 import HomeScreen from "../HomeScreen";
-// import ProfileScreen from "./ProfileScreen";
-// import ExploreScreen from "./ExploreScreen";
 import SingleDoctorScreen from "../SingleDoctorScreen";
 
-// const HomeStack = createNativeStackNavigator();
-// const DetailsStack = createNativeStackNavigator();
 
 const DoctorMainTabScreen = () => (
   <Tab.Navigator
@@ -41,7 +37,7 @@ const DoctorMainTabScreen = () => (
         tabBarLabel: "Appointments",
         tabBarColor: "#fa8072",
         tabBarIcon: ({ color }) => (
-          <Icon name="ios-aperture" color={color} size={26} />
+          <Icon name="md-calendar-sharp" color={color} size={26} />
         ),
       }}
     />

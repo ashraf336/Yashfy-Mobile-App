@@ -128,14 +128,14 @@ const authContext = React.useMemo(() => ({
             drawerContent={(props) => <DrawerContent {...props} />}
             // headerMode="screen"
             screenOptions={{
-              headerStyle: { backgroundColor: "#009387" },
+              headerStyle: { backgroundColor: "#009387", height:25 },
               headerTintColor: "#fff",
               headerTitleAlign: "center",
               headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
-              headerShown: false,
+              headerShown: true,
             }}
           >
-            <Drawer.Screen  name="DrawerHome" component={MainTabScreen} options={{ title: "Home" }}/>
+            <Drawer.Screen  name="DrawerHome" component={MainTabScreen} options={{ title: "" }}/>
             {/* <Drawer.Screen name="SupportScreen" component={SupportScreen} /> */}
             <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
             <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
@@ -145,17 +145,15 @@ const authContext = React.useMemo(() => ({
           :( // DOCTOR's Successful sign in path
           <DoctorDrawer.Navigator
             drawerContent={(props) => <DoctorDrawerContent {...props} />}
-            headerMode="none"
             screenOptions={{
-              headerShown: false,
-              headerStyle: { backgroundColor: "#009387" },
+              headerStyle: { backgroundColor: "#009387", height:25 },
               headerTintColor: "#fff",
               headerTitleAlign: "center",
               headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
-              // headerShown: true,
+              headerShown: true,
             }}
           >
-             <Drawer.Screen  name="DrawerHome" component={DoctorMainTabScreen} options={{ title: "Home" }}/>
+             <Drawer.Screen  name="DrawerHome" component={DoctorMainTabScreen} options={{ title: "" }}/>
              <Drawer.Screen name="SupportScreen" component={SupportScreen} />
              <Drawer.Screen name="DoctorProfileScreen" component={DoctorProfileScreen} options={{ title: "Profile" }}/>
           </DoctorDrawer.Navigator>)
