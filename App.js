@@ -7,11 +7,11 @@ import { DoctorDrawerContent } from "./screens/Doctor Screens/DoctorDrawerConten
 import "react-native-gesture-handler";
 import MainTabScreen from "./screens/Patient Screens/MainTabScreen";
 import DoctorMainTabScreen from "./screens/Doctor Screens/DoctorMainTabScreen";
-import SupportScreen from "./screens/SupportScreen";
-import SettingsScreen from "./screens/SettingsScreen";
-import BookmarkScreen from "./screens/BookmarkScreen";
+
 import SingleDoctorScreen from "./screens/SingleDoctorScreen";
 import DoctorProfileScreen from "./screens/Doctor Screens/DoctorProfileScreen";
+import SearchScreen from "./screens/Patient Screens/SearchScreen";
+import AppointmentsScreen from "./screens/Patient Screens/AppointmentsScreen";
 import { AuthContext } from "./components/context";
 import RootStackScreen from "./screens/RootStackScreen";
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -136,10 +136,9 @@ const authContext = React.useMemo(() => ({
             }}
           >
             <Drawer.Screen  name="DrawerHome" component={MainTabScreen} options={{ title: "" }}/>
-            {/* <Drawer.Screen name="SupportScreen" component={SupportScreen} /> */}
-            <Drawer.Screen name="SettingsScreen" component={SettingsScreen} />
-            <Drawer.Screen name="BookmarkScreen" component={BookmarkScreen} />
-            <Drawer.Screen name="SingleDoctorScreen" component={SingleDoctorScreen} />
+            <Drawer.Screen name="SingleDoctorScreen" component={SingleDoctorScreen} options={{ title: "" }} />
+            <Drawer.Screen name="SearchScreen" component={SearchScreen} options={{ title: "" }} />
+            <Drawer.Screen name="AppointmentsScreen" component={AppointmentsScreen} options={{ title: "" }} />
           </Drawer.Navigator>
           )
           :( // DOCTOR's Successful sign in path
@@ -154,7 +153,7 @@ const authContext = React.useMemo(() => ({
             }}
           >
              <Drawer.Screen  name="DrawerHome" component={DoctorMainTabScreen} options={{ title: "" }}/>
-             <Drawer.Screen name="SupportScreen" component={SupportScreen} />
+             
              <Drawer.Screen name="DoctorProfileScreen" component={DoctorProfileScreen} options={{ title: "Profile" }}/>
           </DoctorDrawer.Navigator>)
         ) 

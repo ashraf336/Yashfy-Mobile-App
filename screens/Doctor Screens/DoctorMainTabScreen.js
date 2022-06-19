@@ -7,9 +7,7 @@ const Tab = createMaterialBottomTabNavigator();
 
 import DoctorProfileScreen from "./DoctorProfileScreen";
 import DoctorAppointmentsScreen from "./DoctorAppointmentsScreen";
-import DetailsScreen from "../DetailsScreen";
-import HomeScreen from "../HomeScreen";
-import SingleDoctorScreen from "../SingleDoctorScreen";
+
 
 
 const DoctorMainTabScreen = () => (

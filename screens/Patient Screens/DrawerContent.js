@@ -13,16 +13,11 @@ import {
 import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
+import Ionicons from "react-native-vector-icons/Ionicons";
 
 import { AuthContext} from "../../components/context";
 
 export function DrawerContent(props) {
-  const [isDarkTheme, setIsDarkTheme] = useState(false);
-  const toggleTheme = () => {
-    setIsDarkTheme(!isDarkTheme);
-  };
-
-  // const paperTheme = useTheme();
 
   const { signOut } = React.useContext(AuthContext);
 
@@ -34,10 +29,10 @@ export function DrawerContent(props) {
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <Avatar.Image
                 source={
-                  require("../../assets/ahmed2.jpg")
+                  require("../../assets/patient.jpg")
                   // {uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'}
                 }
-                size={100}
+                size={60}
               />
               <View style={{ marginLeft: 15, flexDirection: "column" }}>
                 <Title style={styles.title}>Ahmed Ashraf</Title>
@@ -45,30 +40,16 @@ export function DrawerContent(props) {
               </View>
             </View>
 
-            <View style={styles.row}>
-              <View style={styles.section}>
-                <Paragraph style={[styles.paragraph, styles.caption]}>
-                  80
-                </Paragraph>
-                <Caption style={styles.caption}>Following</Caption>
-              </View>
-              <View style={styles.section}>
-                <Paragraph style={[styles.paragraph, styles.caption]}>
-                  100
-                </Paragraph>
-                <Caption style={styles.caption}>Followers</Caption>
-              </View>
-            </View>
           </View>
 
           <Drawer.Section style={styles.drawerSection}>
             <DrawerItem
               icon={({ color, size }) => (
-                <Icon name="home-outline" color={color} size={size} />
+                <Ionicons name="search" color={color} size={size} />
               )}
-              label="Home"
+              label="Search"
               onPress={() => {
-                props.navigation.navigate("Home");
+                props.navigation.navigate("Search");
               }}
             />
             <DrawerItem
@@ -82,56 +63,15 @@ export function DrawerContent(props) {
             />
             <DrawerItem
               icon={({ color, size }) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
+                <Ionicons name="md-calendar-sharp" color={color} size={size} />
               )}
-              label="Bookmarks"
+              label="Appointments"
               onPress={() => {
-                props.navigation.navigate("BookmarkScreen");
-              }}
-            />
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="cog-outline" color={color} size={size} />
-              )}
-              label="Settings"
-              onPress={() => {
-                props.navigation.navigate("SettingsScreen");
-              }}
-            />
-            {/* <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="account-check-outline" color={color} size={size} />
-              )}
-              label="Support"
-              onPress={() => {
-                props.navigation.navigate("SupportScreen");
-              }}
-            /> */}
-            <DrawerItem
-              icon={({ color, size }) => (
-                <Icon name="bookmark-outline" color={color} size={size} />
-              )}
-              label="Single Doctor"
-              onPress={() => {
-                props.navigation.navigate("SingleDoctorScreen");
+                props.navigation.navigate("Appointments");
               }}
             />
           </Drawer.Section>
-          <Drawer.Section title="Preferences">
-            <TouchableRipple
-              onPress={() => {
-                toggleTheme();
-              }}
-            >
-              <View style={styles.preference}>
-                <Text>Dark Theme</Text>
-                <View pointerEvents="none">
-                  {/* <Switch value={paperTheme.dark} /> */}
-                  <Switch value={isDarkTheme} />
-                </View>
-              </View>
-            </TouchableRipple>
-          </Drawer.Section>
+
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
@@ -157,7 +97,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   title: {
-    fontSize: 16,
+    fontSize: 22,
     marginTop: 3,
     fontWeight: "bold",
   },

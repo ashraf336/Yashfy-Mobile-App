@@ -37,7 +37,7 @@ export function DoctorDrawerContent(props) {
                 <Caption style={[styles.caption ]}>Consultant of Plastic Surgery and Laser Treatments</Caption>
               </View>
             </View>
-
+{/* 
             <View style={styles.row}>
               <View style={styles.section}>
                 <Paragraph style={[styles.paragraph, styles.caption]}>
@@ -51,7 +51,7 @@ export function DoctorDrawerContent(props) {
                 </Paragraph>
                 <Caption style={styles.caption}>Examinations</Caption>
               </View>
-            </View>
+            </View> */}
           </View>
 
           <DrawerItem
@@ -63,6 +63,15 @@ export function DoctorDrawerContent(props) {
                 props.navigation.navigate("Profile");
               }}
             />
+          <DrawerItem
+              icon={({ color, size }) => (
+                <Icon name="calendar-month" color={color} size={size} />
+              )}
+              label="Appointments"
+              onPress={() => {
+                props.navigation.navigate("Appointments");
+              }}
+            />            
         </View>
       </DrawerContentScrollView>
       <Drawer.Section style={styles.bottomDrawerSection}>
