@@ -7,7 +7,7 @@ import axios from "axios";
 //const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
-const AvaialbleAppointmentsList = ({ result, doctorId, token }) => {
+const AvaialbleAppointmentsList = ({ navigation,result, doctorId, token }) => {
 
 
 const bookAppointmentHandle = async (slot, doctorId, token ) => {
@@ -27,7 +27,10 @@ const bookAppointmentHandle = async (slot, doctorId, token ) => {
       })
       if (response.status === 200) {
         console.log(` Response: ${JSON.stringify(response.data)}`);
-        console.log("..... Done Booking Appointment  .....")  
+        console.log("..... Done Booking Appointment  .....")  ;
+        navigation.navigate("Appointments");
+        alert("Your appointment has been booked succesfully.")
+        
             } 
       else
       {
@@ -40,6 +43,8 @@ const bookAppointmentHandle = async (slot, doctorId, token ) => {
      catch (error) {
       alert("An error has occurred");
       console.log(error);
+      // navigation.navigate("Appointments");
+      // alert("Your appointment has been booked succesfully.")
       throw error;
     }
   }

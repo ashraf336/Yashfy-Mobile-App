@@ -87,6 +87,10 @@ const [AvailableSlots, setAvailableSlots] = React.useState([]);
 //****************Patient Reviews**********************// 
 const [reviews, setReviews] = React.useState([]);
 
+//*************** ANONYMOUS Review Switch******************************/
+const [anonymousReviewSwitch, setAnonymousReviewSwitch] = React.useState(false);
+const onToggleSwitch = () => setAnonymousReviewSwitch(!anonymousReviewSwitch);
+
 
 {/******************************      API Call  Handlers  ***********************************/}
 const fetchDoctorDataHandle = async ( ) => {
@@ -427,7 +431,7 @@ const handleAddReview = (val) => {
         <View style={styles.lineStyle} />
         {/****************   APPOINTMENTS ************************/}
         <ScrollView>
-          <AvaialbleAppointmentsList result={AvailableSlots} token={token} doctorId={doctorId} />
+          <AvaialbleAppointmentsList result={AvailableSlots} token={token} doctorId={doctorId} navigation={navigation} />
         </ScrollView>
         {/********************************************************/}
         <View style={styles.lineStyle} />
@@ -455,7 +459,7 @@ const handleAddReview = (val) => {
             size={30}
             style={styles.icon}
           />
-          <View style={{ marginTop: 5 }}>
+          <View style={{flexShrink:1, marginTop: 5 }}>
             <Text style={styles.smallSectionsTitle}>
               {result.region}
             </Text>
@@ -755,6 +759,12 @@ const handleAddReview = (val) => {
              numberOfLines={5} 
              textAlignVertical="top" 
              onChangeText={(val) => handleAddReview(val)} />
+              {/*** Anonymous Review Toggle  ****/}
+            <View style={{flexDirection:"row"}}> 
+            <Text style={{alignSelf:"center",fontWeight:"bold"}}>Anonymous Review</Text> 
+            <Switch style={{alignSelf:"flex-start"}} value={anonymousReviewSwitch} onValueChange={onToggleSwitch} />
+              {/****  Submit Review  *****/}
+            </View>
             <TouchableOpacity onPress=
             {() =>
                {setAddReviewVisible(!addReviewVisible),
@@ -884,6 +894,7 @@ const styles = StyleSheet.create({
   },
   smallSectionsTitle: {
     fontWeight: "bold",
+    flexShrink:1,
   },
   sectionHeader: {
     fontWeight: "bold",
