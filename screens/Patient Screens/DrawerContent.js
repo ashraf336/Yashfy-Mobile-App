@@ -29,7 +29,7 @@ export function DrawerContent(props) {
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <Avatar.Image
                 source={
-                  require("../../assets/doctor1.png")
+                  require("../../assets/patient.jpg")
                   // {uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'}
                 }
                 size={60}

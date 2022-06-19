@@ -90,7 +90,7 @@ const SignUpScreen = ({ navigation }) => {
 
     //CALLING API RETURN data 
 
-      console.log(" ....... Calling API (Fetch Doctor data)......")
+      console.log(" ....... Calling API (Fetch Insurances data)......")
      axios.get(`${baseUrl}/home/insurances`)
      .then(
        response =>
@@ -98,7 +98,7 @@ const SignUpScreen = ({ navigation }) => {
       if (response.status === 200) {
         setloadInsurances(true)
         // console.log(` Response: ${JSON.stringify(response.data)}`);
-         console.log(` doctor data is fetched`);
+         console.log(` Insurances data is fetched`);
          const result_api = response.data.insurances 
          console.log("HERE" , result_api)
 

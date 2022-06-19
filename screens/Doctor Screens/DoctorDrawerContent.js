@@ -27,7 +27,7 @@ export function DoctorDrawerContent(props) {
             <View style={{ flexDirection: "row", marginTop: 15 }}>
               <Avatar.Image
                 source={
-                  require("../../assets/doctor2.png")
+                  require("../../assets/doctor1.png")
                   // {uri: 'https://api.adorable.io/avatars/50/abott@adorable.png'}
                 }
                 size={100}

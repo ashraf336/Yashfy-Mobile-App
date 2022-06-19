@@ -60,11 +60,15 @@ const AppointmentDetail = ({result , token , navigation}) => {
               {/* *******Appointment Date******** */}
               <Text style={[styles.data,{fontWeight:"bold",}]}>{result.day_of_week}</Text>
               {/* ********** Time *********** */}
-              <Text style={styles.data}>{result.time}</Text>
+              <Text style={[styles.data,{fontSize:14,}]}>{result.time}</Text>
           </View>
           
               {/* ********** Status ************** */}
-          <Text style={styles.status}>{result.states}</Text> 
+
+           {result.states=="Upcoming"?(<Text style={[styles.status,{color: "green",}]}>{result.states}</Text>)
+           :(<Text style={[styles.status,{color: "red",}]}>{result.states}</Text>)
+           }   
+           
 
   {/* **************** Cancel Appointment button (Show only for "Upcoming")******************* */}
   { result.states == "Upcoming" ?
@@ -127,7 +131,7 @@ const styles = StyleSheet.create({
     fontSize:16,
   },
   doctor:{
-    fontSize:18,
+    fontSize:19,
     fontWeight:"bold",
   },
   specialization:{

@@ -3,7 +3,7 @@ import { Text, StyleSheet, View, FlatList,TouchableOpacity } from "react-native"
 import DoctorAppointmentDetail from "./DoctorAppointmentDetail";
 
 
-const DoctorAppointmentsList = ({result, navigation }) => {
+const DoctorAppointmentsList = ({result, token , navigation }) => {
 
 if(!result.length){
   return null;
@@ -18,7 +18,7 @@ if(!result.length){
         keyExtractor={(result) => result.id}
         renderItem={({ item }) => {
           return (<TouchableOpacity disabled="true">
-          <DoctorAppointmentDetail result={item} />
+          <DoctorAppointmentDetail result={item} token = {token} navigation = {navigation} />
           </TouchableOpacity>)
         }}
       />
