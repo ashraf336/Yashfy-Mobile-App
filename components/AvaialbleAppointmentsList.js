@@ -4,10 +4,10 @@ import AppointmentDetail from "./AppointmentDetail";
 import axios from "axios";
 //const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
-//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
-const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
-const AvaialbleAppointmentsList = ({  result, doctorId, token }) => {
+const AvaialbleAppointmentsList = ({ result, doctorId, token }) => {
 
 
 const bookAppointmentHandle = async (slot, doctorId, token ) => {
@@ -16,8 +16,7 @@ const bookAppointmentHandle = async (slot, doctorId, token ) => {
   try {
       console.log(" ....... Calling API (Book Appointmnet) ......")
        const response = await axios.post(`${baseUrl}/patient/bookAppointment`, 
-       { start_time:slot.start_time ,
-        day_of_week: slot.day_of_week  ,
+       { 
         doctor_id: doctorId,
         slotId:slot.id
 
@@ -28,8 +27,8 @@ const bookAppointmentHandle = async (slot, doctorId, token ) => {
       })
       if (response.status === 200) {
         console.log(` Response: ${JSON.stringify(response.data)}`);
-        console.log("..... Done Booking Appointment  .....")     
-      } 
+        console.log("..... Done Booking Appointment  .....")  
+            } 
       else
       {
         Alert.alert('Not Found !', 'ERROR !', [

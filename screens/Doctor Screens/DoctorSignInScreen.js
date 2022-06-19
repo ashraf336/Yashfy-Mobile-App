@@ -41,8 +41,8 @@ let submission = {
   }
 
 let dummyFoundUser={
-  id:"123",
-  token:"123456",
+  id:"1",
+  token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im9zYW1hQGVzc2F3eS5jb20iLCJ1c2VySWQiOjEsImlhdCI6MTY1NTY1Njc1Nn0.X9SWKi1I0DHxxZ2z0kHt82ZNFKn17g8F4F3eZWyIjTY",
   isDoctor: true,
 };   
 {/******************************     Handle input Fields Change    ***********************************/}
@@ -131,7 +131,7 @@ const loginHandle = async (email, password) => {
     <View style={styles.container}>
        <StatusBar backgroundColor='#087ed4' barStyle="light-content"/>
       <View style={styles.header}>
-        <Text style={styles.text_header}>Welcome Doctor !</Text>
+        <Text style={styles.text_header}>Welcome Doctor </Text>
       </View>
 
 {/******************************    Email    ***********************************/}

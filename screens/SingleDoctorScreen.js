@@ -25,7 +25,7 @@ import {
 import { ActivityIndicator } from 'react-native';
 import AvaialbleAppointmentsList from "../components/AvaialbleAppointmentsList";
 import ReviewsList from "../components/ReviewsList";
-
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import StarRating from "react-native-star-rating";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
@@ -33,19 +33,17 @@ import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
 import axios from "axios";
-const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
-
-//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const SingleDoctorScreen = ( { navigation, route } /*, token , *** result ****  */  ) => {
 
 let  doctorId = route.params.id
 console.log("Doctor ID : ", doctorId )
-const token='eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjU1NDE0MDUwfQ.1_gUe-E824Fvdvgq-n8T2oQeg0Zrq4L6lv8LK2ADTmE'
 
 //**************** Doctor Data **********************//
 const initialState = {doctor_name: "" ,
-no_of_ratings: "0",
+doctorId: doctorId,
 rating: 0,
 doctor_speciality: "Consultant of " ,
 consultation_fees: '0',
@@ -67,9 +65,14 @@ experienceDetail:
 supportedInsurances:[
   "Delta","Bupa", "Misr Insurance" , "Axa"
 ],}
+
 const [result, setResult] = React.useState(
   initialState
 );
+
+const [no_of_ratings, setNo_of_ratings] = useState("0");
+const [token, setToken] = React.useState(null);
+
 
 /*************************  States ****************************/
 const [isLoading, setLoading] = useState(true);
@@ -99,25 +102,8 @@ const fetchDoctorDataHandle = async ( ) => {
       if (response.status === 200) {
        // console.log(` Response: ${JSON.stringify(response.data)}`);
         console.log(` doctor data is fetched`);
-        let result_api = response.data
         // Set the data with fetched data
-        setResult({
-          ...result,
-          doctor_name:result_api.doctor.first_name+ " " + result_api.doctor.last_name ,
-          rating: result_api.doctor.general_rank,
-          doctor_speciality: "Consultant of " + result_api.doctor.specialization,
-          consultation_fees: result_api.doctor.consultaion_fee,
-          waiting_time: result_api.doctor.waiting_time,
-          hospital_name: result_api.hospital_name ,
-          region: result_api.doctor.region,
-          staff_rating: result_api.doctor.catgs_staff,
-          clinic_rating: result_api.doctor.catgs_Clinic,
-          doctor_treatment_rating: result_api.doctor.catgs_doctor_treatment,
-          waiting_time_rating: result_api.doctor.catgs_waiting_time,
-          equipement_rating:result_api.doctor.catgs_equipment,
-          price_rating:result_api.doctor.catgs_price,
-        });
-        return
+        return response.data
       } 
       else
       {
@@ -145,20 +131,16 @@ const fetchDoctorSlotsHandle = async ( ) => {
       //console.log(` Response: ${JSON.stringify(response.data)}`);
       console.log(` doctor Slots is fetched`);
 
-      let fetchedSlots = response.data.slots
       //console.log(` Fetched Slots Is : ${fetchedSlots}`);
 
-      // Set the data with fetched data
-      setAvailableSlots(fetchedSlots);
-
-      return
+      return response.data.slots
     } 
     else
     {
       Alert.alert('Not Found !', 'Seems that Slots are not found !', [
         {text: 'Try Again'}
      ]);
-      return null;
+      return [];
     }
   }
    catch (error) {
@@ -166,7 +148,7 @@ const fetchDoctorSlotsHandle = async ( ) => {
     setRefreshing(false)
     alert("An error has occurred in fetching Doctor Available Slots ..");
     console.log(error);
-    throw error;
+    return [];
   }
 }
 const fetchDoctorReviewsHandle = async ( ) => {
@@ -180,23 +162,14 @@ const fetchDoctorReviewsHandle = async ( ) => {
     if (response.status === 200) {
      // console.log(` Response: ${JSON.stringify(response.data)}`);
      console.log(` doctor reviews is fetched`);
-
-      let fetchedReviews = response.data.reviews
-      //console.log(` Fetched Slots Is : ${fetchedSlots}`);
-
-      // Set the data with fetched data
-      console.log("INSIDE")
-      setReviews(fetchedReviews);
-      result.no_of_ratings = fetchedReviews.length
-
-      return
+      return response.data.reviews
     } 
     else
     {
       Alert.alert('Not Found !', 'Seems that Slots are not found !', [
         {text: 'Try Again'}
      ]);
-      return null;
+      return [];
     }
   }
    catch (error) {
@@ -204,8 +177,8 @@ const fetchDoctorReviewsHandle = async ( ) => {
     setRefreshing(false)
     alert("An error has occurred in fetching doctor Reviews");
     console.log(error);
-    throw error;
-  }
+    return[]  
+}
 }
 const addReviewHandle = async (review ) => {
 
@@ -222,10 +195,15 @@ try {
     if (response.status === 201) {
       setLoading(false);
       setRefreshing(false)
-      setaddReviewLoading(false)
       console.log(` Response: ${JSON.stringify(response.data)}`);
-      console.log("..... Done Adding Review .....")      
-      return
+      console.log("..... Done Adding Review .....")   
+      let promise = fetchDoctorReviewsHandle();
+                promise.then(reviews => {
+                  setaddReviewLoading(false)
+                  console.log("reviews: ", reviews)
+                  setReviews(reviews);
+                  setNo_of_ratings(reviews.length )    
+                });
     } 
     else
     {
@@ -239,21 +217,64 @@ try {
     setaddReviewLoading(false)
     setLoading(false);
     setRefreshing(false)
-    alert("An error has occurred");
+    alert("An error has occurred in adding the review");
     console.log(error);
     throw error;
   }
 }
 
-
+function fetchDoctorData() {
+  return Promise.all([
+    fetchDoctorDataHandle(),
+    fetchDoctorSlotsHandle(),
+    fetchDoctorReviewsHandle()
+  ]).then(([doctorData, slots, reviews]) => {
+    return {doctorData, slots, reviews};
+  })
+}
 useFocusEffect(
   React.useCallback(() => {
+    // reset Fields before fetching it 
     setResult(initialState)
     setAvailableSlots([])
     setReviews([])
-    fetchDoctorDataHandle()
-    fetchDoctorSlotsHandle()
-    fetchDoctorReviewsHandle()
+    setNo_of_ratings("0")
+
+    // Fetch All Data
+    const promise = fetchDoctorData();
+    promise.then(data => {
+      setResult({
+        ...result,
+        doctorId: doctorId,
+        doctor_name:data.doctorData.doctor.first_name+ " " + data.doctorData.doctor.last_name ,
+        rating: data.doctorData.doctor.general_rank,
+        doctor_speciality: "Consultant of " + data.doctorData.doctor.specialization,
+        consultation_fees: data.doctorData.doctor.consultaion_fee,
+        waiting_time: data.doctorData.doctor.waiting_time,
+        hospital_name: data.doctorData.hospital_name ,
+        region: data.doctorData.doctor.region,
+        staff_rating: data.doctorData.doctor.catgs_staff,
+        clinic_rating: data.doctorData.doctor.catgs_Clinic,
+        doctor_treatment_rating: data.doctorData.doctor.catgs_doctor_treatment,
+        waiting_time_rating: data.doctorData.doctor.catgs_waiting_time,
+        equipement_rating:data.doctorData.doctor.catgs_equipment,
+        price_rating:data.doctorData.doctor.catgs_price,
+      });
+      setAvailableSlots(data.slots);  
+      setReviews(data.reviews);
+      setNo_of_ratings(data.reviews.length )   
+     });
+
+     // Fetch Token
+     AsyncStorage.multiGet(['userToken','isDoctor']).then(res =>
+      {
+        setToken(res[0][1]);
+      }
+    ).catch(err=>{
+      console.log(err)
+    })
+     console.log("Token is : ", token)
+ 
   }, [doctorId])
 );
 
@@ -261,9 +282,33 @@ useFocusEffect(
 const onRefresh = React.useCallback(() => {
   console.log("Doctor ID in refresh !: ", doctorId )
   setRefreshing(true);
-  fetchDoctorDataHandle();
-  fetchDoctorSlotsHandle()
-  fetchDoctorReviewsHandle()
+  setResult(initialState)
+  setAvailableSlots([])
+  setReviews([])
+  setNo_of_ratings("0")
+  const promise = fetchDoctorData();
+  promise.then(data => {
+    setResult({
+      ...result,
+      doctorId: doctorId,
+      doctor_name:data.doctorData.doctor.first_name+ " " + data.doctorData.doctor.last_name ,
+      rating: data.doctorData.doctor.general_rank,
+      doctor_speciality: "Consultant of " + data.doctorData.doctor.specialization,
+      consultation_fees: data.doctorData.doctor.consultaion_fee,
+      waiting_time: data.doctorData.doctor.waiting_time,
+      hospital_name: data.doctorData.hospital_name ,
+      region: data.doctorData.doctor.region,
+      staff_rating: data.doctorData.doctor.catgs_staff,
+      clinic_rating: data.doctorData.doctor.catgs_Clinic,
+      doctor_treatment_rating: data.doctorData.doctor.catgs_doctor_treatment,
+      waiting_time_rating: data.doctorData.doctor.catgs_waiting_time,
+      equipement_rating:data.doctorData.doctor.catgs_equipment,
+      price_rating:data.doctorData.doctor.catgs_price,
+    });
+    setAvailableSlots(data.slots);  
+    setReviews(data.reviews);
+    setNo_of_ratings(data.reviews.length )   
+   });
   console.log("..... Done FETCHING .....")      
 }, [doctorId]);
 
@@ -277,13 +322,14 @@ const [supportedInsurances, setsupportedInsurances] = useState(true);
 const [addedReview, setAddedReview] = useState({
   review: "" ,
   is_review_annoymous: 0,
-  doctorId: doctorId /* passed in screen*/
+  doctorId: result.doctorId
 });
 const [addReviewVisible, setAddReviewVisible] = useState(false);
 const handleAddReview = (val) => {
   setAddedReview({
       ...addedReview,
       review: val,
+      doctorId: result.doctorId
     });
   };
 
@@ -329,7 +375,7 @@ const handleAddReview = (val) => {
               fullStarColor={"gold"}
             />
             <Caption style={styles.caption}>
-              Overall Rating From {result.no_of_ratings} Visitors
+              Overall Rating From {no_of_ratings} Visitors
             </Caption>
             <Caption
               style={[styles.caption, { marginTop: 5, color: "black" }]}
@@ -715,8 +761,9 @@ const handleAddReview = (val) => {
                 console.log("HIWAN")
                 setAddedReview({
                   ...addedReview,
-                  doctorId: doctorId,
+                  doctorId: result.doctorId,
                 });
+                setReviews([]);
                 addReviewHandle(addedReview)
 
               }} 
@@ -727,12 +774,12 @@ const handleAddReview = (val) => {
         </View>
       </Modal>
       </View>
-      <TouchableOpacity onPress={() => {setAddReviewVisible(true),handleAddReview('')}} style={[styles.button, styles.buttonOpen]}>
+      <TouchableOpacity onPress={() => {setAddReviewVisible(true),handleAddReview('')}} style={[styles.button, styles.buttonOpen, { marginTop: 15,}]}>
         <Text style={styles.buttonText}>Add Review</Text>
       </TouchableOpacity>
 {/***************************************************************************************************/}
           <Text style={[styles.sectionContent, { textAlign: "center" }]}>
-            Overall Rating from {result.no_of_ratings} Visitors
+            Overall Rating from {no_of_ratings} Visitors
           </Text>
           <View style={{ flexDirection: "row", justifyContent: "center" , marginBottom:20}}>
             <View style={styles.smallSectionsReviews}>
@@ -926,7 +973,7 @@ const styles = StyleSheet.create({
   modalView: {
     margin: 20,
     backgroundColor: "white",
-    borderRadius: 20,
+    borderRadius: 25,
     padding: 35,
     // alignItems: "center",
     shadowColor: "#000",
@@ -941,6 +988,7 @@ const styles = StyleSheet.create({
   button: {
     alignSelf:"center",
     borderRadius: 20,
+    justifyContent: "center",
     padding: 10,
     elevation: 2,
     width:150,
@@ -959,10 +1007,10 @@ const styles = StyleSheet.create({
     // backgroundColor:'black'
   },
   buttonOpen: {
-    backgroundColor: "#90ee90",
+    backgroundColor: "#009387",
   },
-  buttonClose: {
-    backgroundColor: "#2196F3",
+  buttonClose: { 
+    backgroundColor: "#009387",
   },
   textStyle: {
     color: "white",
@@ -976,8 +1024,11 @@ const styles = StyleSheet.create({
   },
   buttonText:{
     alignSelf:"center",
-    fontSize:18,
-    fontWeight:"bold"
+    fontSize:17,
+    fontWeight:"bold",
+    justifyContent: "center",
+    color: "white",
+
 
   },
   textInput: {

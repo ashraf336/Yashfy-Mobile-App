@@ -1,29 +1,81 @@
 import React , {useState} from "react";
 import { View, Text,  StyleSheet } from "react-native";
 import AppointmentsList from "./components/AppointmentsList";
+import { useFocusEffect } from '@react-navigation/native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
+import axios from "axios";
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const AppointmentsScreen = ({ navigation }) => {
 
+  const [appointments,setAppointments] = useState([]);
+  const [token, setToken] = React.useState(null);
 
-  const dummyAppointments=[
-    { id:1 , doctor:"Mohamed Aiman" , specialization:"Nephrology" , day:"22-6-2022" , time:"22:10" , status:"Upcoming" },
-    { id:2 , doctor:"Osama Sherif" , specialization:"Opthalmology" , day:"22-6-2022" , time:"5:00" , status:"Upcoming" },
-    { id:3 , doctor:"Zeyad Nasrat" , specialization:"Phsycatry" , day:"22-6-2022" , time:"7:30" , status:"Canceled" },
-    { id:4 , doctor:"Abdulrahman Habib" , specialization:"Urology" , day:"22-6-2022" , time:"13:45" , status:"Completed" },
-    { id:5 , doctor:"Ahmed Ashraf" , specialization:"Dermatology" , day:"22-6-2022" , time:"9:50" , status:"Canceled" },
-    { id:6 , doctor:"Mohamed Aiman" , specialization:"Nephrology" , day:"22-6-2022" , time:"22:10" , status:"Upcoming" },
-    { id:7 , doctor:"Osama Sherif" , specialization:"Opthalmology" , day:"22-6-2022" , time:"5:00" , status:"Upcoming" },
-    { id:8 , doctor:"Zeyad Nasrat" , specialization:"Phsycatry" , day:"22-6-2022" , time:"7:30" , status:"Canceled" },
-    { id:9 , doctor:"Abdulrahman Habib" , specialization:"Urology" , day:"22-6-2022" , time:"13:45" , status:"Completed" },
-    { id:10 , doctor:"Ahmed Ashraf" , specialization:"Dermatology" , day:"22-6-2022" , time:"9:50" , status:"Canceled" },    
-  ];
 
-  const [appointments,setAppointments] = useState(dummyAppointments);
+  {/******************************      API Call  Handlers  ***********************************/}
+const fetchPatientAppointmentsHandle = async (token ) => {
+
+  //CALLING API RETURN data 
+  try {
+    console.log(" ....... Calling API (Fetch patient appointments)......")
+    const response = await axios.get(`${baseUrl}/patient/appointments` ,
+    {
+      headers: {
+        'Authorization': `bearer ${token}` 
+      }
+    });
+
+    if (response.status === 200) {
+      console.log("inside" );
+
+      let fetchedappointments = response.data.appointments
+      console.log("appointments: ",fetchedappointments );
+      return fetchedappointments
+    } 
+    else
+    {
+      Alert.alert('Not Found !', 'No apoointments Available', [
+        {text: 'Try Again'}
+     ]);
+      return null;
+    }
+  }
+   catch (error) {
+    //setLoading(false);
+    //setRefreshing(false)
+    alert("An error has occurred in fetching appointments  ..");
+    console.log(error);
+    throw error;
+  }
+}
+
+
+useFocusEffect(
+  React.useCallback(() => {
+    // reset Fields before fetching it 
+    setAppointments([])
+    // Fetch Token
+     AsyncStorage.multiGet(['userToken','isDoctor']).then(res =>
+      {
+            setToken(res[0][1])
+            const promise = fetchPatientAppointmentsHandle(res[0][1]);
+            promise.then(appointments => {
+              setAppointments(appointments)
+            });
+      }
+    ).catch(err=>{
+      console.log(err)
+    })
+ 
+  }, [])
+);
+
 
   return (
     <View style={{flex:1}}>
-    <Text style={styles.title}>My Appointments</Text>
-    <AppointmentsList  result={appointments} navigation={navigation} />
+    <AppointmentsList  result={appointments} token = {token} navigation={navigation} />
   </View>
   );
 };

@@ -17,8 +17,8 @@ import Feather from "react-native-vector-icons/Feather";
 import Fontisto from "react-native-vector-icons/Fontisto";
 import { ActivityIndicator } from 'react-native';
 import axios from "axios";
-const baseUrl = "http://192.168.1.12:8080"; //Devolopment
-//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+//const baseUrl = "http://192.168.1.12:8080"; //Devolopment
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
 import { AuthContext } from "../../components/context";
 
@@ -47,8 +47,8 @@ const SignInScreen = ({navigation}) => {
 
   
   let dummyFoundUser={
-    id:"123",
-    token:"123456",
+    id:"1",
+    token:"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbWFpbCI6Im1hbGVrMTIzQGdtYWlsLmNvbSIsInVzZXJJZCI6MSwiaWF0IjoxNjU1NjUyMzYxfQ.VMV8ZVi7csvh0tCq2BSMKW2Qw1Q7DrI2_elTIMxEG70",
     isDoctor: false,
   };   
 
@@ -137,7 +137,7 @@ const SignInScreen = ({navigation}) => {
     <View style={styles.container}>
        <StatusBar backgroundColor='#009387' barStyle="light-content"/>
       <View style={styles.header}>
-        <Text style={styles.text_header}>Welcome Patient !</Text>
+        <Text style={styles.text_header}>Welcome Patient </Text>
       </View>
 {/******************************    Email    ***********************************/}
 

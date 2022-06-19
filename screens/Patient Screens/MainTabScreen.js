@@ -17,7 +17,6 @@ const MainTabScreen = () => (
     initialRouteName="Search"
     activeColor="#fff"
       barStyle={{ backgroundColor: '#009387' }}
-  
   >
     <Tab.Screen
       name="Search"

@@ -14,7 +14,7 @@ const DoctorMainTabScreen = () => (
   <Tab.Navigator
     initialRouteName="Profile"
     activeColor="#fff"
-      barStyle={{ backgroundColor: '#009387' }}
+      barStyle={{ backgroundColor: '#087ed4' }}
   >
 
     <Tab.Screen
@@ -22,7 +22,7 @@ const DoctorMainTabScreen = () => (
       component={DoctorProfileScreen}
       options={{
         tabBarLabel: "Profile",
-        tabBarColor: "#8a2be2",
+        tabBarColor: "#087ed4",
         tabBarIcon: ({ color }) => (
           <Icon name="ios-person" color={color} size={26} />
         ),
@@ -33,7 +33,7 @@ const DoctorMainTabScreen = () => (
       component={DoctorAppointmentsScreen}
       options={{
         tabBarLabel: "Appointments",
-        tabBarColor: "#fa8072",
+        tabBarColor: "#087ed4",
         tabBarIcon: ({ color }) => (
           <Icon name="md-calendar-sharp" color={color} size={26} />
         ),

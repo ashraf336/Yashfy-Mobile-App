@@ -5,7 +5,7 @@ import DoctorAppointmentsList from "./components/DoctorAppointmentsList"
 const DoctorAppointmentsScreen = ({ navigation }) => {
 
 
-  const dummyAppointments=[
+const dummyAppointments=[
     { id:1 , patient:"Khaled Mohamed" , day:"22-6-2022" , time:"22:10" , status:"Upcoming" },
     { id:2 , patient:"Yaser Aly" , day:"22-6-2022" , time:"5:00" , status:"Upcoming" },
     { id:3 ,  patient:"Mohamed Yousef" , day:"22-6-2022" , time:"7:30" , status:"Canceled" },

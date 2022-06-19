@@ -22,8 +22,8 @@ import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityI
 import { ActivityIndicator } from 'react-native';
 
 import axios from "axios";
-const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
-//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 
 
 const SignUpScreen = ({ navigation }) => {
@@ -674,7 +674,7 @@ const styles = StyleSheet.create({
   text_header: {
     color: "#fff",
     fontWeight: "bold",
-    fontSize: 30,
+    fontSize: 25,
   },
   text_footer: {
     color: "#05375a",

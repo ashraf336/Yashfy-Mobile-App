@@ -145,7 +145,7 @@ const authContext = React.useMemo(() => ({
           <DoctorDrawer.Navigator
             drawerContent={(props) => <DoctorDrawerContent {...props} />}
             screenOptions={{
-              headerStyle: { backgroundColor: "#009387", height:25 },
+              headerStyle: { backgroundColor: "#087ed4", height:25 },
               headerTintColor: "#fff",
               headerTitleAlign: "center",
               headerTitleStyle: { fontWeight: "bold", fontSize: 25 },
