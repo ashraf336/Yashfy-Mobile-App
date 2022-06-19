@@ -2,8 +2,8 @@ import react from "react";
 import {View , Text , StyleSheet , TouchableOpacity  , Alert } from 'react-native';
 import { LinearGradient } from "expo-linear-gradient";
 import axios from "axios";
-//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
-const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const AppointmentDetail = ({result , token , navigation}) => {
 
