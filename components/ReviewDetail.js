@@ -21,6 +21,8 @@ const styles = StyleSheet.create({
     marginBottom:1,
     borderRightWidth: 2,
     borderColor: "#e6e6fa",
+    flexShrink:1,
+    width:200,
 
   },  
   name:{
@@ -30,6 +32,8 @@ const styles = StyleSheet.create({
   review:{
     marginTop:6,
     fontSize:18,
+    textAlign:"center",
+    
   },
   date_time: {
     marginTop:5,
