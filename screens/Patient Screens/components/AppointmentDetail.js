@@ -55,8 +55,8 @@ const AppointmentDetail = ({result , token , navigation}) => {
             <Text style={styles.doctor}>Doctor {result.doctor_name} </Text>            
         </View>    
 
-        <View style={styles.slot} >
-          <View style={[styles.date_time,{flexDirection:"column"}]}>
+        <View style={[styles.slot,{justifyContent:"space-between"}]} >
+          <View style={[styles.date_time,{flexDirection:"column",justifyContent:"center"}]}>
               {/* *******Appointment Date******** */}
               <Text style={[styles.data,{fontWeight:"bold",}]}>{result.day_of_week}</Text>
               {/* ********** Time *********** */}
@@ -64,16 +64,16 @@ const AppointmentDetail = ({result , token , navigation}) => {
           </View>
           
               {/* ********** Status ************** */}
-
+           
            {result.states=="Upcoming"?(<Text style={[styles.status,{color: "green",}]}>{result.states}</Text>)
            :(<Text style={[styles.status,{color: "red",}]}>{result.states}</Text>)
            }   
-           
+            
 
   {/* **************** Cancel Appointment button (Show only for "Upcoming")******************* */}
   { result.states == "Upcoming" ?
               <TouchableOpacity
-              style={styles.cancelButton}
+              style={[styles.cancelButton,{marginRight:30}]}
               onPress={()=>  Alert.alert(
                   "Appointment Cancelation",
                   "Are you sure you want to cancel this appointment ?",
@@ -97,7 +97,7 @@ const AppointmentDetail = ({result , token , navigation}) => {
                   <Text style={styles.cancelText}>Cancel</Text>
               </LinearGradient>
               </TouchableOpacity>
-              :null    
+              :<View style={{marginRight:110}} ></View>    
   }                                
           </View>
         </View>     
@@ -143,10 +143,14 @@ const styles = StyleSheet.create({
     fontWeight:"bold",
   },
   status:{
+    // borderColor:"black",
+    // borderWidth:2,
     fontSize:16,
     fontWeight:"bold",
-    marginRight: 25,
-    marginLeft:45,
+    // textAlign:"right",
+    // marginRight: 25,
+    // marginLeft:45,
+    alignSelf:"center"
   },
   cancelButton:{
     backgroundColor:"red",
@@ -154,7 +158,10 @@ const styles = StyleSheet.create({
     height: 30,
     justifyContent: "center",
     alignItems: "center",
-    borderRadius: 10,    
+    borderRadius: 10, 
+    // marginRight:25, 
+    
+    alignSelf:"center",  
   },
   cancelText:{
     fontSize:15,
