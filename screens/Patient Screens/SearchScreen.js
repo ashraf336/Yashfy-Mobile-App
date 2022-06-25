@@ -8,8 +8,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import DropDownPicker from "react-native-dropdown-picker";
 import axios from "axios";
-const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
-//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const SearchScreen = (props) => {
 

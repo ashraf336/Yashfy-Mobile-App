@@ -35,11 +35,51 @@ import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
 import axios from "axios";  
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
 const baseUrl = "http://192.168.1.12:8080"; //Devolopment
 
-const DoctorProfileScreen = ( /*token*/) => {
-  
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
 
+
+
+const DoctorProfileScreen = ( /*token*/) => {
+
+  
+const fetchDoctorDataHandle = async ( token) => {
+
+    //CALLING API RETURN data 
+    try {
+      console.log(" ....... Calling API (Fetch Doctor data)......")
+      const response = await axios.get(`${baseUrl}/doctors/profile`, {
+        headers: {
+          'Authorization': `bearer ${token}` 
+        }
+      });
+  
+      // { url , body , headear , config } for maore deatils visit docs
+      if (response.status === 200) {
+       // console.log(` Response: ${JSON.stringify(response.data)}`);
+        console.log(` Doctor data is fetched`);
+        // Set the data with fetched data
+        return response.data.doctor    
+        } 
+      else
+      {
+        Alert.alert('Not Found !', 'Seems that this doctor is not found !', [
+          {text: 'Try Again'}
+       ]);
+        return null;
+      }
+    }
+     catch (error) {
+      setLoading(false);
+      setRefreshing(false)
+      alert("An error has occurred in fetching doctor data ..");
+      console.log(error);
+      throw error;
+    }
+  }
 
 const submitEditHandle = async (submission) => {
       setfetchapi(true);
@@ -76,39 +116,34 @@ const submitEditHandle = async (submission) => {
         throw error;
       }
   }
-  
-  const [data, setData] = useState({
+const intialState= {
     username: " ",
     email: " ",
-    // password: "",
-    // confirm_password: "",
     first_name: " ",
     last_name: " ",
     phone_number: " ",
     date_of_birth: " ",
     specialization:" ",
-    consultaion_fee:' ',
+    consultaion_fee:0,
     region: ' ',
-    // country: "",
     city: " ",
-    // street_address:'',
-    // insurance:null,
     hospital:" ",
-    // hospital_id: null,
+    hospital_id: null,
     qualification_name: " ",
     institute_name: " ",
     procurement_year: " ",
-    countryCode: " ",
-    staff_rating: 4.5,
-    clinic_rating: 3.5,
-    doctor_treatment_rating: 5,
-    waiting_time_rating: 4.5,
-    equipement_rating:2,
-    price_rating:1,
-  });  
+    staff_rating: 0,
+    clinic_rating: 0,
+    doctor_treatment_rating: 0,
+    waiting_time_rating: 0,
+    equipement_rating: 0,
+    price_rating: 0,
+  }
+const [data, setData] = useState(intialState);  
+const [token, setToken] = React.useState(null);
 
 
-  let submission = {
+let submission = {
     first_name: data.first_name,
     last_name: data.last_name,
     city: data.city,
@@ -130,6 +165,53 @@ const submitEditHandle = async (submission) => {
     // insurance_id: data.insurance,
   };  
 
+  
+useFocusEffect(
+    React.useCallback(() => {
+      // reset Fields before fetching it 
+      setFieldsEditable(false)
+      setData(intialState)  
+       // Fetch Token
+       AsyncStorage.multiGet(['userToken','isDoctor']).then(res =>
+        {
+          setToken(res[0][1]);
+           // Fetch All Data
+          const promise = fetchDoctorDataHandle(res[0][1]);
+          promise.then(doctorData => {
+            //let insurance = InsurancesItems.find( ({ id }) => id === patientData.insuranceId );
+            console.log("DATA: ",doctorData)
+            setData(
+              {
+                ...data,
+                username: doctorData.username,
+                email: doctorData.email,
+                first_name: doctorData.first_name,
+                last_name : doctorData.last_name,
+                date_of_birth: doctorData.date_of_birth.split("-").reverse().join("-"),
+                city: doctorData.city,
+                phone_number: doctorData.phone_num,
+                consultaion_fee: doctorData.consultaion_fee,
+                region: doctorData.region,
+                staff_rating: doctorData.catgs_staff,
+                clinic_rating: doctorData.catgs_Clinic,
+                doctor_treatment_rating: doctorData.catgs_doctor_treatment,
+                waiting_time_rating: doctorData.catgs_waiting_time,
+                equipement_rating:doctorData.catgs_equipment,
+                price_rating:doctorData.catgs_price,
+
+                //insurance_id:patientData.insuranceId,
+                //insurance: insurance.value
+              }
+            )
+          });
+
+        }
+      ).catch(err=>{
+        console.log(err)
+      })
+
+    }, [])
+  );
 //****************Patient Reviews**********************//  
 let PatientsReviews={
   Reviews:[
@@ -144,11 +226,11 @@ let PatientsReviews={
 };
   
 
-  const [fieldsEditable,setFieldsEditable] = useState(false);
+const [fieldsEditable,setFieldsEditable] = useState(false);
 
   //  For SPECIALIZATION Dropdown
-  const [specializationOpen, setSpecializationOpen] = useState(false);
-  const [specializationItems, setSpecializationItems] = useState([
+const [specializationOpen, setSpecializationOpen] = useState(false);
+const [specializationItems, setSpecializationItems] = useState([
     { label: "Allergy and immunology", value: "Allergy and immunology" },
     { label: "Anesthesiology", value: "Anesthesiology" },
     { label: "Dermatology", value: "Dermatology" },
@@ -175,8 +257,8 @@ let PatientsReviews={
   ]);
 
   //  For HOSPITAL Dropdown
-  const [hospitalOpen, setHospitalOpen] = useState(false);
-  const [hospitalItems, setHospitalItems] = useState([
+const [hospitalOpen, setHospitalOpen] = useState(false);
+const [hospitalItems, setHospitalItems] = useState([
     { label: "Agial Hospital", value: "Agial Hospital", id: 1 },
     {
       label: "Alexandria University Main Hospital",
@@ -225,18 +307,18 @@ let PatientsReviews={
     
   ]);
   
-  //  For SUPPORTED INSURANCES Dropdown
-  const [supportedInsurances, setSupportedInsurances] = useState(['Axa','Bupa']);
-  const [supportedInsurancesOpen, setSupportedInsurancesOpen] = useState(false);
-  const [supportedInsurancesItems, setSupportedInsurancesItems] = useState([
-    {  id: 1 , label: "Axa" , value: "Axa"  },
-    {  id: 2 , label: "Misr Insurance" ,  value: "Misr Insurance"},
-    {  id: 3 , label: "Alianz", value: "Alianz"},
-    {  id: 4 , label: "Bupa", value: "Bupa"},
-    {  id: 5 , label: "Lintile" , value: "Lintile"},
-    {  id: 6 , label: "Werty", value: "Werty"},
-  ]);
-    
+//  For SUPPORTED INSURANCES Dropdown
+const [supportedInsurances, setSupportedInsurances] = useState(['Axa','Bupa']);
+const [supportedInsurancesOpen, setSupportedInsurancesOpen] = useState(false);
+const [supportedInsurancesItems, setSupportedInsurancesItems] = useState([
+  {  id: 1 , label: "Axa" , value: "Axa"  },
+  {  id: 2 , label: "Misr Insurance" ,  value: "Misr Insurance"},
+  {  id: 3 , label: "Alianz", value: "Alianz"},
+  {  id: 4 , label: "Bupa", value: "Bupa"},
+  {  id: 5 , label: "Lintile" , value: "Lintile"},
+  {  id: 6 , label: "Werty", value: "Werty"},
+]);
+  
 
 ///////////////////////   INPUT HANDLERS      ////////////////////////////////
 

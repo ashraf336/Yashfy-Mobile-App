@@ -30,67 +30,29 @@ import CountryPicker from "react-native-country-picker-modal";
 import DropDownPicker from "react-native-dropdown-picker";
 import Entypo from "react-native-vector-icons/Entypo";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import axios from "axios";  
-
-
-// const baseUrl = "http://192.168.1.12:8080"; //Devolopment
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useFocusEffect } from '@react-navigation/native';
+import axios from "axios";
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const ProfileScreen = ( /*token*/) => {
   
-
-
-const submitEditHandle = async (submission) => {
-      setfetchapi(true);
-
-      //CALLING API RETURN TOKEN
-      try {
-        console.log(" Calling API ....")
-        const response = await axios.post(`${baseUrl}/doctors/edit-profile`, submission);
-        if (response.status === 200) {
-          setfetchapi(false);
-          Alert.alert('Done', 'Successfuly Logged In.', [
-            {text: 'Okay'}
-          ]);
-          console.log(` Response: ${JSON.stringify(response.data)}`);
-          //call sign in function from authcontext JS object imported
-  
-          signIn(response.data);
-          navigation.navigate("HomeScreen");  // This should be removed , the sigIn( ) in the previous line is enough.      
-        } 
-        else
-        {
-          setfetchapi(false);
-          Alert.alert('Not Found User!', 'Username or password is incorrect.', [
-            {text: 'Okay'}
-         ]);
-          return;
-        }
-      }
-       catch (error) {
-        setfetchapi(false);
-        alert("An error has occurred");
-        console.log(error);
-        console.log("Status code" , response.status);
-        throw error;
-      }
-  }
-  
-  const [data, setData] = useState({
+let intialState = {
     username: " ",
     email: " ",
-    // password: "",
-    // confirm_password: "",
-    first_name: "Osama",
-    last_name: "Sherif",
+    first_name: " ",
+    last_name: " ",
     phone_number: " ",
-    date_of_birth: "01-01-1999",
+    date_of_birth: " ",
     country: "",
-    countryCode: "",
     city: " ",
-    street_address:'',
-    insurance:"",
+    street_address:' ',
+    insurance:" ",
     insurance_id:null,
-  });  
+  }
+const [data, setData] = useState(intialState);  
+const [token, setToken] = React.useState(null);
 
 
   let submission = {
@@ -101,25 +63,166 @@ const submitEditHandle = async (submission) => {
     date_of_birth: data.date_of_birth.split("-").reverse().join("-"),
     street_address: data.street_address,
     country: data.country,
-    insurance_id: data.insurance,
+    insurance_id: data.insurance_id,
   };  
 
+{/******************************      API Call  Handlers  ***********************************/}
+const fetchPatientDataHandle = async ( token) => {
 
+    //CALLING API RETURN data 
+    try {
+      console.log(" ....... Calling API (Fetch Patient data)......")
+      const response = await axios.get(`${baseUrl}/patient/profile`, {
+        headers: {
+          'Authorization': `bearer ${token}` 
+        }
+      });
+
+      // { url , body , headear , config } for maore deatils visit docs
+      if (response.status === 200) {
+       // console.log(` Response: ${JSON.stringify(response.data)}`);
+        console.log(` patient data is fetched`);
+        // Set the data with fetched data
+        return response.data.patient      } 
+      else
+      {
+        Alert.alert('Not Found !', 'Seems that this doctor is not found !', [
+          {text: 'Try Again'}
+       ]);
+        return null;
+      }
+    }
+     catch (error) {
+      setLoading(false);
+      setRefreshing(false)
+      alert("An error has occurred in fetching doctor data ..");
+      console.log(error);
+      throw error;
+    }
+}
+
+const submitEditHandle = async (submission , token) => {
+      //setfetchapi(true);
+      console.log("Submitted Data ...", submission)
+      //CALLING API RETURN TOKEN
+      try {
+        console.log(" Calling API ....")
+        const response = await axios.patch(`${baseUrl}/patient/edit-profile`, submission , {
+          headers: {
+            'Authorization': `bearer ${token}` 
+          }
+        });
+        if (response.status === 200) {
+
+         console.log(response.data);
+         setData(intialState)  
+         let promise = fetchPatientDataHandle(token)
+         promise.then(patientData => {
+          let insurance = InsurancesItems.find( ({ id }) => id === patientData.insuranceId );
+          setData(
+            {
+              ...data,
+              username: patientData.username,
+              email: patientData.email,
+              first_name: patientData.first_name,
+              last_name : patientData.last_name,
+              date_of_birth: patientData.date_of_birth.split("-").reverse().join("-"),
+              city: patientData.city,
+              country : patientData.country,
+              phone_number: patientData.phone_number,
+              street_address: patientData.street_address ,
+              insurance_id:patientData.insuranceId,
+              insurance: insurance.value
+            }
+          )
+        });
+         return
+
+        } 
+        else
+        {
+         //setfetchapi(false);
+          Alert.alert('Not Found User!', 'Username or password is incorrect.', [
+            {text: 'Okay'}
+         ]);
+          return;
+        }
+      }
+       catch (error) {
+        //setfetchapi(false);
+        alert("An error has occurred");
+        console.log(error);
+        throw error;
+      }
+  }
+
+  useFocusEffect(
+    React.useCallback(() => {
+      // reset Fields before fetching it 
+      setFieldsEditable(false)
+      setData(intialState)  
+       // Fetch Token
+       AsyncStorage.multiGet(['userToken','isDoctor']).then(res =>
+        {
+          setToken(res[0][1]);
+           // Fetch All Data
+          const promise = fetchPatientDataHandle(res[0][1]);
+          promise.then(patientData => {
+            let insurance = InsurancesItems.find( ({ id }) => id === patientData.insuranceId );
+            setData(
+              {
+                ...data,
+                username: patientData.username,
+                email: patientData.email,
+                first_name: patientData.first_name,
+                last_name : patientData.last_name,
+                date_of_birth: patientData.date_of_birth.split("-").reverse().join("-"),
+                city: patientData.city,
+                country : patientData.country,
+                phone_number: patientData.phone_number,
+                street_address: patientData.street_address ,
+                insurance_id:patientData.insuranceId,
+                insurance: insurance.value
+              }
+            )
+          });
+
+        }
+      ).catch(err=>{
+        console.log(err)
+      })
+      
+   
+    }, [])
+  );
+  
 
   const [fieldsEditable,setFieldsEditable] = useState(false);
 
-
-  
   //  For INSURANCE Dropdown
  
   const [InsurancesOpen, setInsurancesOpen] = useState(false);
   const [InsurancesItems, setInsurancesItems] = useState([
-    {  id: 1 , label: "Axa" , value: "Axa"  },
-    {  id: 2 , label: "Misr Insurance" ,  value: "Misr Insurance"},
-    {  id: 3 , label: "Alianz", value: "Alianz"},
-    {  id: 4 , label: "Bupa", value: "Bupa"},
-    {  id: 5 , label: "Lintile" , value: "Lintile"},
-    {  id: 6 , label: "Werty", value: "Werty"},
+    {  id: 0 , label: "none" , value: null  },
+    {  id: 1 , label: "WellCare" , value: "WellCare"  },
+    {  id: 2 , label: "Smart Care" ,  value: "Smart Care"},
+    {  id: 3 , label: "Medright", value: "Medright"},
+    {  id: 4 , label: "CarePlus", value: "CarePlus"},
+    {  id: 5 , label: "Easy Care" , value: "Easy Care"},
+    {  id: 6 , label: "Egymed", value: "Egymed"},
+    {  id: 7 , label: "Family Care Cure", value: "Family Care Cure"},
+    {  id: 8 , label: "Extra Care", value: "Extra Care"},
+    {  id: 9 , label: "Elmothida", value: "Elmothida"},
+    {  id: 10 , label: "City Care", value: "City Care"},
+    {  id: 11 , label: "Banque Misr", value: "WeBanque Misrrty"},
+    {  id: 12 , label: "Bank of Egypt Iran", value: "Bank of Egypt Iran"},
+    {  id: 13 , label: "Badr Petroleum Company", value: "Badr Petroleum Company"},
+    {  id: 14 , label: "Al Baraka Bank - Egypt", value: "Al Baraka Bank - Egypt"},
+    {  id: 15 , label: "Access", value: "Access"},
+    {  id: 16 , label: "Egycare", value: "Egycare"},
+    {  id: 17 , label: "Axa", value: "Axa"},
+
+
   ]);
 
 ///////////////////////   INPUT HANDLERS      ////////////////////////////////
@@ -170,7 +273,6 @@ const handleCountryChange = (val) => {
   setData({
     ...data,
     country: val.name,
-    countryCode: val.cca2,
   });
 };
 
@@ -199,20 +301,12 @@ const handleInsuranceChange = (val) => {
           <Avatar.Image
             style={{ marginLeft: 15, marginTop: 5 }}
             source={require("../../assets/patient.jpg")}
-            size={175}
+            size={120}
           />
 
           <View style={styles.doctorDescription}>
             <Title style={styles.title}>{data.first_name} {data.last_name}</Title>
 
-            {/* <Caption style={styles.caption}>
-              Overall Rating 
-            </Caption>
-            <Caption
-              style={[styles.caption, {fontWeight:"bold",fontSize:16, marginTop: 15, color: "black" }]}
-            >
-              {data.doctor_speciality}
-            </Caption> */}
           </View>
         </View>
       </View>
@@ -379,13 +473,14 @@ const handleInsuranceChange = (val) => {
           <Text style={styles.text_footer}>Country</Text>
                     <View style={styles.action}>
                       <CountryPicker
-                        countryCode={data.countryCode}
+                        value={data.country}
                         onSelect={(val) => {
                           handleCountryChange(val);
                         }}
                         withModal={true}
                         withCountryNameButton={true}
                         withAlphaFilter={true}
+                        disabled={!fieldsEditable}
                       />
                     </View>
 
@@ -399,7 +494,7 @@ const handleInsuranceChange = (val) => {
               style={[styles.textInput_2]}
               autoCapitalize="none"
               value={data.city}
-              editable={fieldsEditable}
+              disabled={!fieldsEditable}
               onChangeText={(val) => handleCityChange(val)}
             />
           </View>
@@ -413,14 +508,16 @@ const handleInsuranceChange = (val) => {
                         // placeholderTextColor="#666666"
                         style={[styles.textInput_2]}
                         autoCapitalize="none"
+                        value={data.street_address}
                         onChangeText={(val) => handleStreetAddressChange(val)}
+                        editable={fieldsEditable}
                       />
                     </View>
 
 
           {/******************************      INSURANCE     ***********************************/}
           <Text style={[styles.text_footer,{ marginTop:10}]}>Insurance</Text>
-          <View style={{ marginTop: 10 }}>
+          <View style={{ marginTop: 10 , marginBottom: 10}}>
             <DropDownPicker
               listMode="MODAL"
               open={InsurancesOpen}
@@ -439,9 +536,9 @@ const handleInsuranceChange = (val) => {
             onPress={()=>
             {
               // API CALL FOR SUBMIT THE EDIT 
-              // submitEditHandle(/*pass new data*/)
+              submitEditHandle(submission,token)
               setFieldsEditable(!fieldsEditable),
-              alert("Changes Saved!") 
+              alert("Updates Saved Successfuly !") 
             }}
               >
             <LinearGradient
@@ -487,18 +584,18 @@ const styles = StyleSheet.create({
   },
   headerView: {
     backgroundColor: "white",
-    marginBottom: 15,
+    marginBottom: 10,
     // height: 160,
     // alignItems:"center",
   },
   bodyView: {
     backgroundColor: "white",
-    marginBottom: 15,
+    marginBottom: 10,
     height: "auto",
   },
   aboutView: {
     backgroundColor: "white",
-    marginBottom: 15,
+    marginBottom: 10,
     height: "auto",
   },
   smallSections: {
@@ -542,7 +639,7 @@ const styles = StyleSheet.create({
     alignItems:"center",
   },
   doctorName: {
-    fontSize: 15,
+    fontSize: 12,
     fontWeight: "bold",
     alignSelf: "flex-start",
     marginLeft: 150,
@@ -554,7 +651,7 @@ const styles = StyleSheet.create({
     paddingLeft: 20,
   },
   title: {
-    fontSize: 28,
+    fontSize: 25,
     marginTop: 3,
     marginBottom: 10,
     fontWeight: "bold",
@@ -696,7 +793,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     // borderBottomWidth: 1,
     // borderBottomColor: "#f2f2f2",
-    paddingBottom: 25,
+    paddingBottom: 15,
   },
   textInput_2: {
     flex: 1,
@@ -712,15 +809,14 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   editField: {
-    // width: "50%",
-    height: 50,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
   },
   submit: {
     // width: "50%",
-    height: 50,
+    height: 40,
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 10,
@@ -728,7 +824,7 @@ const styles = StyleSheet.create({
   button:{
     alignSelf:"center",
     width:150,
-    marginVertical:15,
+    marginVertical:0,
   },
   datePickerStyle: {
     width: "100%",

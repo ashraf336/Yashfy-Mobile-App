@@ -111,10 +111,14 @@ const styles = StyleSheet.create({
     borderColor: "#e6e6fa",
     marginLeft:15,
     marginVertical:15,
+    backgroundColor: "white",
+
   }, 
   box:{
     borderBottomColor:"#e6e6fa",
     borderBottomWidth:5,
+    backgroundColor: "white",
+
   },
   slot:{
     flexDirection:"row",

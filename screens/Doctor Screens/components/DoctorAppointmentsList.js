@@ -29,6 +29,8 @@ if(!result.length){
 const styles = StyleSheet.create({
   Container:{
       flex:1,
+      backgroundColor: "white",
+
   },  
   Title: {
     fontWeight: "bold",

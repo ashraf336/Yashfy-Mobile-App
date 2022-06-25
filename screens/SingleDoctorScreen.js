@@ -33,8 +33,8 @@ import Collapsible from "react-native-collapsible";
 import Tags from "react-native-tags";
 
 import axios from "axios";
-const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
-//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const SingleDoctorScreen = ( { navigation, route } /*, token , *** result ****  */  ) => {
 
@@ -66,19 +66,36 @@ supportedInsurances:[
   "Delta","Bupa", "Misr Insurance" , "Axa"
 ],}
 
-const [result, setResult] = React.useState(
-  initialState
-);
-
+const [result, setResult] = React.useState(initialState);
 const [no_of_ratings, setNo_of_ratings] = useState("0");
 const [token, setToken] = React.useState(null);
 
+
+/**** Sections Togglers  ****/
+const [about, setAbout] = useState(true);
+const [experience, setExperience] = useState(true);
+const [supportedInsurances, setsupportedInsurances] = useState(true);
+
+/*************** User ADD REVIEW  ****************/
+const [addedReview, setAddedReview] = useState({
+  review: "" ,
+  is_review_annoymous: 0,
+  doctorId: result.doctorId,
+  is_review_annoymous: false
+});
+const [addReviewVisible, setAddReviewVisible] = useState(false);
+const handleAddReview = (val) => {
+  setAddedReview({
+      ...addedReview,
+      review: val,
+      doctorId: result.doctorId
+    });
+  };
 
 /*************************  States ****************************/
 const [isLoading, setLoading] = useState(true);
 const [addReviewLoading, setaddReviewLoading] = useState(false);
 const [refreshing, setRefreshing] = React.useState(false);
-
 
 
 //**************** Doctor Slots**********************//
@@ -89,7 +106,14 @@ const [reviews, setReviews] = React.useState([]);
 
 //*************** ANONYMOUS Review Switch******************************/
 const [anonymousReviewSwitch, setAnonymousReviewSwitch] = React.useState(false);
-const onToggleSwitch = () => setAnonymousReviewSwitch(!anonymousReviewSwitch);
+const onToggleSwitch = () => {
+  setAnonymousReviewSwitch(!anonymousReviewSwitch);
+  console.log("the value_now :",anonymousReviewSwitch)
+  setAddedReview({
+    ...addedReview,
+    is_review_annoymous: !anonymousReviewSwitch
+  });
+}
 
 
 {/******************************      API Call  Handlers  ***********************************/}
@@ -201,6 +225,8 @@ try {
       setRefreshing(false)
       console.log(` Response: ${JSON.stringify(response.data)}`);
       console.log("..... Done Adding Review .....")   
+      setNo_of_ratings("0")    
+
       let promise = fetchDoctorReviewsHandle();
                 promise.then(reviews => {
                   setaddReviewLoading(false)
@@ -316,26 +342,6 @@ const onRefresh = React.useCallback(() => {
   console.log("..... Done FETCHING .....")      
 }, [doctorId]);
 
-
-/**** Sections Togglers  ****/
-const [about, setAbout] = useState(true);
-const [experience, setExperience] = useState(true);
-const [supportedInsurances, setsupportedInsurances] = useState(true);
-
-/*************** User ADD REVIEW  ****************/
-const [addedReview, setAddedReview] = useState({
-  review: "" ,
-  is_review_annoymous: 0,
-  doctorId: result.doctorId
-});
-const [addReviewVisible, setAddReviewVisible] = useState(false);
-const handleAddReview = (val) => {
-  setAddedReview({
-      ...addedReview,
-      review: val,
-      doctorId: result.doctorId
-    });
-  };
 
 
 /********************************   SCREEN  **********************************************************/   
@@ -762,17 +768,17 @@ const handleAddReview = (val) => {
               {/*** Anonymous Review Toggle  ****/}
             <View style={{flexDirection:"row"}}> 
             <Text style={{alignSelf:"center",fontWeight:"bold"}}>Anonymous Review</Text> 
-            <Switch style={{alignSelf:"flex-start"}} value={anonymousReviewSwitch} onValueChange={onToggleSwitch} />
+            <Switch style={{alignSelf:"flex-start",}} value={anonymousReviewSwitch} onValueChange={onToggleSwitch} />
               {/****  Submit Review  *****/}
             </View>
             <TouchableOpacity onPress=
             {() =>
                {setAddReviewVisible(!addReviewVisible),
-                console.log("HIWAN")
                 setAddedReview({
                   ...addedReview,
                   doctorId: result.doctorId,
                 });
+                console.log(addedReview)
                 setReviews([]);
                 addReviewHandle(addedReview)
 

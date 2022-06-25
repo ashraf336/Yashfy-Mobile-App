@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useEffect } from "react";
 import { View, StyleSheet } from "react-native";
 import {
   Avatar,
@@ -14,13 +15,84 @@ import { DrawerContentScrollView, DrawerItem } from "@react-navigation/drawer";
 
 import Icon from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { AuthContext} from "../../components/context";
+import axios from "axios";
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+
 
 export function DrawerContent(props) {
 
-  const { signOut } = React.useContext(AuthContext);
 
+
+{/******************************      API Call  Handlers  ***********************************/}
+const fetchPatientDataHandle = async ( token) => {
+
+  //CALLING API RETURN data 
+  try {
+    console.log(" ....... Calling API (Fetch Patient data)......")
+    const response = await axios.get(`${baseUrl}/patient/profile`, {
+      headers: {
+        'Authorization': `bearer ${token}` 
+      }
+    });
+
+    // { url , body , headear , config } for maore deatils visit docs
+    if (response.status === 200) {
+     // console.log(` Response: ${JSON.stringify(response.data)}`);
+      console.log(` patient data is fetched`);
+      // Set the data with fetched data
+      return response.data.patient      } 
+    else
+    {
+      Alert.alert('Not Found !', 'Seems that this doctor is not found !', [
+        {text: 'Try Again'}
+     ]);
+      return null;
+    }
+  }
+   catch (error) {
+    setLoading(false);
+    setRefreshing(false)
+    alert("An error has occurred in fetching doctor data ..");
+    console.log(error);
+    throw error;
+  }
+}
+const [data, setData] = useState({
+  username: " ",
+  first_name: " ",
+  last_name: " ",
+});  
+useEffect(() => {
+  //Runs only on the first render
+// Fetch Token
+AsyncStorage.multiGet(['userToken','isDoctor']).then(res =>
+{
+    // Fetch All Data
+  const promise = fetchPatientDataHandle(res[0][1]);
+  promise.then(patientData => {
+    setData(
+      {
+        ...data,
+        username: patientData.username,
+        first_name: patientData.first_name,
+        last_name : patientData.last_name,
+      }
+    )
+  });
+
+}
+).catch(err=>{
+console.log(err)
+})
+}, []);
+ 
+
+  const { signOut } = React.useContext(AuthContext);
+     
   return (
     <View style={{ flex: 1 }}>
       <DrawerContentScrollView {...props}>
@@ -34,9 +106,9 @@ export function DrawerContent(props) {
                 }
                 size={60}
               />
-              <View style={{ marginLeft: 15, flexDirection: "column" }}>
-                <Title style={styles.title}>Ahmed Ashraf</Title>
-                <Caption style={styles.caption}>@ashraf336</Caption>
+              <View style={{ marginLeft: 15, flexDirection: "column" ,flexShrink:1}}>
+                <Title style={styles.title}>{data.first_name} {data.last_name}</Title>
+                <Caption style={styles.caption}>@{data.username}</Caption>
               </View>
             </View>
 
@@ -95,11 +167,14 @@ const styles = StyleSheet.create({
   },
   userInfoSection: {
     paddingLeft: 20,
+    flexShrink:1
+
   },
   title: {
-    fontSize: 22,
+    fontSize: 20,
     marginTop: 3,
     fontWeight: "bold",
+    flexShrink:1
   },
   caption: {
     fontSize: 14,

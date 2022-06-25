@@ -5,8 +5,8 @@ import { useFocusEffect } from '@react-navigation/native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from "axios";
-const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
-//const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
+//const baseUrl = "https://test-api-yashfy.herokuapp.com"; // production 
+const baseUrl = "http://192.168.1.12:8080"; //DeVolopment
 
 const AppointmentsScreen = ({ navigation }) => {
 

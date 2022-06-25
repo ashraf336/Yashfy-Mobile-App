@@ -31,6 +31,7 @@ const styles = StyleSheet.create({
   Container:{
       marginBottom:3,
       flex:1,
+
   },  
   Title: {
     fontWeight: "bold",

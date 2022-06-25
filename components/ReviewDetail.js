@@ -5,9 +5,9 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 
 const ReviewDetail = ({result}) => {
     return <View style={styles.container}>
-        <View style={{marginHorizontal:25,alignItems: "center",flexShrink: 1,}}>
-        { result.is_review_annoymous ? (<Text style={styles.name}>Annoymous Patient</Text>) : (<Text style={styles.name}>{result.patient_name}</Text>) }
-        <Text style={styles.review}>{result.review}</Text>
+        <View style={{marginHorizontal:25,alignItems: "center",}}>
+        { result.is_review_annoymous ? (<Text style={styles.name}>Annoymous</Text>) : (<Text style={styles.name}>{result.patient_name}</Text>) }
+        <Text style={[styles.review,{flexShrink: 1}]}>{result.review}</Text>
         <Text style={styles.date_time}>{result.date} | {result.time}</Text>
 
         </View>
