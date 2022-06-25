@@ -56,7 +56,7 @@ const DoctorAppointmentDetail = ({result , token , navigation}) => {
             <Text style={styles.doctor}>{result.patient_name} </Text>            
         </View>    
 
-        <View style={styles.slot} >
+        <View style={[styles.slot,{justifyContent:"space-between"}]} >
           <View style={[styles.date_time,{flexDirection:"column"}]}>
               {/* *******Appointment Date******** */}
               <Text style={[styles.data,{fontWeight:"bold",}]}>{result.day_of_week}</Text>
@@ -74,7 +74,7 @@ const DoctorAppointmentDetail = ({result , token , navigation}) => {
   {/* **************** Cancel Appointment button (Show only for "Upcoming")******************* */}
   { result.states == "Upcoming" ?
               <TouchableOpacity
-              style={styles.cancelButton}
+              style={[styles.cancelButton,{marginRight:30}]}
               onPress={()=>  Alert.alert(
                   "Appointment Cancelation",
                   "Are you sure you want to cancel this appointment ?",
@@ -98,7 +98,7 @@ const DoctorAppointmentDetail = ({result , token , navigation}) => {
                   <Text style={styles.cancelText}>Cancel</Text>
               </LinearGradient>
               </TouchableOpacity>
-              :null    
+              :<View style={{marginRight:110}} ></View>    
   }                                
           </View>
         </View>     
