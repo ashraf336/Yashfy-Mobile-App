@@ -19,7 +19,8 @@ const SearchScreen = (props) => {
 const [term, setTerm] = useState("");
 //**************** Doctors List **********************// 
 const [result, setResult] = React.useState([]);
-
+//**************** Sorting Category **********************// 
+const [sortingCategory, setSortingCategory] = useState(null);
 
 {/******************************      API Call  Handlers  ***********************************/}
 const fetchDoctorsDataHandle = async ( queryParams ) => {
@@ -82,6 +83,52 @@ const fetchDoctorsDataHandle = async ( queryParams ) => {
   }
   };
 
+  //---------------RECOMMENDATION FUNCTION-----------------
+  //Function that sorts the result using a certain category 
+  const sortResultsByCategory = (val) => {
+    if(val.value==null){
+     return ;
+    }
+    else{
+      switch(val.value) {
+        case "Doctor Treatment":
+         setFilteredResult( filteredResult.sort((a, b) => {
+            return b.catgs_doctor_treatment - a.catgs_doctor_treatment;
+        })
+         )
+         break;
+        case "Clinic":
+          setFilteredResult( filteredResult.sort((a, b) => {
+            return b.catgs_Clinic - a.catgs_Clinic;
+        }))
+        break;
+        case "Staff":
+           setFilteredResult( filteredResult.sort((a, b) => {
+            return b.catgs_staff - a.catgs_staff;
+        }))
+        break;
+        case "Waiting Time":
+          setFilteredResult( filteredResult.sort((a, b) => {
+            return b.catgs_waiting_time - a.catgs_waiting_time;
+        }))
+        break;
+        case "Equipment":
+          setFilteredResult( filteredResult.sort((a, b) => {
+            return b.catgs_equipment - a.catgs_equipment;
+        }))
+        break;
+        case "Price":
+          setFilteredResult(  filteredResult.sort((a, b) => {
+            return b.catgs_price - a.catgs_price;
+        }))
+        break;                     
+        default:
+          return
+      }
+  }
+  };
+
+
 
   
 useFocusEffect(
@@ -94,9 +141,23 @@ useFocusEffect(
       // Set the data with fetched data
       setResult(fetchedDoctors)
       setFilteredResult(fetchedDoctors)
+      // console.log(fetchedDoctors)
     });
   }, [])
 );
+
+
+      //  For SORTING Dropdown
+      const [sortingCategoryOpen, setSortingCategoryOpen] = useState(false);
+      const [sortingCategoryItems, setSortingCategoryItems] = useState([
+        { label: "None", value: null },
+        { label: "Doctor Treatment", value: "Doctor Treatment" },
+        { label: "Clinic", value: "Clinic" },
+        { label: "Staff", value: "Staff" },
+        { label: "Waiting Time", value: "Waiting Time" },
+        { label: "Equipment", value: "Equipment" },
+        { label: "Price", value: "Price" },
+      ]);
 
       //  For SPECIALIZATION Dropdown
       const [specializationOpen, setSpecializationOpen] = useState(false);
@@ -142,7 +203,10 @@ useFocusEffect(
         ]);
     
 
-  
+
+
+
+        
     
   const handleSpecializationChange = (val) => {
     setFilterCriteria({
@@ -177,7 +241,7 @@ useFocusEffect(
   {/*********************  Filter & Sort Buttons   ***************************/}
       <View style={styles.ButtonContainer}>
       {/*********************  SORT    ***********************/}  
-      <TouchableOpacity style={{width:"45%" }}>
+      {/* <TouchableOpacity style={{width:"45%" }}>
       <LinearGradient
               colors={["#08d4c4", "#01ab9d"]}
               style={styles.Button}
@@ -194,9 +258,28 @@ useFocusEffect(
               </Text>
               <MaterialCommunityIcons style={{marginLeft:10}} name="sort" color="#fff" size={20} />
             </LinearGradient>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View  style={{flexDirection:"row", width:'57%'}}>
+      <Text style={[styles.text_footer,{marginTop:0}]}>Sort by: </Text>
+            <DropDownPicker
+              placeholder="Recommendation Category.."
+              placeholderStyle={{fontSize:12, fontWeight:"bold"}}
+              style={[styles.Button, {width:'100%'}]}
+              listMode="MODAL"
+              open={sortingCategoryOpen}
+              value={sortingCategory}
+              items={sortingCategoryItems}
+              setOpen={setSortingCategoryOpen}
+              onSelectItem={(val) => {
+                [setSortingCategory(val.value),
+                  // console.log("before function "+sortingCategory),
+                sortResultsByCategory(val)]
+                // console.log("after function "+sortingCategory)]
+              }}
+            />
+      </View>         
       {/*********************  FILTER    ***********************/} 
-      <TouchableOpacity style={{width:"45%"}} onPress={()=>{setFilterVisible(!filterVisible)}} >
+      <TouchableOpacity style={{width:"22%"}} onPress={()=>{setFilterVisible(!filterVisible)}} >
       <LinearGradient
               colors={["#08d4c4", "#01ab9d"]}
               style={styles.Button}
@@ -268,7 +351,7 @@ useFocusEffect(
             /> 
         {/*********************  APPLY Button  ***********************/}
       <TouchableOpacity onPress={( )  => 
-        {
+        { setSortingCategory(null)
           setFilterVisible(false)
           setFilteredResult([])
           setResult([])
@@ -368,7 +451,9 @@ const styles = StyleSheet.create({
     color: "#05375a",
     fontSize: 18,
     fontWeight:"bold",
-    marginTop:15
+    marginTop:15,
+    // textAlign:"center",
+    textAlignVertical:"center",
   }
 });
 
